@@ -1,9 +1,4 @@
-export enum PronounGroup {
-  Personal = 'Personal/Possessive/Reflexive',
-  IndefPersonThing = 'Indefinite (person/thing)',
-  IndefQuantityPartitive = 'Indefinite (quantity/partitive)',
-  Demonstrative = 'Demonstrative/Other',
-}
+import { PronounGroup } from './enum';
 
 export type PronounItem = {
   /** 通し番号（1〜） */

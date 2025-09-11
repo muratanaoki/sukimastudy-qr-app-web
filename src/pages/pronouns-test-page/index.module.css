@@ -100,17 +100,11 @@
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--gap);
   list-style: none;
   padding: 0;
   margin: 0;
-}
-
-@media (min-width: 860px) {
-  .cardGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .card {
@@ -136,6 +130,20 @@
   margin: 2px 0;
 }
 
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.termRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .index {
   font-size: 11px;
   color: #6b7280;
@@ -145,24 +153,67 @@
 }
 
 .term {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: 0.2px;
 }
 
 .ipa {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 14px;
-  color: #0f766e;
-  background: #ecfeff;
+  font-size: 13px;
+  color: #0b766e;
+  background: #f0fdfa;
   border: 1px dashed #99f6e4;
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: 999px;
 }
 
 .jp {
   font-size: 14px;
   color: #374151;
+  margin-bottom: 6px;
 }
 
 /* metaPill UI は削除 */
+
+/* --- examples --- */
+.examples {
+  margin: 8px 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.exampleItem {
+  background: #ffffff;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.exampleEnRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.level {
+  font-size: 11px;
+  color: #2563eb;
+  background: #e0ecff;
+  border: 1px solid #c7ddff;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.exampleEn {
+  font-size: 14px;
+  color: #111827;
+}
+
+.exampleJp {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #4b5563;
+}

@@ -1,4 +1,5 @@
-import { PronounItem, PronounGroup } from './type';
+import { PronounGroup } from './enum';
+import { PronounItem } from './type';
 
 export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   // 01. Personal / Possessive / Reflexive

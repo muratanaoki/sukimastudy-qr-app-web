@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import styles from './index.module.css';
-import { PronounItem, PronounGroup } from './utils/type';
+import { PronounItem } from './utils/type';
 import { DATA_RAW } from './utils/const';
+import { PronounGroup } from './utils/enum';
 
 const DATA: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
 
@@ -10,7 +11,7 @@ export default function PronounsTestPage() {
 
   // グルーピング（group のみ）
   const grouped = useMemo(() => {
-    const map = new Map<string, PronounItem[]>();
+    const map = new Map<PronounGroup, PronounItem[]>();
     for (const item of filtered) {
       if (!map.has(item.group)) map.set(item.group, []);
       map.get(item.group)!.push(item);
@@ -36,28 +37,69 @@ export default function PronounsTestPage() {
 
             <ul className={styles.cardGrid}>
               {items.map((it) => (
-                <li key={it.index} className={styles.card}>
-                  <div className={styles.cardRow}>
-                    <span className={styles.index}>#{it.index}</span>
-                    <span className={styles.term} lang="en">
-                      {it.term}
-                    </span>
-                  </div>
-                  <div className={styles.cardRow}>
-                    <span className={styles.ipa} lang="en">
-                      {it.ipa}
-                    </span>
-                  </div>
-                  <div className={styles.cardRow}>
-                    <span className={styles.jp}>{it.jp}</span>
-                  </div>
-                </li>
+                <PronounCard key={it.index} item={it} />
               ))}
             </ul>
           </section>
         ))}
       </main>
     </div>
+  );
+}
+
+type ExampleEntry = { level: 'J1' | 'J2' | 'J3'; en?: string; jp?: string };
+
+function buildExamples(it: PronounItem): ExampleEntry[] {
+  return (
+    [
+      { level: 'J1' as const, en: it.exJ1, jp: it.exJ1Jp },
+      { level: 'J2' as const, en: it.exJ2, jp: it.exJ2Jp },
+      { level: 'J3' as const, en: it.exJ3, jp: it.exJ3Jp },
+    ]
+      // どちらかがあれば表示
+      .filter((e) => e.en || e.jp)
+  );
+}
+
+function PronounCard({ item }: { item: PronounItem }) {
+  const exs = buildExamples(item);
+  return (
+    <li className={styles.card}>
+      <div className={styles.cardHeader}>
+        <div className={styles.termRow}>
+          <span className={styles.term} lang="en">
+            {item.term}
+          </span>
+          <span className={styles.ipa} lang="en">
+            {item.ipa}
+          </span>
+        </div>
+        <span className={styles.index}>#{item.index}</span>
+      </div>
+      <div className={styles.jp}>{item.jp}</div>
+      <ExampleList items={exs} />
+    </li>
+  );
+}
+
+function ExampleList({ items }: { items: ExampleEntry[] }) {
+  if (!items.length) return null;
+  return (
+    <ul className={styles.examples}>
+      {items.map((ex) => (
+        <li key={ex.level} className={styles.exampleItem}>
+          <div className={styles.exampleEnRow}>
+            <span className={styles.level}>{ex.level}</span>
+            {ex.en && (
+              <span className={styles.exampleEn} lang="en">
+                {ex.en}
+              </span>
+            )}
+          </div>
+          {ex.jp && <div className={styles.exampleJp}>{ex.jp}</div>}
+        </li>
+      ))}
+    </ul>
   );
 }
 
