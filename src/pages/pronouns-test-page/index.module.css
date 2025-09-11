@@ -79,7 +79,7 @@
 .groupHeader {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 6px;
 }
 
@@ -100,7 +100,7 @@
 
 .cardGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr; /* 1列固定 */
   gap: var(--gap);
   list-style: none;
   padding: 0;
@@ -139,9 +139,16 @@
 }
 
 .termRow {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 単語行の再生ボタンを右端に寄せる */
+.termRow .iconButton {
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .index {
@@ -166,6 +173,7 @@
   border: 1px dashed #99f6e4;
   padding: 2px 6px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 .jp {
@@ -194,7 +202,7 @@
 
 .exampleEnRow {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
 }
 
@@ -210,6 +218,9 @@
 .exampleEn {
   font-size: 14px;
   color: #111827;
+  flex: 1 1 auto; /* ボタンを右に押し出す */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .exampleJp {
@@ -248,4 +259,17 @@
 .iconButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* アクセシビリティ: キーボードフォーカス可視化 */
+.iconButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+  border-color: #93c5fd;
+}
+
+/* アイコンサイズを安定させる */
+.iconButton svg {
+  width: 18px;
+  height: 18px;
 }

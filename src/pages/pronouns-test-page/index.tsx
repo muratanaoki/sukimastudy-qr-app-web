@@ -3,7 +3,6 @@ import styles from './index.module.css';
 import { PronounItem } from './utils/type';
 import { DATA_RAW } from './utils/const';
 import { PronounGroup } from './utils/enum';
-import { Square } from 'lucide-react';
 import { useSpeech } from './hooks/useSpeech';
 import { PronounCard } from './components/PronounCard';
 
@@ -25,25 +24,6 @@ export default function PronounsTestPage() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Pronouns Catalog</h1>
-        <p className={styles.subtitle}>ジャンル / 単語 / IPA（米音） / 日本語訳</p>
-        {/* 簡易TTSコントロール */}
-        <div className={styles.controls}>
-          <span className={styles.count}>TTS: {speech.supported ? '対応' : '未対応'}</span>
-          <button
-            type="button"
-            className={styles.iconButton}
-            onClick={speech.cancel}
-            title="読み上げ停止"
-            aria-label="Stop speech"
-            disabled={!speech.speaking}
-          >
-            <Square size={18} />
-          </button>
-        </div>
-      </header>
-
       <main className={styles.main}>
         {[...grouped.entries()].map(([group, items]) => (
           <section key={group} className={styles.section}>
@@ -53,8 +33,12 @@ export default function PronounsTestPage() {
             </div>
 
             <ul className={styles.cardGrid}>
-              {items.map((it) => (
-                <PronounCard key={it.index} item={it} speech={speech} />
+              {items.map((it, idx) => (
+                <PronounCard
+                  key={`${group}-${idx + 1}`}
+                  item={{ ...it, index: idx + 1 }}
+                  speech={speech}
+                />
               ))}
             </ul>
           </section>
