@@ -32,7 +32,7 @@ export function PronounCard({ item, speech }: { item: PronounItem; speech: UseSp
           <button
             type="button"
             className={styles.iconButton}
-            onClick={() => speech.speak(item.term)}
+            onClick={() => speech.speakWord(item.term)}
             title="単語を再生"
             aria-label={`Speak term ${item.term}`}
           >
@@ -42,7 +42,7 @@ export function PronounCard({ item, speech }: { item: PronounItem; speech: UseSp
         <span className={styles.index}>#{item.index}</span>
       </div>
       <div className={styles.jp}>{item.jp}</div>
-      <ExampleList items={exs} onSpeak={(t) => speech.speak(t)} />
+      <ExampleList items={exs} onSpeak={(t) => speech.speakSentence(t)} />
     </li>
   );
 }
