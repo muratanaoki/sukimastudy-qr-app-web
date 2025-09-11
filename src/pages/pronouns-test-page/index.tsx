@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import styles from './index.module.css';
 import { PronounItem } from './utils/type';
 import { DATA_RAW } from './utils/const';
-import { PronounGroup } from './utils/enum';
+import { PronounGroup, JLevel } from './utils/enum';
 
 const DATA: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
 
@@ -47,14 +47,14 @@ export default function PronounsTestPage() {
   );
 }
 
-type ExampleEntry = { level: 'J1' | 'J2' | 'J3'; en?: string; jp?: string };
+type ExampleEntry = { level: JLevel; en?: string; jp?: string };
 
 function buildExamples(it: PronounItem): ExampleEntry[] {
   return (
     [
-      { level: 'J1' as const, en: it.exJ1, jp: it.exJ1Jp },
-      { level: 'J2' as const, en: it.exJ2, jp: it.exJ2Jp },
-      { level: 'J3' as const, en: it.exJ3, jp: it.exJ3Jp },
+      { level: JLevel.J1, en: it.exJ1, jp: it.exJ1Jp },
+      { level: JLevel.J2, en: it.exJ2, jp: it.exJ2Jp },
+      { level: JLevel.J3, en: it.exJ3, jp: it.exJ3Jp },
     ]
       // どちらかがあれば表示
       .filter((e) => e.en || e.jp)

@@ -4,3 +4,9 @@ export enum PronounGroup {
   IndefQuantityPartitive = 'Indefinite (quantity/partitive)',
   Demonstrative = 'Demonstrative/Other',
 }
+
+export enum JLevel {
+  J1 = 'J1',
+  J2 = 'J2',
+  J3 = 'J3',
+}
