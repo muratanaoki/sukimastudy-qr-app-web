@@ -1,4 +1,4 @@
-import { PronounGroup } from './enum';
+import { JLevel, PronounGroup } from './enum';
 
 export type PronounItem = {
   /** 通し番号（1〜） */
@@ -24,3 +24,5 @@ export type PronounItem = {
   /** 例文（中3レベル）の日本語訳 */
   exJ3Jp?: string;
 };
+
+export type ExampleEntry = { level: JLevel; en?: string; jp?: string };
