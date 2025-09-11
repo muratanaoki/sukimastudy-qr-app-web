@@ -1,0 +1,46 @@
+// TypeScriptコンパイラが特定のオプションで型チェックやコンパイルを行うことができる。
+
+{
+  "compilerOptions": {
+    // "composite": true:
+    //   複合プロジェクト（Project References）の一部として使用することを可能にする。
+    //   これにより、依存する他のプロジェクトのビルド結果を効率的に利用できる。
+
+    "composite": true,
+
+    // "skipLibCheck": true:
+    //   ライブラリファイル（.d.ts）に対する型のチェックをスキップする。
+    //   ビルド速度向上のためによく使われる設定で、一般的には問題ないケースが多い。
+
+    "skipLibCheck": true,
+
+    // "module": "ESNext":
+    //   コンパイラが生成するモジュール形式をESNext（ES Modules）形式に設定する。
+    //   現代的なツールチェーンやブラウザがサポートするESM形式を使用する。
+
+    "module": "ESNext",
+
+    // "moduleResolution": "bundler":
+    //   TypeScript 5.0以降で利用可能な機能。バンドラ（RollupやViteなど）に合わせた
+    //   新しいモジュール解決戦略を使用する。
+    //   従来の"node"や"classic"と異なり、bundlerツールチェーンを前提とした解決を行う。
+
+    "moduleResolution": "bundler",
+
+    // "allowSyntheticDefaultImports": true:
+    //   defaultエクスポートが存在しないモジュールに対しても、defaultインポート構文を許可する。
+    //   Reactや他のES Module環境での開発を容易にする設定。
+
+    "allowSyntheticDefaultImports": true,
+
+    // "strict": true:
+    //   TypeScriptのstrictモードを有効化。すべての厳格な型チェックオプションが有効になり、
+    //   より型安全なコードを書くことができる。
+
+    "strict": true
+  },
+  "include": [
+    "./vite/vite.config.ts" // この設定ファイルでは、"vite.config.ts"をTypeScriptコンパイル対象に含める。
+    // これにより、Vite設定ファイルに型チェックや補完を適用できる。
+  ]
+}

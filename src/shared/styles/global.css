@@ -1,0 +1,106 @@
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/zen-maru-gothic-regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zen Maru Gothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/zen-maru-gothic-bold.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/noto-sans-jp-regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/noto-sans-jp-medium.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/noto-sans-jp-bold.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/m-plus-rounded-1c-regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/m-plus-rounded-1c-bold.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  --font-family: 'M PLUS Rounded 1c', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  --font-color: #303030;
+  --primary-color: #2196f3;
+  --success-color: #4caf50;
+  --error-color: #f44336;
+  --background-color: #f5f5f5;
+
+  --primary-gradient-start: #d7d3f1;
+  --primary-gradient-mid: #e4d1f4;
+  --primary-gradient-end: #f6d3e4;
+  --header-grad-start: rgba(255, 255, 255, 0.9);
+  --header-grad-end: rgba(255, 255, 255, 0.6);
+  --header-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  --title-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+  --accent-color: #4cc9f0;
+  --english-text: #2b2d42;
+  --japanese-text: #545b7a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--font-color);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+button {
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+
+#root {
+  height: 100%;
+}

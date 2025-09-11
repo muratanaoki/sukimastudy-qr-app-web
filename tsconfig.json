@@ -1,0 +1,119 @@
+// このTypeScript設定ファイル（tsconfig.json）は、プロジェクトのコンパイル動作や型チェックルールを定義している。
+// 主にES2020を前提としたモダンなJavaScript環境、Reactプロジェクト、Bundler（ViteやWebpackなど）の設定に合わせたオプションが有効になっている。
+
+{
+  "compilerOptions": {
+    // "target": "ES2020":
+    //   トランスパイル後の出力コードをES2020水準のJavaScriptとして扱う。
+    //   より新しい言語機能が使用可能となる。
+
+    "target": "ES2020",
+
+    // "useDefineForClassFields": true:
+    //   Classフィールド宣言を`define`による定義（ECMAScript標準準拠）として扱う。
+    //   この設定はクラスフィールドをより標準的な動作に近づけるために用いる。
+
+    "useDefineForClassFields": true,
+
+    // "lib": ["ES2020", "DOM", "DOM.Iterable"]:
+    //   型定義として利用するライブラリを指定する。
+    //   ES2020標準ライブラリ、ブラウザDOM API、反復可能DOMコレクション等を使用可能にする。
+
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    // "module": "ESNext":
+    //   ESモジュール形式（ESM）でコードを解釈する。
+    //   現代的なツールチェーンやランタイムでサポートされる標準的なモジュール形式。
+
+    "module": "ESNext",
+
+    // "skipLibCheck": true:
+    //   `d.ts`ファイル（型定義ファイル）の型チェックをスキップする。
+    //   ビルド時間短縮に有効。
+
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    // "moduleResolution": "bundler":
+    //   TypeScript 5.0以降で導入されたbundlerモードによるモジュール解決を使用する。
+    //   ViteやRollupなどのバンドラツールの解決方法を前提としたモジュール探索が行われる。
+
+    "moduleResolution": "bundler",
+
+    // "allowImportingTsExtensions": true:
+    //   TypeScriptソースファイルをimportする際、拡張子（.ts, .mts, .cts）を含めても許可する。
+    //   通常は拡張子なしインポートが期待されるが、この設定で拡張子付きもOKとなる。
+
+    "allowImportingTsExtensions": true,
+
+    // "resolveJsonModule": true:
+    //   JSONファイルをインポート可能にする。インポート時に型が付与され、JSONの内容にアクセスできる。
+
+    "resolveJsonModule": true,
+
+    // "isolatedModules": true:
+    //   各ファイルを独立したモジュールとして扱う。
+    //   バンドラやBabel等との互換性確保のため有効にすることが多い。
+
+    "isolatedModules": true,
+
+    // "noEmit": true:
+    //   TypeScriptコンパイル時にJavaScriptファイルを出力しない。
+    //   型チェック専用の設定で、実際のバンドルは別ツール（Viteなど）に任せる場合によく使う。
+
+    "noEmit": true,
+
+    // "jsx": "react-jsx":
+    //   JSX構文をTypeScript側で処理する際のモードを"react-jsx"に設定。
+    //   React 17以降の新しいJSX変換方式を用いる。
+
+    "jsx": "react-jsx",
+
+    /* Linting */
+    // "strict": true:
+    //   厳格な型チェックモードを有効化し、型安全性を高める。
+
+    "strict": true,
+
+    // "strictPropertyInitialization": false:
+    //   クラスのプロパティがコンストラクタで必ず初期化されていない場合でもエラーとしない。
+    //   柔軟性を確保するため無効化することがある。
+
+    "strictPropertyInitialization": false,
+
+    // "noUnusedLocals": true:
+    //   未使用のローカル変数があるとエラーを出す。コードのクリーンアップを促す設定。
+
+    "noUnusedLocals": true,
+
+    // "noUnusedParameters": true:
+    //   未使用の関数引数があるとエラーを出す。
+    //   不要な引数を削除してコードをより明確にする。
+
+    "noUnusedParameters": true,
+
+    // "noFallthroughCasesInSwitch": true:
+    //   switch文でcase間のfallthrough（breakなしで次のcaseへ移行）があるとエラー。
+    //   意図しないcaseスキップを防ぎ、バグを減らすため。
+
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@sukimastudy/shared": ["../shared/src"]
+    }
+  },
+
+  "include": [
+    // "include": ["src"]:
+    //   コンパイル対象のファイルとして src ディレクトリ配下の全てのTypeScriptファイルを含める。
+    "src"
+  ],
+  "references": [
+    // "references": [{ "path": "./tsconfig.node.json" }]:
+    //   このtsconfigと関連する別のtsconfig（tsconfig.node.json）への参照を定義。
+    //   複合プロジェクト設定（Project References）を使用して、ビルド時の効率化や依存関係の明確化を図る。
+    { "path": "./tsconfig.node.json" }
+  ]
+}
