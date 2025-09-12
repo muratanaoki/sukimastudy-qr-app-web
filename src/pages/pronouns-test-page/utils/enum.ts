@@ -6,7 +6,7 @@ export enum PronounGroup {
 }
 
 export enum JLevel {
-  J1 = 'J1',
-  J2 = 'J2',
-  J3 = 'J3',
+  J1 = '中1',
+  J2 = '中2',
+  J3 = '中3',
 }

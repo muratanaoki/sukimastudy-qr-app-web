@@ -1,99 +1,152 @@
 .container {
-  --maxw: 1100px;
-  --padX: 16px;
-  --radius: 16px;
-  --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
-  --gap: 12px;
+  --maxw: 68.75rem;
+  --padX: 1rem;
+  --radius: 1rem;
+  --shadow: 0 0.375rem 1.5rem rgba(0, 0, 0, 0.08);
+  --gap: 0.75rem;
+
+  /* Design tokens (local to this page) */
+  /* spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+
+  /* borders & radius */
+  --b-1: 0.0625rem;
+  --r-sm: 0.5rem;
+  --r-md: 0.625rem;
+  --r-lg: 0.875rem;
+  --r-pill: 999rem;
+
+  /* typography */
+  --ls-tight: 0.0125rem;
+
+  /* colors */
+  --c-text: #1c1c1c;
+  --c-strong: #111827;
+  --c-muted: #666666;
+  --c-subtle: #888888;
+  --c-secondary: #374151;
+  --c-tertiary: #4b5563;
+  --c-surface: #ffffff;
+  --c-surface-subtle: #fbfdff;
+  --c-chip-bg: #f1f5f9;
+  --c-chip-bg-weak: #f5f7fb;
+  --c-border: #e5e7eb;
+  --c-border-subtle: #e6e6e6;
+  --c-border-soft: #f0f0f0;
+  --c-card-border: #eef1f6;
+  --c-badge-text: #3b82f6;
+  --c-badge-bg: #e8f0fe;
+  --c-info-text: #0b766e;
+  --c-info-bg: #f0fdfa;
+  --c-info-border: #99f6e4;
+
+  /* focus */
+  --focus-border: #90caf9;
+  --focus-ring: rgba(144, 202, 249, 0.25);
+  --focus-visible-border: #93c5fd;
+  --focus-visible-ring: rgba(59, 130, 246, 0.35);
+
+  /* shadows */
+  --shadow-hover: 0 0.625rem 1.5rem rgba(71, 145, 219, 0.12);
+  --shadow-sm: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.06);
+
+  /* icon sizes */
+  --icon: 1.75rem; /* button w/h */
+  --icon-inner: 1.125rem; /* svg w/h */
 
   margin: 0 auto;
   max-width: var(--maxw);
-  padding: 20px var(--padX) 64px;
-  color: #1c1c1c;
-  background: #fff;
+  padding: 1.25rem var(--padX) 4rem;
+  color: var(--c-text);
+  background: var(--c-surface);
 }
 
 .header {
   position: sticky;
   top: 0;
   background: linear-gradient(#ffffffcc, #ffffffdd);
-  backdrop-filter: blur(6px);
-  padding: 12px 0 16px;
+  backdrop-filter: blur(0.375rem);
+  padding: 0.75rem 0 1rem;
   z-index: 5;
 }
 
 .title {
-  font-size: clamp(20px, 3.6vw, 28px);
+  font-size: clamp(1.25rem, 3.6vw, 1.75rem);
   font-weight: 800;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.0125rem;
   margin: 0;
 }
 
 .subtitle {
-  margin: 4px 0 10px;
-  color: #666;
-  font-size: 13px;
+  margin: 0.25rem 0 0.625rem;
+  color: var(--c-muted);
+  font-size: 0.8125rem;
 }
 
 .controls {
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
 }
 
 .search {
   flex: 1;
-  padding: 10px 12px;
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 0.625rem 0.75rem;
+  border: var(--b-1) solid var(--c-border-subtle);
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
   outline: none;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02) inset;
+  box-shadow: 0 0.125rem 0 rgba(0, 0, 0, 0.02) inset;
 }
 
 .search:focus {
-  border-color: #90caf9;
-  box-shadow: 0 0 0 4px rgba(144, 202, 249, 0.25);
+  border-color: var(--focus-border);
+  box-shadow: 0 0 0 0.25rem var(--focus-ring);
 }
 
 .count {
-  font-size: 12px;
-  color: #888;
-  padding: 6px 8px;
-  background: #f5f7fb;
-  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--c-subtle);
+  padding: 0.375rem 0.5rem;
+  background: var(--c-chip-bg-weak);
+  border-radius: var(--r-pill);
 }
 
 .main {
-  margin-top: 14px;
   display: grid;
-  gap: 28px;
+  gap: 1.75rem;
 }
 
 .section {
-  border: 1px solid #f0f0f0;
+  border: var(--b-1) solid var(--c-border-soft);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 16px;
+  padding: 1rem;
 }
 
 .groupHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
 }
 
 .groupTitle {
-  font-size: clamp(16px, 2.8vw, 20px);
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
   margin: 0;
 }
 
 .groupBadge {
-  font-size: 12px;
-  color: #3b82f6;
-  background: #e8f0fe;
-  padding: 4px 8px;
-  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--c-badge-text);
+  background: var(--c-badge-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--r-pill);
 }
 
 /* subGroup UI は削除 */
@@ -108,40 +161,40 @@
 }
 
 .card {
-  border: 1px solid #eef1f6;
-  border-radius: 14px;
-  padding: 12px;
-  background: #fbfdff;
+  border: var(--b-1) solid var(--c-card-border);
+  border-radius: var(--r-lg);
+  padding: 0.75rem;
+  background: var(--c-surface-subtle);
   transition:
     box-shadow 0.15s ease,
     transform 0.05s ease;
 }
 
 .card:hover {
-  box-shadow: 0 10px 24px rgba(71, 145, 219, 0.12);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-0.0625rem);
 }
 
 .cardRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   line-height: 1.35;
-  margin: 2px 0;
+  margin: 0.125rem 0;
 }
 
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 0.625rem;
+  margin-bottom: 0.375rem;
 }
 
 .termRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   flex-wrap: wrap;
 }
 
@@ -152,81 +205,81 @@
 }
 
 .index {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #6b7280;
-  background: #f1f5f9;
-  padding: 2px 6px;
-  border-radius: 999px;
+  background: var(--c-chip-bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--r-pill);
 }
 
 .term {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
-  letter-spacing: 0.2px;
+  letter-spacing: var(--ls-tight);
 }
 
 .ipa {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 13px;
-  color: #0b766e;
-  background: #f0fdfa;
-  border: 1px dashed #99f6e4;
-  padding: 2px 6px;
-  border-radius: 999px;
+  font-size: 0.8125rem;
+  color: var(--c-info-text);
+  background: var(--c-info-bg);
+  border: var(--b-1) dashed var(--c-info-border);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--r-pill);
   white-space: nowrap;
 }
 
 .jp {
-  font-size: 14px;
-  color: #374151;
-  margin-bottom: 6px;
+  font-size: 0.875rem;
+  color: var(--c-secondary);
+  margin-bottom: 0.375rem;
 }
 
 /* metaPill UI は削除 */
 
 /* --- examples --- */
 .examples {
-  margin: 8px 0 0;
+  margin: 0.5rem 0 0;
   padding-left: 0;
   list-style: none;
   display: grid;
-  gap: 6px;
+  gap: 0.375rem;
 }
 
 .exampleItem {
   background: #ffffff;
-  border: 1px dashed #e5e7eb;
-  border-radius: 10px;
-  padding: 8px 10px;
+  border: var(--b-1) dashed var(--c-border);
+  border-radius: var(--r-md);
+  padding: 0.5rem 0.625rem;
 }
 
 .exampleEnRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .level {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #2563eb;
   background: #e0ecff;
-  border: 1px solid #c7ddff;
-  padding: 1px 6px;
-  border-radius: 999px;
+  border: var(--b-1) solid #c7ddff;
+  padding: 0.0625rem 0.375rem;
+  border-radius: var(--r-pill);
 }
 
 .exampleEn {
-  font-size: 14px;
-  color: #111827;
+  font-size: 0.875rem;
+  color: var(--c-strong);
   flex: 1 1 auto; /* ボタンを右に押し出す */
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
 .exampleJp {
-  margin-top: 2px;
-  font-size: 13px;
-  color: #4b5563;
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  color: var(--c-tertiary);
 }
 
 /* --- icon buttons --- */
@@ -234,12 +287,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: #111827;
+  width: var(--icon);
+  height: var(--icon);
+  border-radius: var(--r-sm);
+  border: var(--b-1) solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-strong);
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -249,11 +302,11 @@
 
 .iconButton:hover {
   background: #f9fafb;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .iconButton:active {
-  transform: translateY(1px);
+  transform: translateY(0.0625rem);
 }
 
 .iconButton:disabled {
@@ -264,12 +317,118 @@
 /* アクセシビリティ: キーボードフォーカス可視化 */
 .iconButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
-  border-color: #93c5fd;
+  box-shadow: 0 0 0 0.1875rem var(--focus-visible-ring);
+  border-color: var(--focus-visible-border);
 }
 
 /* アイコンサイズを安定させる */
 .iconButton svg {
-  width: 18px;
-  height: 18px;
+  width: var(--icon-inner);
+  height: var(--icon-inner);
+}
+
+/* =========================
+   Responsive adjustments
+   - Smartphone: <= 30rem (<=480px)
+   - Tablet (portrait): >= 37.5rem (>=600px) and portrait
+   All sizes use rem based on html 16px
+========================= */
+
+/* Smartphone (<=480px) */
+@media (max-width: 30rem) {
+  .container {
+    padding: 0.75rem 0.75rem 2.5rem; /* 上下/左右を少しコンパクトに */
+    --icon: 1.5rem;
+    --icon-inner: 1rem;
+  }
+
+  .header {
+    padding: 0.5rem 0 0.75rem;
+    backdrop-filter: blur(0.25rem);
+  }
+
+  .controls {
+    gap: 0.5rem;
+    flex-wrap: wrap; /* 狭いときは折り返し */
+  }
+
+  .search {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.875rem;
+  }
+
+  .main {
+    gap: 1rem;
+  }
+
+  .section {
+    padding: 0.875rem;
+  }
+
+  .card {
+    padding: 0.625rem;
+    border-radius: 0.75rem;
+  }
+
+  .cardRow {
+    gap: 0.375rem;
+    margin: 0.125rem 0;
+  }
+
+  .cardHeader {
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .term {
+    font-size: 1.125rem;
+    letter-spacing: 0.01rem;
+  }
+
+  .ipa {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.3125rem;
+  }
+
+  .examples {
+    gap: 0.3125rem;
+  }
+
+  .exampleItem {
+    padding: 0.5rem;
+  }
+
+  .exampleEn {
+    font-size: 0.875rem; /* 可読性維持 */
+  }
+
+  .exampleJp {
+    font-size: 0.75rem;
+  }
+
+  .iconButton {
+    border-radius: 0.375rem; /* 6px */
+  }
+}
+
+/* Tablet (portrait) >=600px */
+@media (min-width: 37.5rem) and (orientation: portrait) {
+  .container {
+    padding: 1.25rem 1.25rem 4rem; /* 少し余白を広く */
+    --icon: 1.875rem; /* 30px */
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2列で一覧性向上 */
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .controls {
+    gap: 0.75rem;
+  }
+
+  /* icon sizes are adjusted via variables above */
 }
