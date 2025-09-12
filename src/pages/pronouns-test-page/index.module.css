@@ -1,6 +1,6 @@
 .container {
   --padX: 1rem;
-  --radius: 1rem;
+  --radius: 0.5rem;
   --shadow: 0 0.375rem 1.5rem rgba(0, 0, 0, 0.08);
   --gap: 0.75rem;
 
@@ -14,10 +14,10 @@
 
   /* borders & radius */
   --b-1: 0.0625rem;
-  --r-sm: 0.5rem;
-  --r-md: 0.625rem;
-  --r-lg: 0.875rem;
-  --r-pill: 999rem;
+  --r-sm: 0.25rem;
+  --r-md: 0.375rem;
+  --r-lg: 0.5rem;
+  --r-pill: 1.25rem;
 
   /* typography */
   --ls-tight: 0.0125rem;
@@ -39,9 +39,10 @@
   --c-card-border: #eef1f6;
   --c-badge-text: #3b82f6;
   --c-badge-bg: #e8f0fe;
-  --c-info-text: #0b766e;
-  --c-info-bg: #f0fdfa;
-  --c-info-border: #99f6e4;
+  /* neutral accents (was info) */
+  --c-ipa-text: #4b5563;
+  --c-ipa-bg: transparent;
+  --c-ipa-border: #e5e7eb;
 
   /* focus */
   --focus-border: #90caf9;
@@ -199,7 +200,7 @@
   color: #6b7280;
   background: var(--c-chip-bg);
   padding: 0.125rem 0.375rem;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-sm);
 }
 
 .term {
@@ -211,11 +212,11 @@
 .ipa {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   font-size: 0.8125rem;
-  color: var(--c-info-text);
-  background: var(--c-info-bg);
-  border: var(--b-1) dashed var(--c-info-border);
-  padding: 0.125rem 0.375rem;
-  border-radius: var(--r-pill);
+  color: var(--c-ipa-text);
+  background: var(--c-ipa-bg);
+  padding: 0;
+  border: none;
+  border-radius: 0;
   white-space: nowrap;
 }
 
@@ -238,30 +239,25 @@
 
 .exampleItem {
   background: #ffffff;
-  border: var(--b-1) dashed var(--c-border);
+  border: var(--b-1) solid var(--c-border-soft);
   border-radius: var(--r-md);
   padding: 0.5rem 0.625rem;
 }
 
 .exampleEnRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto; /* text | button */
+  align-items: start;
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
 }
 
-.level {
-  font-size: 0.6875rem;
-  color: #2563eb;
-  background: #e0ecff;
-  border: var(--b-1) solid #c7ddff;
-  padding: 0.0625rem 0.375rem;
-  border-radius: var(--r-pill);
-}
+/* .level は廃止 */
 
 .exampleEn {
   font-size: 0.875rem;
   color: var(--c-strong);
-  flex: 1 1 auto; /* ボタンを右に押し出す */
+  /* grid middle column expands; allow wrapping */
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -288,6 +284,11 @@
     background 0.15s ease,
     box-shadow 0.15s ease,
     transform 0.05s ease;
+}
+
+/* 例文の行では右端に配置 */
+.exampleEnRow .iconButton {
+  justify-self: end;
 }
 
 .iconButton:hover {

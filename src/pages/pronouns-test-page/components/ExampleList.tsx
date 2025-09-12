@@ -1,5 +1,5 @@
 import styles from '../index.module.css';
-import { Play } from 'lucide-react';
+import { Volume2 } from 'lucide-react';
 import type { ExampleEntry } from '../utils/type';
 
 export function ExampleList({
@@ -12,10 +12,9 @@ export function ExampleList({
   if (!items.length) return null;
   return (
     <ul className={styles.examples}>
-      {items.map((ex) => (
-        <li key={ex.level} className={styles.exampleItem}>
+      {items.map((ex, idx) => (
+        <li key={idx} className={styles.exampleItem}>
           <div className={styles.exampleEnRow}>
-            <span className={styles.level}>{ex.level}</span>
             {ex.en && (
               <span className={styles.exampleEn} lang="en">
                 {ex.en}
@@ -27,9 +26,9 @@ export function ExampleList({
                 className={styles.iconButton}
                 onClick={() => onSpeak(ex.en!)}
                 title="例文を再生"
-                aria-label={`Speak example ${ex.level}`}
+                aria-label={`Speak example ${idx + 1}`}
               >
-                <Play size={18} />
+                <Volume2 size={18} />
               </button>
             )}
           </div>
