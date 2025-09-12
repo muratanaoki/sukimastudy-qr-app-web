@@ -121,7 +121,6 @@
 
 .section {
   border: var(--b-1) solid var(--c-border-soft);
-  box-shadow: var(--shadow);
   padding: 1rem;
 }
 
@@ -289,6 +288,11 @@
     background 0.15s ease,
     box-shadow 0.15s ease,
     transform 0.05s ease;
+}
+
+.iconButton:hover {
+  background: #f9fafb;
+  box-shadow: var(--shadow-sm);
 }
 
 .iconButton:active {

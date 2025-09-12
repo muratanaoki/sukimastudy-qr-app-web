@@ -1,10 +1,13 @@
-import { PronounGroup } from './enum';
 import { PronounItem } from './type';
 
-export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
+// NOTE: group は表示/ロジックでは未使用（廃止）。
+// データ編集の負担を減らすため、データソース側では一時的に保持して
+// 消費側（ページ）で除去してから使用します。
+type RawPronounItem = Omit<PronounItem, 'index'>;
+
+const DATA_RAW_SOURCE: RawPronounItem[] = [
   // 01. Personal / Possessive / Reflexive
   {
-    group: PronounGroup.Personal,
     term: 'I',
     ipa: '/aɪ/',
     jp: '私は',
@@ -16,7 +19,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私は海外に行ったことがありません。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'my',
     ipa: '/maɪ/',
     jp: '私の',
@@ -28,7 +30,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私の夢は海外で勉強することです。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'me',
     ipa: '/miː/',
     jp: '私を、私に',
@@ -40,7 +41,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'そのプロジェクトの間、皆が私を信頼してくれました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'mine',
     ipa: '/maɪn/',
     jp: '私のもの',
@@ -52,7 +52,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'この席は予約してあって、私のものです。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'myself',
     ipa: '/maɪˈsɛlf/',
     jp: '私自身',
@@ -65,7 +64,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'we',
     ipa: '/wiː/',
     jp: '私たちは',
@@ -77,7 +75,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちは去年からお互いを知っています。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'our',
     ipa: '/ˈaʊɚ/',
     jp: '私たちの',
@@ -89,7 +86,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちの先生は追加の宿題を出しました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'us',
     ipa: '/ʌs/',
     jp: '私たちを、私たちに',
@@ -101,7 +97,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らは私たちをプロジェクトに招待しました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'ours',
     ipa: '/ˈaʊɚz/',
     jp: '私たちのもの',
@@ -113,7 +108,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'この勝利は彼らではなく私たちのものです。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'ourselves',
     ipa: '/ɑrˈsɛlvz/',
     jp: '私たち自身',
@@ -126,7 +120,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'you',
     ipa: '/juː/',
     jp: 'あなたは',
@@ -138,7 +131,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'あなたは今年、前より自信がつきました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'your',
     ipa: '/jʊr/',
     jp: 'あなたの',
@@ -150,7 +142,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'あなたのアイデアはチームにとても役立ちました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'you',
     ipa: '/juː/',
     jp: 'あなたを、あなたに',
@@ -162,7 +153,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '先生はあなたに最初に発表するよう頼みました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'yours',
     ipa: '/jʊrz/',
     jp: 'あなたのもの',
@@ -174,7 +164,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '最終決定はあなたのものです（あなたが決めます）。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'yourself',
     ipa: '/jʊrˈsɛlf/',
     jp: 'あなた自身',
@@ -187,7 +176,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'you',
     ipa: '/juː/',
     jp: 'あなたたちは',
@@ -199,7 +187,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'あなたたちは数か月間、一緒に取り組んできました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'your',
     ipa: '/jʊr/',
     jp: 'あなたたちの',
@@ -211,7 +198,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'あなたたちの努力は大きな違いを生みました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'you',
     ipa: '/juː/',
     jp: 'あなたたちを、あなたたちに',
@@ -223,7 +209,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私はあなたたちを私たちのイベントに招待しました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'yours',
     ipa: '/jʊrz/',
     jp: 'あなたたちのもの',
@@ -235,7 +220,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '選択はあなたたちに任されています。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'yourselves',
     ipa: '/jʊrˈsɛlvz/',
     jp: 'あなたたち自身',
@@ -248,7 +232,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'he',
     ipa: '/hiː/',
     jp: '彼は',
@@ -260,7 +243,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼は5年間大阪に住んでいます。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'his',
     ipa: '/hɪz/',
     jp: '彼の',
@@ -272,7 +254,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼の助言は役に立ってきました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'him',
     ipa: '/hɪm/',
     jp: '彼を、彼に',
@@ -284,7 +265,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'みんなが彼を尊敬しています。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'his',
     ipa: '/hɪz/',
     jp: '彼のもの',
@@ -296,7 +276,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '最終的な決定は彼のものです。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'himself',
     ipa: '/hɪmˈsɛlf/',
     jp: '彼自身',
@@ -309,7 +288,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'she',
     ipa: '/ʃiː/',
     jp: '彼女は',
@@ -321,7 +299,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼女は何度も京都を訪れています。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'her',
     ipa: '/hɝː/',
     jp: '彼女の',
@@ -333,7 +310,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼女の考えで計画が変わりました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'her',
     ipa: '/hɝː/',
     jp: '彼女を、彼女に',
@@ -345,7 +321,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちは彼女をリーダーに選びました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'hers',
     ipa: '/hɝːz/',
     jp: '彼女のもの',
@@ -357,7 +332,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'その勝利は彼女のものです。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'herself',
     ipa: '/hɝːˈsɛlf/',
     jp: '彼女自身',
@@ -370,7 +344,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'it',
     ipa: '/ɪt/',
     jp: 'それは',
@@ -382,7 +355,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '最近、寒くなってきました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'its',
     ipa: '/ɪts/',
     jp: 'それの',
@@ -394,7 +366,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'その会社は方針を変えました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'it',
     ipa: '/ɪt/',
     jp: 'それを、それに',
@@ -406,7 +377,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私はそれを慎重に考えました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'itself',
     ipa: '/ɪtˈsɛlf/',
     jp: 'それ自身',
@@ -419,7 +389,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.Personal,
     term: 'they',
     ipa: '/ðeɪ/',
     jp: '彼らは',
@@ -431,7 +400,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らは多くの国を旅行したことがあります。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'their',
     ipa: '/ðɛr/',
     jp: '彼らの',
@@ -443,7 +411,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らの努力は実を結びました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'them',
     ipa: '/ðɛm/',
     jp: '彼らを、彼らに',
@@ -455,7 +422,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私は彼らに一緒に参加するよう頼みました。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'theirs',
     ipa: '/ðɛrz/',
     jp: '彼らのもの',
@@ -467,7 +433,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '今回は彼らの勝ちです。',
   },
   {
-    group: PronounGroup.Personal,
     term: 'themselves',
     ipa: '/ðɛmˈsɛlvz/',
     jp: '彼ら自身',
@@ -481,7 +446,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
 
   // 02. Indefinite (person/thing)
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'someone',
     ipa: '/ˈsʌmˌwʌn/',
     jp: '誰か',
@@ -493,7 +457,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '誰かが私の席を取ってしまいました。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'somebody',
     ipa: '/ˈsʌmˌbɑːdi/',
     jp: '誰か',
@@ -505,7 +468,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '誰かがすでに部屋を掃除しました。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'something',
     ipa: '/ˈsʌmˌθɪŋ/',
     jp: '何か',
@@ -518,7 +480,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'anyone',
     ipa: '/ˈɛniˌwʌn/',
     jp: '誰でも、誰か',
@@ -530,7 +491,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'もし誰か助けが必要なら知らせてください。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'anybody',
     ipa: '/ˈɛniˌbɑːdi/',
     jp: '誰でも、誰か',
@@ -542,7 +502,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'もし質問がある人は、後で私に聞いてください。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'anything',
     ipa: '/ˈɛniˌθɪŋ/',
     jp: '何でも、何か',
@@ -555,7 +514,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'everyone',
     ipa: '/ˈɛvriˌwʌn/',
     jp: 'みんな',
@@ -567,7 +525,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'みんな宿題を終えています。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'everybody',
     ipa: '/ˈɛvriˌbɑːdi/',
     jp: 'みんな',
@@ -579,7 +536,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'みんな時間どおりに到着しました。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'everything',
     ipa: '/ˈɛvriˌθɪŋ/',
     jp: 'すべて',
@@ -592,7 +548,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
   },
 
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'no one',
     ipa: '/ˈnoʊ ˌwʌn/',
     jp: '誰も〜ない',
@@ -604,7 +559,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'まだ誰もそのパズルを解いていません。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'nobody',
     ipa: '/ˈnoʊˌbɑːdi/',
     jp: '誰も〜ない',
@@ -616,7 +570,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'まだ誰もその課題を終えていません。',
   },
   {
-    group: PronounGroup.IndefPersonThing,
     term: 'nothing',
     ipa: '/ˈnʌθɪŋ/',
     jp: '何も〜ない',
@@ -630,7 +583,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
 
   // 03. Indefinite (quantity/partitive)
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'one',
     ipa: '/wʌn/',
     jp: '一人、もの',
@@ -642,7 +594,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '友だちの一人が名古屋に引っ越しました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'another',
     ipa: '/əˈnʌðɚ/',
     jp: 'もう一つの、別の',
@@ -654,7 +605,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'それを解く別の方法を試しましょう。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'other',
     ipa: '/ˈʌðɚ/',
     jp: '他の',
@@ -666,7 +616,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '他の選択肢が提案されています。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'others',
     ipa: '/ˈʌðɚz/',
     jp: '他のもの、人々',
@@ -678,7 +627,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '他の人たちはすでに出発しました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'each',
     ipa: '/itʃ/',
     jp: 'それぞれ',
@@ -690,7 +638,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らはそれぞれ自分の作業を終えています。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'either',
     ipa: '/ˈiðɚ/',
     jp: 'どちらか',
@@ -702,7 +649,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'どちらの答えでも受け入れられます。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'neither',
     ipa: '/ˈniðɚ/',
     jp: 'どちらも〜ない',
@@ -714,7 +660,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちのどちらもまだ終わっていません。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'none',
     ipa: '/nʌn/',
     jp: 'どれも〜ない、誰も〜ない',
@@ -726,7 +671,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らはまだ誰も到着していません。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'some',
     ipa: '/sʌm/',
     jp: 'いくつかの',
@@ -738,7 +682,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'アイデアのいくつかが選ばれました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'any',
     ipa: '/ˈɛni/',
     jp: 'いくらか、どれか',
@@ -750,7 +693,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'もし質問があれば、後で聞いてください。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'certain',
     ipa: '/ˈsɝːtn/',
     jp: 'ある人々',
@@ -762,7 +704,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '安全のため、特定の区域が閉鎖されています。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'all',
     ipa: '/ɔl/',
     jp: 'すべて',
@@ -774,7 +715,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちは全員終わりました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'both',
     ipa: '/boʊθ/',
     jp: '両方',
@@ -786,7 +726,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼ら二人はとても上達しました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'most',
     ipa: '/moʊst/',
     jp: 'ほとんどの',
@@ -798,7 +737,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '作業のほとんどは終わっています。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'more',
     ipa: '/mɔr/',
     jp: 'もっと多くの',
@@ -810,7 +748,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '判断するにはもっと情報が必要です。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'many',
     ipa: '/ˈmɛni/',
     jp: '多くの（可算）',
@@ -822,7 +759,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らの多くは東京を訪れたことがあります。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'much',
     ipa: '/mʌtʃ/',
     jp: '多くの（不可算）',
@@ -834,7 +770,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '春以来、多くのことが変わりました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'several',
     ipa: '/ˈsɛvrəl/',
     jp: 'いくつかの',
@@ -846,7 +781,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'いくつかの計画が中止されました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'few',
     ipa: '/fjuː/',
     jp: 'ほとんど〜ない（可算）',
@@ -858,7 +792,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちの中でレポートを終えた人はほとんどいません。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'little',
     ipa: '/ˈlɪtl/',
     jp: 'ほとんど〜ない（不可算）',
@@ -870,7 +803,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '成功の見込みはほとんどありません。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'less',
     ipa: '/lɛs/',
     jp: 'より少ない',
@@ -882,7 +814,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '私たちは昨年より少なく使いました。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'least',
     ipa: '/list/',
     jp: '最小、最も少ない',
@@ -894,7 +825,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼女はその変化の影響を最も受けませんでした。',
   },
   {
-    group: PronounGroup.IndefQuantityPartitive,
     term: 'enough',
     ipa: '/ɪˈnʌf/',
     jp: '十分な',
@@ -908,7 +838,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
 
   // 04. Demonstrative & Other
   {
-    group: PronounGroup.Demonstrative,
     term: 'this',
     ipa: '/ðɪs/',
     jp: 'これ',
@@ -920,7 +849,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'これは私のお気に入りの曲になりました。',
   },
   {
-    group: PronounGroup.Demonstrative,
     term: 'these',
     ipa: '/ðiːz/',
     jp: 'これら',
@@ -932,7 +860,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'これらはとても役立ってきました。',
   },
   {
-    group: PronounGroup.Demonstrative,
     term: 'that',
     ipa: '/ðæt/',
     jp: 'それ、あれ',
@@ -944,7 +871,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'それは以前にも起きたことがあります。',
   },
   {
-    group: PronounGroup.Demonstrative,
     term: 'those',
     ipa: '/ðoʊz/',
     jp: 'それら、あれら',
@@ -956,7 +882,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'あれらはすでに売り切れました。',
   },
   {
-    group: PronounGroup.Demonstrative,
     term: 'such',
     ipa: '/sʌtʃ/',
     jp: 'そのようなもの、こと',
@@ -968,7 +893,6 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: 'そのような問題は過去にも起きています。',
   },
   {
-    group: PronounGroup.Demonstrative,
     term: 'same',
     ipa: '/seɪm/',
     jp: '同じもの、こと',
@@ -980,3 +904,5 @@ export const DATA_RAW: Omit<PronounItem, 'index'>[] = [
     exJ3Jp: '彼らは昨日と同じ時間に到着しました。',
   },
 ];
+
+export const DATA_RAW: Omit<PronounItem, 'index'>[] = DATA_RAW_SOURCE.map(({ ...rest }) => rest);

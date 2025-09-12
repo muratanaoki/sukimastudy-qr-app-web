@@ -1,10 +1,8 @@
-import { JLevel, PronounGroup } from './enum';
+import { JLevel } from './enum';
 
 export type PronounItem = {
   /** 通し番号（1〜） */
   index: number;
-  /** 大ジャンル */
-  group: PronounGroup;
   /** 英語 */
   term: string;
   /** IPA（American English） */
