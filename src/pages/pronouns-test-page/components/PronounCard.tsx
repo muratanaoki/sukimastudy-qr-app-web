@@ -23,12 +23,14 @@ export function EnglishWordCard({ item, speech }: { item: PronounItem; speech: U
     <li className={styles.card}>
       <div className={styles.cardHeader}>
         <div className={styles.termRow}>
-          <span className={styles.term} lang="en">
-            {item.term}
-          </span>
-          <span className={styles.ipa} lang="en">
-            {item.ipa}
-          </span>
+          <div className={styles.termBody}>
+            <span className={styles.term} lang="en">
+              {item.term}
+            </span>
+            <span className={styles.ipa} lang="en">
+              {item.ipa}
+            </span>
+          </div>
           <button
             type="button"
             className={styles.iconButton}
