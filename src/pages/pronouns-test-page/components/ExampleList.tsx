@@ -6,12 +6,13 @@ import type { ExampleEntry } from '../utils/type';
 export type ExampleListProps = {
   items: ExampleEntry[];
   onSpeak: (text: string) => void;
+  listId?: string;
 };
 
-function ExampleListBase({ items, onSpeak }: ExampleListProps) {
+function ExampleListBase({ items, onSpeak, listId }: ExampleListProps) {
   if (!items.length) return null;
   return (
-    <ul className={styles.examples}>
+    <ul className={styles.examples} id={listId} aria-live="polite">
       {items.map((ex, idx) => (
         <li key={idx} className={styles.exampleItem}>
           <div className={styles.exampleEnRow}>

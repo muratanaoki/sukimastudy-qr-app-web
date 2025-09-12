@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState, useId } from 'react';
 import styles from '../index.module.css';
 import { Volume2 } from 'lucide-react';
 import type { PronounItem, ExampleEntry } from '../utils/type';
@@ -16,6 +16,8 @@ function buildExamples(it: PronounItem): ExampleEntry[] {
 
 function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
   const examples = useMemo(() => buildExamples(item), [item]);
+  const [open, setOpen] = useState(false);
+  const listId = useId();
 
   return (
     <li className={styles.card}>
@@ -41,8 +43,23 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
         </div>
         <span className={styles.index}>#{item.index}</span>
       </div>
-      <div className={styles.jp}>{item.jp}</div>
-      <ExampleList items={examples} onSpeak={(t) => speech.speakSentence(t)} />
+      <div className={styles.jpRow}>
+        <div className={styles.jp}>{item.jp}</div>
+        {examples.length > 0 && (
+          <button
+            type="button"
+            className={styles.examplesToggle}
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls={listId}
+          >
+            例文{open ? 'を閉じる' : 'を表示'}
+          </button>
+        )}
+      </div>
+      {open && (
+        <ExampleList items={examples} onSpeak={(t) => speech.speakSentence(t)} listId={listId} />
+      )}
     </li>
   );
 }
