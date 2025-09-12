@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import styles from '../index.module.css';
 import { Volume2 } from 'lucide-react';
 import type { PronounItem, ExampleEntry } from '../utils/type';
@@ -6,19 +7,16 @@ import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../hooks/useSpeech';
 
 function buildExamples(it: PronounItem): ExampleEntry[] {
-  return (
-    [
-      { level: JLevel.J1, en: it.exJ1, jp: it.exJ1Jp },
-      { level: JLevel.J2, en: it.exJ2, jp: it.exJ2Jp },
-      { level: JLevel.J3, en: it.exJ3, jp: it.exJ3Jp },
-    ]
-      // どちらかがあれば表示
-      .filter((e) => e.en || e.jp)
-  );
+  return [
+    { level: JLevel.J1, en: it.exJ1, jp: it.exJ1Jp },
+    { level: JLevel.J2, en: it.exJ2, jp: it.exJ2Jp },
+    { level: JLevel.J3, en: it.exJ3, jp: it.exJ3Jp },
+  ].filter((e) => e.en || e.jp);
 }
 
-export function EnglishWordCard({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
-  const exs = buildExamples(item);
+function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
+  const examples = useMemo(() => buildExamples(item), [item]);
+
   return (
     <li className={styles.card}>
       <div className={styles.cardHeader}>
@@ -44,9 +42,10 @@ export function EnglishWordCard({ item, speech }: { item: PronounItem; speech: U
         <span className={styles.index}>#{item.index}</span>
       </div>
       <div className={styles.jp}>{item.jp}</div>
-      <ExampleList items={exs} onSpeak={(t) => speech.speakSentence(t)} />
+      <ExampleList items={examples} onSpeak={(t) => speech.speakSentence(t)} />
     </li>
   );
 }
 
-export default EnglishWordCard;
+export const PronounCard = memo(PronounCardBase);
+export default PronounCard;

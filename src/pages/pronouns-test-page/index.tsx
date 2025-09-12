@@ -1,23 +1,19 @@
-//
 import styles from './index.module.css';
-import { PronounItem } from './utils/type';
-import { DATA_RAW } from './utils/const';
+import { DATA } from './utils/const';
 import { useSpeech } from './hooks/useSpeech';
-import { EnglishWordCard } from './components/PronounCard';
-
-const DATA: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
+import { PronounCard } from './components/PronounCard';
 
 export default function PronounsTestPage() {
   const speech = useSpeech();
-  const filtered = DATA;
+  const filtered = DATA; // 今後フィルターや検索を入れる余地
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
         <section className={styles.section}>
           <ul className={styles.cardGrid}>
-            {filtered.map((it, idx) => (
-              <EnglishWordCard key={idx} item={{ ...it, index: idx + 1 }} speech={speech} />
+            {filtered.map((it) => (
+              <PronounCard key={it.index} item={it} speech={speech} />
             ))}
           </ul>
         </section>

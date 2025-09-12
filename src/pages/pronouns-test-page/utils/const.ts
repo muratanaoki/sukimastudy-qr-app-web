@@ -906,3 +906,6 @@ const DATA_RAW_SOURCE: RawPronounItem[] = [
 ];
 
 export const DATA_RAW: Omit<PronounItem, 'index'>[] = DATA_RAW_SOURCE.map(({ ...rest }) => rest);
+
+// index付与済みの完成データ（ページ側での計算を避ける）
+export const DATA: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));

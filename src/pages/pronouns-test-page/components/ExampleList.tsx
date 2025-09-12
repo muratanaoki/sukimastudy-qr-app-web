@@ -1,14 +1,14 @@
+import { memo } from 'react';
 import styles from '../index.module.css';
 import { Volume2 } from 'lucide-react';
 import type { ExampleEntry } from '../utils/type';
 
-export function ExampleList({
-  items,
-  onSpeak,
-}: {
+export type ExampleListProps = {
   items: ExampleEntry[];
   onSpeak: (text: string) => void;
-}) {
+};
+
+function ExampleListBase({ items, onSpeak }: ExampleListProps) {
   if (!items.length) return null;
   return (
     <ul className={styles.examples}>
@@ -41,4 +41,5 @@ export function ExampleList({
   );
 }
 
+export const ExampleList = memo(ExampleListBase);
 export default ExampleList;

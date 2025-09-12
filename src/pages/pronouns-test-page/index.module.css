@@ -232,11 +232,8 @@
   margin-bottom: 0.375rem;
 }
 
-/* metaPill UI は削除 */
-
 /* --- examples --- */
 .examples {
-  margin: 0.5rem 0 0;
   padding-left: 0;
   list-style: none;
   display: flex;
