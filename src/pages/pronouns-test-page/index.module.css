@@ -83,7 +83,7 @@
 .subtitle {
   margin: 0.25rem 0 0.625rem;
   color: var(--c-muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem; /* 補助見出しは控えめに */
 }
 
 .controls {
@@ -267,6 +267,7 @@
   /* allow wrapping within flex container */
   min-width: 0;
   flex: 0 1 auto; /* 本文領域内で省略可 */
+  line-height: 1.45;
   overflow-wrap: anywhere;
   /* 2行まで表示し、それ以上は省略 */
   display: -webkit-box;
@@ -277,7 +278,8 @@
 }
 
 .exampleJp {
-  font-size: 0.8125rem;
+  font-size: 0.75rem; /* 補助情報（訳）は英文より小さく */
+  line-height: 1.45; /* 小さめ文字の可読性確保 */
   color: var(--c-tertiary);
 }
 
@@ -368,6 +370,11 @@
 
   .title {
     font-size: 1.375rem;
+  }
+
+  /* 補助説明はモバイルでやや控えめに */
+  .jp {
+    font-size: 0.8125rem;
   }
 }
 
