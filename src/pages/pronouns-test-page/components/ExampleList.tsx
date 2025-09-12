@@ -31,8 +31,8 @@ export function ExampleList({
                 <Volume2 size={18} />
               </button>
             )}
+            {ex.jp && <div className={styles.exampleJp}>{ex.jp}</div>}
           </div>
-          {ex.jp && <div className={styles.exampleJp}>{ex.jp}</div>}
         </li>
       ))}
     </ul>
