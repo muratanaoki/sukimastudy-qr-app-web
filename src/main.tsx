@@ -10,7 +10,6 @@ if (!rootElement) throw new Error('Root element not found');
 
 const root = createRoot(rootElement);
 
-// Create a wrapper component to properly use the useLoading hook
 const App = () => {
   return (
     <>

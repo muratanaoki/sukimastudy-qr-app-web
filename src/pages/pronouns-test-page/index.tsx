@@ -51,12 +51,12 @@ export default function PronounsTestPage() {
 function labelGroup(g: PronounItem['group']) {
   switch (g) {
     case PronounGroup.Personal:
-      return '01. 人称・所有・再帰代名詞 (Personal / Possessive / Reflexive)';
+      return '01. 人称・所有・再帰代名詞';
     case PronounGroup.IndefPersonThing:
-      return '02. 不定代名詞（人・物・事） (Indefinite: person/thing)';
+      return '02. 不定代名詞（人・物・事）';
     case PronounGroup.IndefQuantityPartitive:
-      return '03. 不定代名詞（数量・全体・部分など） (Indefinite: quantity/partitive)';
+      return '03. 不定代名詞（数量・全体・部分など）';
     case PronounGroup.Demonstrative:
-      return '04. 指示代名詞・その他 (Demonstrative & Other)';
+      return '04. 指示代名詞・その他';
   }
 }
