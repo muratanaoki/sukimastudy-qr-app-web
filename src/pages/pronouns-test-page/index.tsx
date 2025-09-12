@@ -11,6 +11,9 @@ export default function PronounsTestPage() {
     <div className={styles.container}>
       <main className={styles.main}>
         <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h1 className={styles.title}>人称・所有・再帰代名詞</h1>
+          </div>
           <ul className={styles.cardGrid}>
             {filtered.map((it) => (
               <PronounCard key={it.index} item={it} speech={speech} />
