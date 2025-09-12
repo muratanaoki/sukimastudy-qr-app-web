@@ -61,7 +61,6 @@
 
   margin: 0 auto;
   max-width: var(--maxw);
-  padding: 1.25rem var(--padX) 4rem;
   color: var(--c-text);
   background: var(--c-surface);
 }
@@ -124,7 +123,6 @@
 
 .section {
   border: var(--b-1) solid var(--c-border-soft);
-  border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 1rem;
 }
@@ -337,7 +335,6 @@
 /* Smartphone (<=480px) */
 @media (max-width: 30rem) {
   .container {
-    padding: 0.75rem 0.75rem 2.5rem; /* 上下/左右を少しコンパクトに */
     --icon: 1.5rem;
     --icon-inner: 1rem;
   }
@@ -414,12 +411,7 @@
 /* Tablet (portrait) >=600px */
 @media (min-width: 37.5rem) and (orientation: portrait) {
   .container {
-    padding: 1.25rem 1.25rem 4rem; /* 少し余白を広く */
     --icon: 1.875rem; /* 30px */
-  }
-
-  .cardGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2列で一覧性向上 */
   }
 
   .card {
