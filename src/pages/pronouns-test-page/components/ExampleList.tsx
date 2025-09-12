@@ -16,11 +16,6 @@ export function ExampleList({
         <li key={idx} className={styles.exampleItem}>
           <div className={styles.exampleEnRow}>
             {ex.en && (
-              <span className={styles.exampleEn} lang="en">
-                {ex.en}
-              </span>
-            )}
-            {ex.en && (
               <button
                 type="button"
                 className={styles.iconButton}
@@ -31,7 +26,14 @@ export function ExampleList({
                 <Volume2 size={18} />
               </button>
             )}
-            {ex.jp && <div className={styles.exampleJp}>{ex.jp}</div>}
+            <div className={styles.exampleBody}>
+              {ex.en && (
+                <span className={styles.exampleEn} lang="en">
+                  {ex.en}
+                </span>
+              )}
+              {ex.jp && <div className={styles.exampleJp}>{ex.jp}</div>}
+            </div>
           </div>
         </li>
       ))}

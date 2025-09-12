@@ -245,11 +245,17 @@
 }
 
 .exampleEnRow {
-  display: grid;
-  grid-template-columns: 1fr auto; /* text | button */
-  align-items: start;
-  column-gap: 0.375rem;
-  row-gap: 0.25rem;
+  display: flex;
+  align-items: center; /* アイコンとテキストブロックを上下中央に */
+  gap: 0.375rem;
+}
+
+.exampleBody {
+  display: flex;
+  flex-direction: column; /* 例文→訳を縦積み */
+  gap: 0.125rem;
+  min-width: 0; /* 子の省略に必要 */
+  flex: 1 1 auto; /* 横幅を伸縮 */
 }
 
 /* .level は廃止 */
@@ -259,6 +265,7 @@
   color: var(--c-strong);
   /* grid middle column expands; allow wrapping */
   min-width: 0;
+  flex: 0 1 auto; /* 本文領域内で省略可 */
   overflow-wrap: anywhere;
   /* 2行まで表示し、それ以上は省略 */
   display: -webkit-box;
@@ -269,10 +276,8 @@
 }
 
 .exampleJp {
-  margin-top: 0.125rem;
   font-size: 0.8125rem;
   color: var(--c-tertiary);
-  grid-column: 1 / 2; /* テキスト列のみを占有し、ボタン列下に回り込まない */
 }
 
 /* --- icon buttons --- */
@@ -293,13 +298,11 @@
     transform 0.05s ease;
 }
 
-/* 例文の行では右端に配置 */
+/* 例文の行のアイコン（左端配置） */
 .exampleEnRow .iconButton {
-  justify-self: end;
   width: 1.5rem;
   height: 1.5rem;
-  align-self: start;
-  margin-top: 0.0625rem; /* テキストのキャップ高さと視覚的に揃える微調整 */
+  flex: 0 0 auto;
 }
 
 .iconButton:hover {
@@ -341,7 +344,7 @@
   }
 
   .section {
-    padding: 0.875rem;
+    padding: 0.6rem;
   }
 
   .groupHeader {
