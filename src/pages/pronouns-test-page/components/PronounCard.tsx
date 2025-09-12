@@ -17,7 +17,7 @@ function buildExamples(it: PronounItem): ExampleEntry[] {
   );
 }
 
-export function PronounCard({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
+export function EnglishWordCard({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
   const exs = buildExamples(item);
   return (
     <li className={styles.card}>
@@ -47,4 +47,4 @@ export function PronounCard({ item, speech }: { item: PronounItem; speech: UseSp
   );
 }
 
-export default PronounCard;
+export default EnglishWordCard;
