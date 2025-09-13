@@ -28,7 +28,6 @@ body {
   height: 100%;
   max-width: 68.75rem;
   margin: 0 auto;
-  /* Layout width is managed per-page (e.g., .container). */
 }
 
 #root {
