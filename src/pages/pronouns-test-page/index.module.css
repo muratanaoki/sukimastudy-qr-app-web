@@ -61,7 +61,6 @@
     sans-serif;
   font-weight: 700;
   color: #2196f3;
-  letter-spacing: 0.0125rem;
   flex: 1 1 auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
@@ -82,7 +81,6 @@
   color: gray;
   display: flex;
   align-items: flex-end;
-  margin-bottom: -0.11rem;
 }
 
 .titleIcon {
@@ -107,6 +105,7 @@
   gap: 0.5rem;
   padding-bottom: 0.4rem;
   border-bottom: var(--b-1) solid var(--c-border-soft);
+  border-bottom-color: var(--c-card-border); /* 下線だけ少し濃くしてメリハリ */
   margin-bottom: 0.75rem;
 }
 
@@ -365,10 +364,13 @@
 
   .title {
     font-size: 1.125rem;
+    line-height: 1.125rem;
   }
 
   .titleNumber {
     font-size: 1.425rem; /* モバイルはやや小さめ */
+    line-height: 1.425rem;
+    margin-bottom: -0.1rem;
   }
 }
 
@@ -382,6 +384,7 @@
   .titleNumber {
     font-size: 1.65rem;
     line-height: 1.65rem;
+    margin-bottom: -0.1rem;
   }
 }
 
@@ -395,6 +398,7 @@
   .titleNumber {
     font-size: 1.775rem;
     line-height: 1.775rem;
+    margin-bottom: -0.11rem;
   }
 }
 
@@ -408,5 +412,6 @@
   .titleNumber {
     font-size: 1.9rem;
     line-height: 1.9rem;
+    margin-bottom: -0.11rem;
   }
 }
