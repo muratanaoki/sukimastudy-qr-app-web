@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem; /* 16px */
+  padding-right: 1.5rem;
 }
 
 .left {
@@ -40,8 +40,6 @@
 }
 
 .hamburger {
-  width: 2.5rem; /* 40px */
-  height: 2.5rem; /* 40px */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -120,6 +118,17 @@
 
 /* --- layered nav (genre > items) --- */
 .navSection {
+  border-bottom: 0.0625rem solid var(--border-color);
+}
+
+.subListItem {
+  border-bottom: 0.0625rem solid var(--border-color);
+  height: 3rem;
+  width: 100%;
+}
+
+.subListItem:last-of-type {
+  border-bottom: none;
 }
 
 .sectionTitle {
@@ -143,7 +152,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  border-bottom: 0.0625rem solid var(--border-color);
 
   height: 3.5rem;
 }
@@ -177,14 +185,13 @@
 }
 
 .subLink {
-  display: block;
   width: 100%;
   padding: 0.5rem 0.5rem; /* サブはやや小さめ */
   text-decoration: none;
   color: var(--text-color);
   border-radius: 0.375rem;
-}
-
-.subLink:hover {
-  background: #f9fafb;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }

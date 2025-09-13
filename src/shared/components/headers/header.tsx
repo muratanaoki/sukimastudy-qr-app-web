@@ -87,22 +87,22 @@ const Header = () => {
             </button>
             {sectionsOpen.pronouns && (
               <ul id="nav-pronouns" className={styles.subList}>
-                <li>
+                <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
                     01. 人称・所有・再帰代名詞
                   </Link>
                 </li>
-                <li>
+                <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
                     02. 不定代名詞（人・物・事）
                   </Link>
                 </li>
-                <li>
+                <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
                     03. 不定代名詞（数量・全体・部分など）
                   </Link>
                 </li>
-                <li>
+                <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
                     04. 指示代名詞・その他
                   </Link>
