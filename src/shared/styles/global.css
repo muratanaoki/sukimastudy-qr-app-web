@@ -33,3 +33,9 @@ body {
 #root {
   height: 100%;
 }
+
+/* ナビ開閉時のページスクロール抑止（シンプル版） */
+html.no-scroll,
+html.no-scroll body {
+  overflow: hidden;
+}
