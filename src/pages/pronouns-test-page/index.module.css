@@ -62,9 +62,11 @@
   font-weight: 700;
   color: #2196f3;
   letter-spacing: 0.0125rem;
-  font-size: 1.25rem; /* base size (481-599pxも含む) */
   flex: 1 1 auto;
   min-width: 0;
+  letter-spacing: 0.0125rem;
+  display: flex;
+  align-items: flex-end;
 }
 
 .titleNumber {
@@ -78,6 +80,13 @@
   font-size: 1.8rem;
   font-weight: bold;
   color: gray;
+  display: flex;
+  align-items: flex-end;
+}
+
+.titleIcon {
+  display: flex;
+  align-items: flex-end;
 }
 
 .main {
@@ -98,17 +107,11 @@
   padding-bottom: 0.2rem;
   border-bottom: var(--b-1) solid var(--c-border-soft);
   margin-bottom: 0.75rem;
-  align-items: baseline;
 }
 
 .headerIcon {
   color: gray;
-  /* width: 1.25rem;
-  height: 1.25rem; */
-  flex: 0 0 auto;
 }
-
-/* subGroup UI は削除 */
 
 .card {
   border: var(--b-1) solid var(--c-card-border);
@@ -359,12 +362,12 @@
   }
 
   .title {
-    font-size: 1.125rem; /* モバイルはやや小さめ */
+    font-size: 1.125rem;
   }
 
   .headerIcon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.45rem;
+    height: 1.45rem;
   }
 
   .titleNumber {
@@ -379,8 +382,8 @@
   }
 
   .headerIcon {
-    width: 1.375rem;
-    height: 1.375rem;
+    width: 1.575rem;
+    height: 1.575rem;
   }
 
   .titleNumber {
@@ -395,8 +398,8 @@
   }
 
   .headerIcon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.7rem;
+    height: 1.7rem;
   }
 
   .titleNumber {
