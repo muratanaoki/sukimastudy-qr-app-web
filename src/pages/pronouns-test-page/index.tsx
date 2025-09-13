@@ -2,6 +2,7 @@ import styles from './index.module.css';
 import { DATA } from './utils/const';
 import { useSpeech } from './hooks/useSpeech';
 import { PronounCard } from './components/PronounCard';
+import { User } from 'lucide-react';
 
 export default function PronounsTestPage() {
   const speech = useSpeech();
@@ -13,6 +14,7 @@ export default function PronounsTestPage() {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h1 className={styles.title}>人称・所有・再帰代名詞</h1>
+            <User className={styles.headerIcon} aria-hidden="true" />
           </div>
           <ul className={styles.cardGrid}>
             {filtered.map((it) => (
