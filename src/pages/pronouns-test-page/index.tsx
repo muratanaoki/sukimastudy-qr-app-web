@@ -13,6 +13,7 @@ export default function PronounsTestPage() {
       <main className={styles.main}>
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
+            <h1 className={styles.titleNumber}>01.</h1>
             <h1 className={styles.title}>人称・所有・再帰代名詞</h1>
             <User className={styles.headerIcon} aria-hidden="true" />
           </div>
