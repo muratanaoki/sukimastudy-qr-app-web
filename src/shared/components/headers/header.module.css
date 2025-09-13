@@ -50,7 +50,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  width: 2rem; /* 48px: タップ領域拡大 */
+  width: 1.6rem; /* 48px: タップ領域拡大 */
   height: 2rem; /* 48px: タップ領域拡大 */
   overflow: visible; /* 変形時の見切れ防止 */
   --bar-gap: 0.5rem; /* 上下オフセット量（約6.4px） */
@@ -169,7 +169,7 @@
   border: none;
   font-weight: 700;
   color: var(--text-color);
-  padding: 0.625rem 0.5rem;
+  padding-right: 2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -216,4 +216,5 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  font-weight: bold;
 }
