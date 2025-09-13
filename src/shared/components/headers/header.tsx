@@ -89,22 +89,28 @@ const Header = () => {
               <ul id="nav-pronouns" className={styles.subList}>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    01. 人称・所有・再帰代名詞
+                    <span className={styles.subListItemNo}>01.</span>
+                    <span className={styles.subListItemText}> 人称・所有・再帰代名詞</span>
                   </Link>
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    02. 不定代名詞（人・物・事）
+                    <span className={styles.subListItemNo}>02.</span>
+                    <span className={styles.subListItemText}> 不定代名詞（人・物・事）</span>
                   </Link>
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    03. 不定代名詞（数量・全体・部分など）
+                    <span className={styles.subListItemNo}>03.</span>
+                    <span className={styles.subListItemText}>
+                      不定代名詞（数量・全体・部分など）
+                    </span>
                   </Link>
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    04. 指示代名詞・その他
+                    <span className={styles.subListItemNo}>04.</span>
+                    <span className={styles.subListItemText}> 指示代名詞・その他</span>
                   </Link>
                 </li>
               </ul>
