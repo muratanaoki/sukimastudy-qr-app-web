@@ -1,23 +1,11 @@
 .container {
-  --padX: 1rem;
-  --radius: 0.5rem;
-  --shadow: 0 0.375rem 1.5rem rgba(0, 0, 0, 0.08);
   --gap: 0.75rem;
-
-  /* spacing */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
 
   /* borders & radius */
   --b-1: 0.0625rem;
   --r-sm: 0.25rem;
   --r-md: 0.375rem;
   --r-lg: 0.5rem;
-  --r-pill: 1.25rem;
 
   /* typography */
   --ls-tight: 0.0125rem;
@@ -25,33 +13,23 @@
   /* colors */
   --c-text: #1c1c1c;
   --c-strong: #111827;
-  --c-muted: #666666;
-  --c-subtle: #888888;
   --c-secondary: #374151;
   --c-tertiary: #4b5563;
   --c-surface: #ffffff;
   --c-surface-subtle: #fbfdff;
   --c-chip-bg: #f1f5f9;
-  --c-chip-bg-weak: #f5f7fb;
   --c-border: #e5e7eb;
-  --c-border-subtle: #e6e6e6;
   --c-border-soft: #f0f0f0;
   --c-card-border: #eef1f6;
-  --c-badge-text: #3b82f6;
-  --c-badge-bg: #e8f0fe;
   /* neutral accents (was info) */
   --c-ipa-text: #4b5563;
   --c-ipa-bg: transparent;
-  --c-ipa-border: #e5e7eb;
 
   /* focus */
-  --focus-border: #90caf9;
-  --focus-ring: rgba(144, 202, 249, 0.25);
   --focus-visible-border: #93c5fd;
   --focus-visible-ring: rgba(59, 130, 246, 0.35);
 
   /* shadows */
-  --shadow-hover: 0 0.625rem 1.5rem rgba(71, 145, 219, 0.12);
   --shadow-sm: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.06);
 
   /* icon sizes */
@@ -102,41 +80,6 @@
   color: gray;
 }
 
-.subtitle {
-  margin: 0.25rem 0 0.625rem;
-  color: var(--c-muted);
-  font-size: 0.75rem; /* 補助見出しは控えめに */
-}
-
-.controls {
-  display: flex;
-  gap: 0.625rem;
-  align-items: center;
-}
-
-.search {
-  flex: 1;
-  padding: 0.625rem 0.75rem;
-  border: var(--b-1) solid var(--c-border-subtle);
-  border-radius: 0.75rem;
-  font-size: 0.875rem;
-  outline: none;
-  box-shadow: 0 0.125rem 0 rgba(0, 0, 0, 0.02) inset;
-}
-
-.search:focus {
-  border-color: var(--focus-border);
-  box-shadow: 0 0 0 0.25rem var(--focus-ring);
-}
-
-.count {
-  font-size: 0.75rem;
-  color: var(--c-subtle);
-  padding: 0.375rem 0.5rem;
-  background: var(--c-chip-bg-weak);
-  border-radius: var(--r-pill);
-}
-
 .main {
   display: grid;
   gap: 1.75rem;
@@ -150,7 +93,6 @@
 /* セクション先頭の大見出しと右端アイコンを左右に配置 */
 .sectionHeader {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
   padding-bottom: 0.2rem;
@@ -167,15 +109,6 @@
 }
 
 /* subGroup UI は削除 */
-
-.cardGrid {
-  display: grid;
-  grid-template-columns: 1fr; /* 1列固定 */
-  gap: var(--gap);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
 
 .card {
   border: var(--b-1) solid var(--c-card-border);
@@ -195,6 +128,15 @@
   margin: 0.125rem 0;
 }
 
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1列固定 */
+  gap: var(--gap);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+/* subGroup UI は未使用 */
 .cardHeader {
   display: flex;
   align-items: center;
@@ -381,11 +323,6 @@
 
 .iconButton:active {
   transform: translateY(0.0625rem);
-}
-
-.iconButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* アクセシビリティ: キーボードフォーカス可視化 */
