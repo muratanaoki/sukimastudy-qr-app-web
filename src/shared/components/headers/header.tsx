@@ -105,7 +105,7 @@ const Header = () => {
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    <div className={styles.subListItemBox}>
+                    <div className={styles.subListItemLeftBox}>
                       <span className={styles.subListItemNo}>03.</span>
                       <span className={styles.subListItemText}>
                         不定代名詞（数量・全体・部分など）
