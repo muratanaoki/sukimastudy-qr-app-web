@@ -82,6 +82,7 @@
   color: gray;
   display: flex;
   align-items: flex-end;
+  margin-bottom: -0.11rem;
 }
 
 .titleIcon {
@@ -111,6 +112,7 @@
 
 .headerIcon {
   color: gray;
+  margin-bottom: -0.13rem;
 }
 
 .card {
@@ -365,29 +367,34 @@
     font-size: 1.125rem;
   }
 
-  .headerIcon {
-    width: 1.45rem;
-    height: 1.45rem;
-  }
-
   .titleNumber {
     font-size: 1.425rem; /* モバイルはやや小さめ */
   }
 }
 
-/* Medium screens (>=600px) */
-@media (min-width: 600px) {
+/* Small+ narrow tablets (481px–599px) */
+@media (min-width: 481px) and (max-width: 599px) {
   .title {
-    font-size: 1.375rem; /* タブレット中間 */
-  }
-
-  .headerIcon {
-    width: 1.575rem;
-    height: 1.575rem;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
   }
 
   .titleNumber {
-    font-size: 1.675rem;
+    font-size: 1.65rem;
+    line-height: 1.65rem;
+  }
+}
+
+/* Medium screens (600px–899px) */
+@media (min-width: 600px) and (max-width: 899px) {
+  .title {
+    font-size: 1.375rem;
+    line-height: 1.375rem;
+  }
+
+  .titleNumber {
+    font-size: 1.775rem;
+    line-height: 1.775rem;
   }
 }
 
@@ -395,14 +402,11 @@
 @media (min-width: 900px) {
   .title {
     font-size: 1.5rem; /* デスクトップで少しだけ拡大 */
-  }
-
-  .headerIcon {
-    width: 1.7rem;
-    height: 1.7rem;
+    line-height: 1.5rem;
   }
 
   .titleNumber {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
+    line-height: 1.9rem;
   }
 }
