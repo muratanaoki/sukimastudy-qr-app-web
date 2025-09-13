@@ -89,28 +89,36 @@ const Header = () => {
               <ul id="nav-pronouns" className={styles.subList}>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    <span className={styles.subListItemNo}>01.</span>
-                    <span className={styles.subListItemText}> 人称・所有・再帰代名詞</span>
+                    <div className={styles.subListItemBox}>
+                      <span className={styles.subListItemNo}>01.</span>
+                      <span className={styles.subListItemText}>人称・所有・再帰代名詞</span>
+                    </div>
                   </Link>
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    <span className={styles.subListItemNo}>02.</span>
-                    <span className={styles.subListItemText}> 不定代名詞（人・物・事）</span>
+                    <div className={styles.subListItemBox}>
+                      <span className={styles.subListItemNo}>02.</span>
+                      <span className={styles.subListItemText}> 不定代名詞（人・物・事）</span>
+                    </div>
                   </Link>
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    <span className={styles.subListItemNo}>03.</span>
-                    <span className={styles.subListItemText}>
-                      不定代名詞（数量・全体・部分など）
-                    </span>
+                    <div className={styles.subListItemBox}>
+                      <span className={styles.subListItemNo}>03.</span>
+                      <span className={styles.subListItemText}>
+                        不定代名詞（数量・全体・部分など）
+                      </span>
+                    </div>
                   </Link>
                 </li>
                 <li className={styles.subListItem}>
                   <Link className={styles.subLink} to="">
-                    <span className={styles.subListItemNo}>04.</span>
-                    <span className={styles.subListItemText}> 指示代名詞・その他</span>
+                    <div className={styles.subListItemBox}>
+                      <span className={styles.subListItemNo}>04.</span>
+                      <span className={styles.subListItemText}> 指示代名詞・その他</span>
+                    </div>
                   </Link>
                 </li>
               </ul>
