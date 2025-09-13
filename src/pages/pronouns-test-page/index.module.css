@@ -107,11 +107,11 @@
   border-bottom: var(--b-1) solid var(--c-border-soft);
   border-bottom-color: var(--c-card-border); /* 下線だけ少し濃くしてメリハリ */
   margin-bottom: 0.75rem;
+  padding-right: 0.3rem;
 }
 
 .headerIcon {
   color: gray;
-  margin-bottom: -0.13rem;
 }
 
 .card {
@@ -372,6 +372,12 @@
     line-height: 1.425rem;
     margin-bottom: -0.1rem;
   }
+
+  .headerIcon {
+    margin-bottom: -0.13rem;
+    font-size: 1.425rem; /* モバイルはやや小さめ */
+    line-height: 1.425rem;
+  }
 }
 
 /* Small+ narrow tablets (481px–599px) */
@@ -385,6 +391,12 @@
     font-size: 1.65rem;
     line-height: 1.65rem;
     margin-bottom: -0.1rem;
+  }
+
+  .headerIcon {
+    margin-bottom: -0.13rem;
+    font-size: 1.65rem;
+    line-height: 1.65rem;
   }
 }
 
@@ -400,6 +412,12 @@
     line-height: 1.775rem;
     margin-bottom: -0.11rem;
   }
+
+  .headerIcon {
+    margin-bottom: -0.13rem;
+    font-size: 1.775rem;
+    line-height: 1.775rem;
+  }
 }
 
 /* Large screens (>=900px) */
@@ -413,5 +431,11 @@
     font-size: 1.9rem;
     line-height: 1.9rem;
     margin-bottom: -0.11rem;
+  }
+
+  .headerIcon {
+    margin-bottom: -0.13rem;
+    height: 1.9rem;
+    width: 1.9rem;
   }
 }
