@@ -107,7 +107,6 @@
   border-bottom: var(--b-1) solid var(--c-border-soft);
   border-bottom-color: var(--c-card-border); /* 下線だけ少し濃くしてメリハリ */
   margin-bottom: 0.75rem;
-  padding-right: 0.5rem;
 }
 
 .headerIcon {
@@ -351,10 +350,6 @@
   .controls {
     gap: 0.5rem;
     flex-wrap: wrap;
-  }
-
-  .section {
-    padding: 0.6rem;
   }
 
   /* 補助説明はモバイルでやや控えめに */

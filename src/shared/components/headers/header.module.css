@@ -4,6 +4,9 @@
   --border-color: #e5e7eb; /* tailwind gray-200 */
   --text-color: #111827; /* gray-900 */
   --link-color: #2563eb; /* blue-600 */
+  /* logo tuning */
+  --logo-gap: 0.6rem; /* アイコンとテキストの間隔 */
+  --logo-word-gap: 0.25rem; /* Sukima と Study の字間 */
 }
 
 .wrapper {
@@ -19,7 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-right: 1.5rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
   overflow: visible; /* 変形時の見切れ防止（保険） */
 }
 
@@ -30,9 +34,60 @@
 }
 
 .logo {
-  width: 7.5rem; /* 120px */
-  height: 1.75rem; /* 28px */
-  background: transparent;
+  display: inline-flex;
+  align-items: baseline;
+  /* 比率スケーリング: viewBox 15:19、text = iconWidth * 1.1 */
+  /* ロゴ全体の縮尺（必要に応じて 0.40〜0.65 程度で調整） */
+  --logo-scale: 0.5;
+  --icon-height: calc(var(--header-height) * var(--logo-scale));
+  --icon-width: calc(var(--icon-height) * 15 / 19);
+  --wordmark-size: calc(var(--icon-width) * 1.1);
+  --baseline-nudge: calc(var(--icon-height) * 0.044); /* ≒ 1.3mm/23.3mm を高さ基準に換算 */
+  /* 見た目の間隔も元デザイン比に寄せる（gap ≒ 4.8mm / 23.3mm ≒ 0.206） */
+  --logo-gap: calc(var(--icon-width) * 0.206);
+  /* Sukima と Study の字間 ≒ 0.8mm / 23.3mm ≒ 0.034 */
+  --logo-word-gap: calc(var(--icon-width) * 0.034);
+  gap: var(--logo-gap);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.icon {
+  height: var(--icon-height); /* ヘッダーから上下余白を差し引いて収める */
+  width: auto;
+  display: inline-block;
+  transform: translateY(var(--baseline-nudge)); /* ベースライン微調整（比率で） */
+}
+
+.wordmark {
+  font-family:
+    'Nunito',
+    'Zen Maru Gothic',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Hiragino Kaku Gothic ProN',
+    'Hiragino Sans',
+    'Noto Sans JP',
+    'Yu Gothic',
+    Meiryo,
+    sans-serif;
+  font-weight: 700;
+  font-size: var(--wordmark-size); /* テキスト = アイコン幅の 1.1 倍 */
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.brandPrimary::after {
+  content: '';
+  display: inline-block;
+  width: var(--logo-word-gap);
+}
+
+.brandSecondary {
+  letter-spacing: -0.01em;
 }
 
 .right {

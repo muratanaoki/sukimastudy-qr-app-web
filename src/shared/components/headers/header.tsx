@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './header.module.css';
 import { SectionKey } from './utils/enum';
@@ -82,8 +82,26 @@ const Header = () => {
     <div className={styles.wrapper} ref={wrapperRef}>
       <header className={styles.header}>
         <div className={styles.left}>
-          {/* ロゴ（未実装のため空） */}
-          <div className={styles.logo} aria-label="logo" />
+          {/* ロゴ */}
+          <Link to="/" className={styles.logo} role="img" aria-label="Sukima Study ロゴ">
+            <svg
+              className={styles.icon}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 15 19"
+              shapeRendering="geometricPrecision"
+              aria-hidden="true"
+              focusable="false"
+            >
+              {/* 3本バー（下揃え）: 幅3 / 角丸1.5 / 高さ 5,10,16 */}
+              <rect x="0" y="13.5" width="3" height="5" rx="1.5" fill="#90caf9" />
+              <rect x="6" y="8.5" width="3" height="10" rx="1.5" fill="#42a5f5" />
+              <rect x="12" y="2.5" width="3" height="16" rx="1.5" fill="#1976d2" />
+            </svg>
+            <span className={styles.wordmark} aria-hidden="true">
+              <span className={styles.brandPrimary}>Sukima</span>
+              <span className={styles.brandSecondary}>Study</span>
+            </span>
+          </Link>
         </div>
         <div className={styles.right}>
           <HamburgerButton ref={hamburgerRef} open={open} onToggle={handleToggleOpen} />
