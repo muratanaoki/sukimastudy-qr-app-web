@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, forwardRef } from 'react';
 import styles from './header.module.css';
 
 // 型定義
@@ -119,6 +119,85 @@ const NAV_SECTIONS: NavSection[] = [
   },
 ];
 
+// 番号フォーマッタ: 01. / 02. ...
+const formatNo = (idx: number) => `${String(idx + 1).padStart(2, '0')}.`;
+
+// --- 内部コンポーネント（同一ファイル内） ---
+
+type HamburgerButtonProps = {
+  open: boolean;
+  onToggle: () => void;
+};
+
+const HamburgerButton = memo(
+  forwardRef<HTMLButtonElement, HamburgerButtonProps>(function HamburgerButton(
+    { open, onToggle },
+    ref
+  ) {
+    return (
+      <button
+        type="button"
+        className={styles.hamburger}
+        aria-label="メインメニュー"
+        aria-expanded={open}
+        aria-controls="global-nav"
+        data-open={open}
+        onClick={onToggle}
+        ref={ref}
+      >
+        <span className={styles.bar} />
+        <span className={styles.bar} />
+        <span className={styles.bar} />
+      </button>
+    );
+  })
+);
+
+type SectionListProps = {
+  sections: NavSection[];
+  sectionsOpen: Record<SectionKey, boolean>;
+  onToggleSection: (key: SectionKey) => void;
+};
+
+const SectionList = memo(function SectionList({
+  sections,
+  sectionsOpen,
+  onToggleSection,
+}: SectionListProps) {
+  return (
+    <ul className={styles.navList}>
+      {sections.map((section) => (
+        <li className={styles.navSection} key={section.key}>
+          <button
+            type="button"
+            className={styles.sectionButton}
+            aria-expanded={sectionsOpen[section.key]}
+            aria-controls={`nav-${section.key}`}
+            onClick={() => onToggleSection(section.key)}
+          >
+            {section.title}
+          </button>
+          {sectionsOpen[section.key] && section.items.length > 0 && (
+            <ul id={`nav-${section.key}`} className={styles.subList}>
+              {section.items.map((item, idx) => (
+                <li className={styles.subListItem} key={item.label}>
+                  <Link className={styles.subLink} to={item.to}>
+                    <div className={styles.subListItemLeftBox}>
+                      <span className={styles.subListItemNo}>{formatNo(idx)}</span>
+                      <span className={styles.subListItemText}>{item.label}</span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+      {/* ルートが増えたら以下に追記 */}
+    </ul>
+  );
+});
+
 const Header = () => {
   const [open, setOpen] = useState(false);
   // アコーディオン（ジャンル）開閉状態（定義から初期化）
@@ -134,9 +213,13 @@ const Header = () => {
     []
   );
   const [sectionsOpen, setSectionsOpen] = useState<Record<SectionKey, boolean>>(initialOpen);
-  const toggleSection = (key: SectionKey) => setSectionsOpen((s) => ({ ...s, [key]: !s[key] }));
+  const toggleSection = useCallback(
+    (key: SectionKey) => setSectionsOpen((s) => ({ ...s, [key]: !s[key] })),
+    []
+  );
   const location = useLocation();
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const hamburgerRef = useRef<HTMLButtonElement | null>(null);
 
   // Close menu on route change
   useEffect(() => {
@@ -167,6 +250,25 @@ const Header = () => {
     return () => root.classList.remove('no-scroll');
   }, [open]);
 
+  // Esc キーでクローズ & フォーカス返却
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setOpen(false);
+        // 次のフレームでフォーカス返却（クローズ後に安全に）
+        requestAnimationFrame(() => {
+          hamburgerRef.current?.focus();
+        });
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open]);
+
+  const handleToggleOpen = useCallback(() => setOpen((v) => !v), []);
+
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
       <header className={styles.header}>
@@ -175,19 +277,7 @@ const Header = () => {
           <div className={styles.logo} aria-label="logo" />
         </div>
         <div className={styles.right}>
-          <button
-            type="button"
-            className={styles.hamburger}
-            aria-label="メインメニュー"
-            aria-expanded={open}
-            aria-controls="global-nav"
-            data-open={open}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className={styles.bar} />
-            <span className={styles.bar} />
-            <span className={styles.bar} />
-          </button>
+          <HamburgerButton ref={hamburgerRef} open={open} onToggle={handleToggleOpen} />
         </div>
       </header>
 
@@ -196,39 +286,11 @@ const Header = () => {
         className={`${styles.nav} ${open ? styles.open : ''}`}
         aria-hidden={!open}
       >
-        <ul className={styles.navList}>
-          {NAV_SECTIONS.map((section) => (
-            <li className={styles.navSection} key={section.key}>
-              <button
-                type="button"
-                className={styles.sectionButton}
-                aria-expanded={sectionsOpen[section.key]}
-                aria-controls={`nav-${section.key}`}
-                onClick={() => toggleSection(section.key)}
-              >
-                {section.title}
-              </button>
-              {sectionsOpen[section.key] && section.items.length > 0 && (
-                <ul id={`nav-${section.key}`} className={styles.subList}>
-                  {section.items.map((item, idx) => {
-                    const no = `${String(idx + 1).padStart(2, '0')}.`;
-                    return (
-                      <li className={styles.subListItem} key={item.label}>
-                        <Link className={styles.subLink} to={item.to}>
-                          <div className={styles.subListItemBox}>
-                            <span className={styles.subListItemNo}>{no}</span>
-                            <span className={styles.subListItemText}>{item.label}</span>
-                          </div>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          ))}
-          {/* ルートが増えたら以下に追記 */}
-        </ul>
+        <SectionList
+          sections={NAV_SECTIONS}
+          sectionsOpen={sectionsOpen}
+          onToggleSection={toggleSection}
+        />
       </nav>
     </div>
   );
