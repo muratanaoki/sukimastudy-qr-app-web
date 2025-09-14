@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './header.module.css';
 import { SectionKey } from './utils/enum';
@@ -82,8 +82,8 @@ const Header = () => {
     <div className={styles.wrapper} ref={wrapperRef}>
       <header className={styles.header}>
         <div className={styles.left}>
-          {/* ロゴ */}
-          <Link to="/" className={styles.logo} role="img" aria-label="Sukima Study ロゴ">
+          {/* ロゴ（リンク無し） */}
+          <div className={styles.logo} role="img" aria-label="Sukima Study ロゴ">
             <svg
               className={styles.icon}
               xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +101,7 @@ const Header = () => {
               <span className={styles.brandPrimary}>Sukima</span>
               <span className={styles.brandSecondary}>Study</span>
             </span>
-          </Link>
+          </div>
         </div>
         <div className={styles.right}>
           <HamburgerButton ref={hamburgerRef} open={open} onToggle={handleToggleOpen} />

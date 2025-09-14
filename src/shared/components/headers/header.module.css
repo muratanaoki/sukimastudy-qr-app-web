@@ -105,8 +105,8 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  width: 1.6rem; /* 48px: タップ領域拡大 */
-  height: 2rem; /* 48px: タップ領域拡大 */
+  width: 1.5rem; /* 48px: タップ領域拡大 */
+  height: 1.5rem; /* 48px: タップ領域拡大 */
   overflow: visible; /* 変形時の見切れ防止 */
   --bar-gap: 0.5rem; /* 上下オフセット量（約6.4px） */
 }
