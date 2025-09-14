@@ -28,7 +28,7 @@ export const SectionList = memo(function SectionList({
             aria-controls={`nav-${section.key}`}
             onClick={() => onToggleSection(section.key)}
           >
-            {section.title}
+            <span>{section.title}</span>
             <span
               className={styles.plusMinus}
               aria-hidden="true"
