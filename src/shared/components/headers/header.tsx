@@ -1,17 +1,41 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './header.module.css';
+
+// ナビ定義（ジャンル > 項目）
+const NAV_SECTIONS = [
+  {
+    key: 'pronouns',
+    title: '代名詞',
+    items: [
+      { no: '01.', label: '人称・所有・再帰代名詞', to: '' },
+      { no: '02.', label: '不定代名詞（人・物・事）', to: '' },
+      { no: '03.', label: '不定代名詞（数量・全体・部分など）', to: '' },
+      { no: '04.', label: '指示代名詞・その他', to: '' },
+    ],
+  },
+  { key: 'prepositions', title: '前置詞', items: [] },
+  { key: 'nouns', title: '名詞', items: [] },
+] as const;
+
+type SectionKey = (typeof NAV_SECTIONS)[number]['key'];
 
 const Header = () => {
   const [open, setOpen] = useState(false);
-  // アコーディオン（ジャンル）開閉状態
-  const [sectionsOpen, setSectionsOpen] = useState({
-    pronouns: true,
-    prepositions: false,
-    nouns: false,
-  });
-  const toggleSection = (key: keyof typeof sectionsOpen) =>
-    setSectionsOpen((s) => ({ ...s, [key]: !s[key] }));
+  // アコーディオン（ジャンル）開閉状態（定義から初期化）
+  const initialOpen = useMemo(
+    () =>
+      NAV_SECTIONS.reduce(
+        (acc, s) => {
+          acc[s.key] = s.key === 'pronouns';
+          return acc;
+        },
+        {} as Record<SectionKey, boolean>
+      ),
+    []
+  );
+  const [sectionsOpen, setSectionsOpen] = useState<Record<SectionKey, boolean>>(initialOpen);
+  const toggleSection = (key: SectionKey) => setSectionsOpen((s) => ({ ...s, [key]: !s[key] }));
   const location = useLocation();
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -74,86 +98,33 @@ const Header = () => {
         aria-hidden={!open}
       >
         <ul className={styles.navList}>
-          {/* 代名詞セクション */}
-          <li className={styles.navSection}>
-            <button
-              type="button"
-              className={styles.sectionButton}
-              aria-expanded={sectionsOpen.pronouns}
-              aria-controls="nav-pronouns"
-              onClick={() => toggleSection('pronouns')}
-            >
-              代名詞
-            </button>
-            {sectionsOpen.pronouns && (
-              <ul id="nav-pronouns" className={styles.subList}>
-                <li className={styles.subListItem}>
-                  <Link className={styles.subLink} to="">
-                    <div className={styles.subListItemBox}>
-                      <span className={styles.subListItemNo}>01.</span>
-                      <span className={styles.subListItemText}>人称・所有・再帰代名詞</span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles.subListItem}>
-                  <Link className={styles.subLink} to="">
-                    <div className={styles.subListItemBox}>
-                      <span className={styles.subListItemNo}>02.</span>
-                      <span className={styles.subListItemText}> 不定代名詞（人・物・事）</span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles.subListItem}>
-                  <Link className={styles.subLink} to="">
-                    <div className={styles.subListItemLeftBox}>
-                      <span className={styles.subListItemNo}>03.</span>
-                      <span className={styles.subListItemText}>
-                        不定代名詞（数量・全体・部分など）
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles.subListItem}>
-                  <Link className={styles.subLink} to="">
-                    <div className={styles.subListItemBox}>
-                      <span className={styles.subListItemNo}>04.</span>
-                      <span className={styles.subListItemText}> 指示代名詞・その他</span>
-                    </div>
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </li>
-
-          {/* 前置詞セクション（項目は後日） */}
-          <li className={styles.navSection}>
-            <button
-              type="button"
-              className={styles.sectionButton}
-              aria-expanded={sectionsOpen.prepositions}
-              onClick={() => toggleSection('prepositions')}
-            >
-              前置詞
-            </button>
-            {sectionsOpen.prepositions && (
-              <ul className={styles.subList}>{/* TODO: 項目が決まり次第ここへ追加 */}</ul>
-            )}
-          </li>
-
-          {/* 名詞セクション（項目は後日） */}
-          <li className={styles.navSection}>
-            <button
-              type="button"
-              className={styles.sectionButton}
-              aria-expanded={sectionsOpen.nouns}
-              onClick={() => toggleSection('nouns')}
-            >
-              名詞
-            </button>
-            {sectionsOpen.nouns && (
-              <ul className={styles.subList}>{/* TODO: 項目が決まり次第ここへ追加 */}</ul>
-            )}
-          </li>
+          {NAV_SECTIONS.map((section) => (
+            <li className={styles.navSection} key={section.key}>
+              <button
+                type="button"
+                className={styles.sectionButton}
+                aria-expanded={sectionsOpen[section.key]}
+                aria-controls={`nav-${section.key}`}
+                onClick={() => toggleSection(section.key)}
+              >
+                {section.title}
+              </button>
+              {sectionsOpen[section.key] && section.items.length > 0 && (
+                <ul id={`nav-${section.key}`} className={styles.subList}>
+                  {section.items.map((item) => (
+                    <li className={styles.subListItem} key={item.no}>
+                      <Link className={styles.subLink} to={item.to}>
+                        <div className={styles.subListItemBox}>
+                          <span className={styles.subListItemNo}>{item.no}</span>
+                          <span className={styles.subListItemText}>{item.label}</span>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
           {/* ルートが増えたら以下に追記 */}
         </ul>
       </nav>
