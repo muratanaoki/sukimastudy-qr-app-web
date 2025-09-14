@@ -29,6 +29,11 @@ export const SectionList = memo(function SectionList({
             onClick={() => onToggleSection(section.key)}
           >
             {section.title}
+            <span
+              className={styles.plusMinus}
+              aria-hidden="true"
+              data-open={sectionsOpen[section.key]}
+            />
           </button>
           {sectionsOpen[section.key] && section.items.length > 0 && (
             <ul id={`nav-${section.key}`} className={styles.subList}>

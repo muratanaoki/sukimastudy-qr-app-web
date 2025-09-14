@@ -231,21 +231,45 @@
   align-items: center;
   height: 3.5rem;
   font-size: 1.2rem;
+  position: relative; /* 右側アイコン配置用 */
 }
 
-.sectionButton::after {
+/* 右側の＋/−アイコン（要素版） */
+.plusMinus {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  width: 0.875rem;
+  height: 0.875rem; /* クリック領域を少し広めに */
+  transform: translateY(-50%);
+}
+
+.plusMinus::after,
+.plusMinus::before {
   content: '';
-  margin-left: auto;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-right: 0.125rem solid var(--text-color);
-  border-bottom: 0.125rem solid var(--text-color);
-  transform: rotate(-45deg);
-  transition: transform 150ms ease;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.875rem; /* 横方向の長さ */
+  height: 0.125rem; /* 太さ */
+  background: var(--text-color);
+  border-radius: 0.0625rem;
+  transform-origin: center;
+  transition:
+    transform 150ms ease,
+    opacity 150ms ease;
 }
-
-.sectionButton[aria-expanded='true']::after {
-  transform: rotate(45deg);
+/* 横棒（−） */
+.plusMinus::after {
+  transform: translate(-50%, -50%);
+}
+/* 縦棒（｜）: 初期は90度回転で縦に見せる */
+.plusMinus::before {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+/* 開いたら縦棒を横に回転させて重ねる → 一本のマイナスに */
+.plusMinus[data-open='true']::before {
+  transform: translate(-50%, -50%) rotate(0deg);
 }
 
 .sectionButton:focus-visible {
