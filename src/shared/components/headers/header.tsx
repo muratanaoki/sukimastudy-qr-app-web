@@ -14,7 +14,17 @@ const NAV_SECTIONS = [
       { no: '04.', label: '指示代名詞・その他', to: '' },
     ],
   },
-  { key: 'prepositions', title: '前置詞', items: [] },
+  {
+    key: 'prepositions',
+    title: '前置詞',
+    items: [
+      { no: '01.', label: '位置', to: '' },
+      { no: '02.', label: '方向', to: '' },
+      { no: '03.', label: '時間', to: '' },
+      { no: '04.', label: '手段', to: '' },
+      { no: '05.', label: '論理', to: '' },
+    ],
+  },
   { key: 'nouns', title: '名詞', items: [] },
 ] as const;
 
