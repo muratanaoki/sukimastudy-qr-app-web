@@ -223,8 +223,8 @@
   border: none;
   font-weight: 700;
   color: var(--text-color);
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -235,9 +235,11 @@
 
 /* 右側の＋/−アイコン（要素版） */
 .plusMinus {
-  width: 0.875rem;
-  height: 0.875rem; /* クリック領域を少し広めに */
-  transform: translateY(-50%);
+  position: relative; /* 擬似要素の絶対配置基準 */
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem; /* クリック領域を少し広めに */
+  flex: 0 0 auto; /* 右端の位置を安定させる */
 }
 
 .plusMinus::after,
@@ -246,7 +248,7 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 0.875rem; /* 横方向の長さ */
+  width: 1rem; /* 横方向の長さ */
   height: 0.125rem; /* 太さ */
   background: var(--text-color);
   border-radius: 0.0625rem;
