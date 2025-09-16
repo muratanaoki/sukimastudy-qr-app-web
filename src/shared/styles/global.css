@@ -15,12 +15,14 @@
    - 以下の spacing や fs, step 系の計算の土台になる */
   --rem: clamp(0.92rem, 0.25vw + 0.86rem, 1rem);
 
-  /* スペーシングスケール
-   - マージン・パディングに使う基本余白
-   - var(--space-1) ~ 1rem相当、段階的に調整 */
+  /* スペーシングスケール（シンプル運用）
+   - 0.5刻み中心で最小限に絞る */
+  --space-050: calc(var(--rem) * 0.5);
   --space-1: calc(var(--rem) * 1);
+  --space-150: calc(var(--rem) * 1.5);
   --space-2: calc(var(--rem) * 2);
   --space-3: calc(var(--rem) * 3);
+  --space-350: calc(var(--rem) * 3.5);
 
   /* 固定フォントサイズ（任意）
    - ボタンやラベルなど「特定サイズを維持したいUI」で使用
@@ -52,6 +54,11 @@
   --radius-1: 0.25rem; /* 4px相当 */
   --radius-2: 0.5rem; /* 8px相当 */
   --radius-3: 1rem; /* 16px相当 */
+
+  /* 色・ボーダーの共通トークン */
+  --surface-1: #ffffff; /* 基本背景 */
+  --color-border-soft: #e5e7eb; /* gray-200 相当 */
+  --border-1: 0.0625rem; /* 1px 相当 */
 }
 
 * {
