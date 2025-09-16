@@ -1,7 +1,7 @@
 .wrapper {
   position: sticky;
   top: 0;
-  z-index: var(--z-sticky);
+  z-index: var(--z-100);
   --header-height: calc(var(--rem) * 3.5);
   --header-bg: var(--surface-1);
 }
@@ -9,12 +9,12 @@
 .header {
   min-height: var(--header-height);
   background: var(--header-bg);
-  border-bottom: var(--border-1) solid var(--color-border-soft);
+  border-bottom: var(--border-width-1) solid var(--border-color-soft);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-right: var(--space-1);
-  padding-left: var(--space-1);
+  padding-right: var(--space-100);
+  padding-left: var(--space-100);
   overflow: visible;
 }
 
@@ -62,7 +62,7 @@
   top: 50%;
   width: var(--space-150);
   height: var(--thickness-1);
-  background: var(--font-color);
+  background: var(--color-text);
   border-radius: var(--radius-0); /* 細線用の角丸 */
   transform: translate(-50%, -50%);
   transform-origin: center;
@@ -102,9 +102,9 @@
   right: 0;
   top: var(--header-height);
   bottom: 0;
-  z-index: var(--z-overlay); /* ヘッダーの下、コンテンツの上 */
+  z-index: var(--z-90); /* ヘッダーの下、コンテンツの上 */
   background: var(--surface-1);
-  border-bottom: var(--border-1) solid var(--color-border-soft);
+  border-bottom: var(--border-width-1) solid var(--border-color-soft);
   transform-origin: top;
   max-height: 0;
   overflow: hidden;
@@ -129,20 +129,20 @@
 .navLink {
   display: block;
   width: 100%;
-  padding: var(--space-1) var(--space-1);
+  padding: var(--space-100) var(--space-100);
   text-decoration: none;
-  color: var(--font-color);
+  color: var(--color-text);
   border-radius: var(--radius-2);
 }
 
 /* --- layered nav (genre > items) --- */
 .navSection {
-  border-bottom: var(--border-1) solid var(--color-border-soft);
+  border-bottom: var(--border-width-1) solid var(--border-color-200);
 }
 
 .subListItem {
-  border-bottom: var(--border-1) solid var(--color-border-soft);
-  min-height: var(--space-3);
+  border-bottom: var(--border-width-1) solid var(--border-color-200);
+  min-height: var(--space-300);
   width: 100%;
 }
 
@@ -152,10 +152,10 @@
 
 .sectionTitle {
   font-weight: 700;
-  color: var(--font-color);
-  padding: var(--space-1) var(--space-1);
-  border-bottom: var(--border-1) solid var(--color-border-soft);
-  margin-bottom: var(--space-1);
+  color: var(--color-text);
+  padding: var(--space-100) var(--space-100);
+  border-bottom: var(--border-width-1) solid var(--border-color-200);
+  margin-bottom: var(--space-100);
 }
 
 .sectionButton {
@@ -164,9 +164,9 @@
   background: transparent;
   border: none;
   font-weight: 700;
-  color: var(--font-color);
-  padding-left: var(--space-1);
-  padding-right: var(--space-1);
+  color: var(--color-text);
+  padding-left: var(--space-100);
+  padding-right: var(--space-100);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -190,9 +190,9 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--space-1); /* 横方向の長さ */
+  width: var(--space-100); /* 横方向の長さ */
   height: var(--thickness-1); /* 太さ */
-  background: var(--font-color);
+  background: var(--color-text);
   border-radius: var(--radius-0);
   transform-origin: center;
   transition:
@@ -223,21 +223,21 @@
 .subLink {
   width: 100%;
   text-decoration: none;
-  color: var(--font-color);
+  color: var(--color-text);
   border-radius: var(--radius-2);
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   font-weight: bold;
-  padding-left: var(--space-2);
-  padding-right: var(--space-2);
+  padding-left: var(--space-200);
+  padding-right: var(--space-200);
 }
 
 .subListItemNo {
   font-size: var(--fs-20);
   line-height: var(--fs-20);
-  padding-right: var(--space-1);
+  padding-right: var(--space-100);
 }
 
 .subListItemText {
