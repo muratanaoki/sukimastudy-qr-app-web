@@ -127,19 +127,19 @@ p {
 
 /* 見出し */
 h1 {
-  font-size: var(--step-6);
+  font-size: var(--step-h1);
   line-height: var(--lh-heading);
 }
 h2 {
-  font-size: var(--step-5);
+  font-size: var(--step-h2);
   line-height: var(--lh-heading);
 }
 h3 {
-  font-size: var(--step-4);
+  font-size: var(--step-h3);
   line-height: var(--lh-heading);
 }
 h4 {
-  font-size: var(--step-3);
+  font-size: var(--step-h4);
   line-height: var(--lh-heading);
 }
 
