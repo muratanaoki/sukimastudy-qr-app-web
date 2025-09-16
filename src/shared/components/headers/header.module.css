@@ -1,7 +1,7 @@
 .wrapper {
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: var(--z-sticky);
   --header-height: calc(var(--rem) * 3.5);
   --header-bg: var(--surface-1);
 }
@@ -63,7 +63,7 @@
   width: var(--space-150);
   height: var(--thickness-1);
   background: var(--font-color);
-  border-radius: 0.0625rem; /* 1pxの角丸で見栄え向上 */
+  border-radius: var(--radius-0); /* 細線用の角丸 */
   transform: translate(-50%, -50%);
   transform-origin: center;
   transition:
@@ -102,8 +102,8 @@
   right: 0;
   top: var(--header-height);
   bottom: 0;
-  z-index: 39; /* ヘッダー(40)の下、コンテンツの上 */
-  background: #fff;
+  z-index: var(--z-overlay); /* ヘッダーの下、コンテンツの上 */
+  background: var(--surface-1);
   border-bottom: var(--border-1) solid var(--color-border-soft);
   transform-origin: top;
   max-height: 0;
@@ -193,7 +193,7 @@
   width: var(--space-1); /* 横方向の長さ */
   height: var(--thickness-1); /* 太さ */
   background: var(--font-color);
-  border-radius: 0.0625rem;
+  border-radius: var(--radius-0);
   transform-origin: center;
   transition:
     transform 150ms ease,
@@ -217,7 +217,7 @@
   margin: 0;
   display: grid;
   grid-template-columns: 1fr;
-  background-color: rgb(243 245 250 / 1);
+  background-color: var(--surface-2);
 }
 
 .subLink {
