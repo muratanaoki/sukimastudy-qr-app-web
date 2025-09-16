@@ -1,17 +1,22 @@
 .container {
   margin: 0 auto;
-  color: var(--text-color);
   background: var(--surface-1);
+}
+
+.titleNumber {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--step-h3);
+  font-weight: bold;
+  color: gray;
+  display: flex;
+  align-items: flex-end;
+  line-height: var(--lh-heading);
 }
 
 .title {
   margin: 0;
-  font-family:
-    'Zen Maru Gothic',
-    system-ui,
-    -apple-system,
-    'Noto Sans JP',
-    sans-serif;
+  font-family: var(--font-family-heading);
   font-weight: 700;
   color: #2196f3;
   flex: 1 1 auto;
@@ -20,22 +25,6 @@
   display: flex;
   align-items: flex-end;
   font-size: var(--step-h4);
-  line-height: var(--lh-heading);
-}
-
-.titleNumber {
-  margin: 0;
-  font-family:
-    'Zen Maru Gothic',
-    system-ui,
-    -apple-system,
-    'Noto Sans JP',
-    sans-serif;
-  font-size: var(--step-h3);
-  font-weight: bold;
-  color: gray;
-  display: flex;
-  align-items: flex-end;
   line-height: var(--lh-heading);
 }
 
@@ -58,7 +47,6 @@
 .sectionHeader {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-100);
   padding-bottom: calc(var(--rem) * 0.4);
   border-bottom: var(--border-width-1) solid var(--border-color-200);
   margin-bottom: var(--space-100);

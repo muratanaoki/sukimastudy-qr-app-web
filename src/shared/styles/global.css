@@ -19,6 +19,8 @@
   */
 
   --font-family: 'Noto Sans', 'M PLUS Rounded 1c', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  /* 見出し・装飾用のフォントスタック（ページ個別指定から移設） */
+  --font-family-heading: 'Zen Maru Gothic', system-ui, -apple-system, 'Noto Sans JP', sans-serif;
   --text-color: #303030; /* 基本テキスト色 */
   --font-color: var(--text-color); /* 互換 alias（徐々に移行） */
 
@@ -38,6 +40,7 @@
   --space-100: calc(var(--rem) * 1);
   --space-150: calc(var(--rem) * 1.5);
   --space-200: calc(var(--rem) * 2);
+  --space-250: calc(var(--rem) * 2.5);
   --space-300: calc(var(--rem) * 3);
   --space-350: calc(var(--rem) * 3.5);
 
