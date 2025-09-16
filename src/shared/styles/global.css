@@ -5,6 +5,45 @@
 :root {
   --font-family: 'Noto Sans', 'M PLUS Rounded 1c', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
   --font-color: #303030;
+
+  /* -----------------------------
+   タイポグラフィ・レイアウト基盤
+----------------------------- */
+
+  /* 流体ベースサイズ
+   - remの基準値を端末幅に応じて流動化
+   - 以下の spacing や fs, step 系の計算の土台になる */
+  --rem: clamp(0.92rem, 0.25vw + 0.86rem, 1rem);
+
+  /* スペーシングスケール
+   - マージン・パディングに使う基本余白
+   - var(--space-1) ~ 1rem相当、段階的に調整 */
+  --space-1: calc(var(--rem) * 1);
+  --space-2: calc(var(--rem) * 2);
+  --space-3: calc(var(--rem) * 3);
+
+  /* 固定フォントサイズ（任意）
+   - ボタンやラベルなど「特定サイズを維持したいUI」で使用
+   - clampでなくcalcにして、流体影響を受けすぎないように */
+  --fs-14: calc(var(--rem) * 0.875); /* 小さめテキスト */
+  --fs-16: calc(var(--rem) * 1); /* 本文ベース */
+  --fs-20: calc(var(--rem) * 1.25); /* 少し強調 */
+
+  /* 行間・行長・レイアウト幅
+   - 本文の読みやすさ確保用 */
+  --lh-body: 1.7; /* 本文の行間 */
+  --lh-heading: 1.25; /* 見出しの行間（タイトめ） */
+  --measure: 68ch; /* 段落の最大行長（可読性の黄金比） */
+
+  --container-max: 68.75rem; /* レイアウト全体の最大幅 */
+
+  /* 見出し用の流体スケール
+   - h1〜h4 など見出しサイズ専用
+   - 画面幅に応じて拡縮し、メディアクエリ不要にする */
+  --step-3: clamp(1.25rem, 0.9vw + 1.05rem, 1.5rem); /* h4程度 */
+  --step-4: clamp(1.5rem, 1.4vw + 1.15rem, 1.875rem); /* h3程度 */
+  --step-5: clamp(1.875rem, 2.1vw + 1.25rem, 2.25rem); /* h2程度 */
+  --step-6: clamp(2.25rem, 3.2vw + 1.35rem, 3rem); /* h1程度 */
 }
 
 * {
@@ -21,20 +60,42 @@ html {
 body {
   font-family: var(--font-family);
   color: var(--font-color);
-  font-size: 1rem;
-  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  max-width: 68.75rem;
+  max-width: var(--container-max);
   margin: 0 auto;
+  line-height: var(--lh-body);
 }
 
 #root {
   height: 100%;
 }
 
-/* ナビ開閉時のページスクロール抑止（シンプル版） */
+/* 本文 */
+p {
+  max-width: var(--measure);
+}
+
+/* 見出し */
+h1 {
+  font-size: var(--step-6);
+  line-height: var(--lh-heading);
+}
+h2 {
+  font-size: var(--step-5);
+  line-height: var(--lh-heading);
+}
+h3 {
+  font-size: var(--step-4);
+  line-height: var(--lh-heading);
+}
+h4 {
+  font-size: var(--step-3);
+  line-height: var(--lh-heading);
+}
+
+/* ナビ開閉時のページスクロール抑止 */
 html.no-scroll,
 html.no-scroll body {
   overflow: hidden;
