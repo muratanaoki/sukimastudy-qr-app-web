@@ -6,6 +6,7 @@ import type { NavSection } from './utils/type';
 import { NAV_SECTIONS } from './utils/const';
 import { SectionList } from './components/SectionList';
 import { HamburgerButton } from './components/HamburgerButton';
+import logoPng from '../../images/logo.png';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -82,25 +83,9 @@ const Header = () => {
     <div className={styles.wrapper} ref={wrapperRef}>
       <header className={styles.header}>
         <div className={styles.left}>
-          {/* ロゴ（リンク無し） */}
-          <div className={styles.logo} role="img" aria-label="Sukima Study ロゴ">
-            <svg
-              className={styles.icon}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 15 19"
-              shapeRendering="geometricPrecision"
-              aria-hidden="true"
-              focusable="false"
-            >
-              {/* 3本バー（下揃え）: 幅3 / 角丸1.5 / 高さ 5,10,16 */}
-              <rect x="0" y="13.5" width="3" height="5" rx="1.5" fill="#90caf9" />
-              <rect x="6" y="8.5" width="3" height="10" rx="1.5" fill="#42a5f5" />
-              <rect x="12" y="2.5" width="3" height="16" rx="1.5" fill="#1976d2" />
-            </svg>
-            <span className={styles.wordmark} aria-hidden="true">
-              <span className={styles.brandPrimary}>Sukima</span>
-              <span className={styles.brandSecondary}>Study</span>
-            </span>
+          {/* ロゴ（PNG） */}
+          <div className={styles.logo}>
+            <img src={logoPng} alt="Sukima Study ロゴ" className={styles.logoImage} />
           </div>
         </div>
         <div className={styles.right}>
