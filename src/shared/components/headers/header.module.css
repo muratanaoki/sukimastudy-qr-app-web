@@ -137,7 +137,7 @@
   bottom: 0;
   z-index: 39; /* ヘッダー(40)の下、コンテンツの上 */
   background: #fff;
-  border-bottom: var(--border-1) solid var(--header-border-color);
+  border-bottom: var(--border-1) solid var(--color-border-soft);
   transform-origin: top;
   max-height: 0;
   overflow: hidden;
@@ -170,11 +170,11 @@
 
 /* --- layered nav (genre > items) --- */
 .navSection {
-  border-bottom: var(--border-1) solid var(--header-border-color);
+  border-bottom: var(--border-1) solid var(--color-border-soft);
 }
 
 .subListItem {
-  border-bottom: var(--border-1) solid var(--header-border-color);
+  border-bottom: var(--border-1) solid var(--color-border-soft);
   min-height: var(--space-3);
   width: 100%;
 }
@@ -187,7 +187,7 @@
   font-weight: 700;
   color: var(--font-color);
   padding: var(--space-1) var(--space-1);
-  border-bottom: var(--border-1) solid var(--header-border-color);
+  border-bottom: var(--border-1) solid var(--color-border-soft);
   margin-bottom: var(--space-1);
 }
 
