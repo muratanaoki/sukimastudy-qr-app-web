@@ -63,7 +63,7 @@
   width: var(--space-150);
   height: var(--thickness-1);
   background: var(--color-text);
-  border-radius: var(--radius-0); /* 細線用の角丸 */
+  border-radius: var(--radius-1); /* 細線用の角丸 */
   transform: translate(-50%, -50%);
   transform-origin: center;
   transition:
@@ -132,7 +132,7 @@
   padding: var(--space-100) var(--space-100);
   text-decoration: none;
   color: var(--color-text);
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-3);
 }
 
 /* --- layered nav (genre > items) --- */
@@ -193,7 +193,7 @@
   width: var(--space-100); /* 横方向の長さ */
   height: var(--thickness-1); /* 太さ */
   background: var(--color-text);
-  border-radius: var(--radius-0);
+  border-radius: var(--radius-1);
   transform-origin: center;
   transition:
     transform 150ms ease,
@@ -224,7 +224,7 @@
   width: 100%;
   text-decoration: none;
   color: var(--color-text);
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-3);
   height: 100%;
   display: flex;
   align-items: center;
