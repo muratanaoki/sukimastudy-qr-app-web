@@ -59,6 +59,9 @@
   --surface-1: #ffffff; /* 基本背景 */
   --color-border-soft: #e5e7eb; /* gray-200 相当 */
   --border-1: 0.0625rem; /* 1px 相当 */
+
+  /* 線/バーの厚み（UIトークン） */
+  --thickness-1: 0.125rem; /* 細いバー/ライン（ハンバーガー等） */
 }
 
 * {

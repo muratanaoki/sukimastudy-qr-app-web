@@ -94,7 +94,7 @@
   left: 50%;
   top: 50%;
   width: var(--space-150);
-  height: calc(var(--rem) * 0.125);
+  height: var(--thickness-1);
   background: var(--font-color);
   border-radius: 0.0625rem; /* 1pxの角丸で見栄え向上 */
   transform: translate(-50%, -50%);
@@ -224,7 +224,7 @@
   left: 50%;
   top: 50%;
   width: var(--space-1); /* 横方向の長さ */
-  height: calc(var(--rem) * 0.125); /* 太さ */
+  height: var(--thickness-1); /* 太さ */
   background: var(--font-color);
   border-radius: 0.0625rem;
   transform-origin: center;
