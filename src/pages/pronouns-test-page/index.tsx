@@ -15,9 +15,7 @@ export default function PronounsTestPage() {
           <div className={styles.sectionHeader}>
             <h1 className={styles.titleNumber}>01.</h1>
             <h1 className={styles.title}>人称・所有・再帰代名詞</h1>
-            <div className={styles.titleIcon}>
-              <User className={styles.headerIcon} />
-            </div>
+            <User className={styles.headerIcon} />
           </div>
           <ul className={styles.cardGrid}>
             {filtered.map((it) => (

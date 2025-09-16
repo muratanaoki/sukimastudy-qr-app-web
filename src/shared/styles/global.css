@@ -15,7 +15,6 @@
    - ボーダー/太さ: --border-*, --thickness-*
    - レイヤー順序:  --z-<number>  数字が大きいほど前面（例: --z-90, --z-100）
    - 単位原則:      rem を基本。サイズは --rem を土台に算出。
-   - 互換方針:      既存名は段階的に alias を残して移行。
   */
 
   --font-family: 'Noto Sans', 'M PLUS Rounded 1c', 'Helvetica Neue', 'Noto Sans JP', sans-serif;

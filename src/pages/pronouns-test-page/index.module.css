@@ -8,20 +8,15 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline; /* 見出し番号とタイトルのベースライン揃え */
-  padding-bottom: calc(var(--rem) * 0.4);
+  padding-bottom: var(--space-050);
   border-bottom: var(--border-width-1) solid var(--border-color-200);
   margin-bottom: var(--space-100);
 }
 
-.titleIcon {
-  display: flex;
-  align-items: flex-end;
-}
-
 .headerIcon {
   color: gray;
-  height: calc(var(--rem) * 1.5);
-  width: calc(var(--rem) * 1.5);
+  text-align: b;
+  margin-top: auto;
 }
 
 .titleNumber {
@@ -35,8 +30,7 @@
   letter-spacing: 0.0125rem;
   padding-right: var(--space-050);
   position: relative;
-  --optical-baseline-shift: 0.04em; /* 数字を少し下げる(上げたい場合は負値) 調整余地 */
-  top: var(--optical-baseline-shift);
+  top: 0.04em;
   font-variant-numeric: tabular-nums lining-nums; /* 数字の高さを安定させる */
 }
 
@@ -83,7 +77,7 @@
 .cardGrid {
   display: grid;
   grid-template-columns: 1fr; /* 1列固定 */
-  gap: var(--space-150);
+  gap: var(--space-100);
   list-style: none;
   padding: 0;
   margin: 0;
