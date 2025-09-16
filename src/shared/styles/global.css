@@ -5,7 +5,7 @@
 :root {
   /*
    デザイントークン命名ルール（抜粋）
-   - 色:            --color-*  例) --color-text, 将来的に --color-accent 等
+   - 色:            --color-*  例) --text-color, 将来的に --color-accent 等
    - サーフェス:    --surface-N  明度順/階層で番号付け（1が最も明るい）
    - 余白:          --space-050, --space-1, --space-150 ... 0.5刻みはゼロ埋め
    - フォントサイズ固定: --fs-14, --fs-16 ... （固定用途。流体は step を使用）
@@ -19,8 +19,8 @@
   */
 
   --font-family: 'Noto Sans', 'M PLUS Rounded 1c', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
-  --color-text: #303030; /* 基本テキスト色 */
-  --font-color: var(--color-text); /* 互換 alias（徐々に移行） */
+  --text-color: #303030; /* 基本テキスト色 */
+  --font-color: var(--text-color); /* 互換 alias（徐々に移行） */
 
   /* -----------------------------
    タイポグラフィ・レイアウト基盤
@@ -59,10 +59,10 @@
   /* 見出し用の流体スケール
    - h1〜h4 など見出しサイズ専用
    - 画面幅に応じて拡縮し、メディアクエリ不要にする */
-  --step-3: clamp(1.25rem, 0.9vw + 1.05rem, 1.5rem); /* h4程度 */
-  --step-4: clamp(1.5rem, 1.4vw + 1.15rem, 1.875rem); /* h3程度 */
-  --step-5: clamp(1.875rem, 2.1vw + 1.25rem, 2.25rem); /* h2程度 */
-  --step-6: clamp(2.25rem, 3.2vw + 1.35rem, 3rem); /* h1程度 */
+  --step-h4: clamp(1.25rem, 0.9vw + 1.05rem, 1.5rem); /* h4程度 */
+  --step-h3: clamp(1.5rem, 1.4vw + 1.15rem, 1.875rem); /* h3程度 */
+  --step-h2: clamp(1.875rem, 2.1vw + 1.25rem, 2.25rem); /* h2程度 */
+  --step-h1: clamp(2.25rem, 3.2vw + 1.35rem, 3rem); /* h1程度 */
 
   /* 角丸スケール
    - 小: ボタンやタグ

@@ -62,7 +62,7 @@
   top: 50%;
   width: var(--space-150);
   height: var(--thickness-1);
-  background: var(--color-text);
+  background: var(--text-color);
   border-radius: var(--radius-1); /* 細線用の角丸 */
   transform: translate(-50%, -50%);
   transform-origin: center;
@@ -131,7 +131,7 @@
   width: 100%;
   padding: var(--space-100) var(--space-100);
   text-decoration: none;
-  color: var(--color-text);
+  color: var(--text-color);
   border-radius: var(--radius-3);
 }
 
@@ -152,7 +152,7 @@
 
 .sectionTitle {
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--text-color);
   padding: var(--space-100) var(--space-100);
   border-bottom: var(--border-width-1) solid var(--border-color-200);
   margin-bottom: var(--space-100);
@@ -164,7 +164,7 @@
   background: transparent;
   border: none;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--text-color);
   padding-left: var(--space-100);
   padding-right: var(--space-100);
   cursor: pointer;
@@ -192,7 +192,7 @@
   top: 50%;
   width: var(--space-100); /* 横方向の長さ */
   height: var(--thickness-1); /* 太さ */
-  background: var(--color-text);
+  background: var(--text-color);
   border-radius: var(--radius-1);
   transform-origin: center;
   transition:
@@ -223,7 +223,7 @@
 .subLink {
   width: 100%;
   text-decoration: none;
-  color: var(--color-text);
+  color: var(--text-color);
   border-radius: var(--radius-3);
   height: 100%;
   display: flex;
