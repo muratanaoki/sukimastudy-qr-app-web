@@ -1,3 +1,14 @@
+/* Local color tokens for this page */
+:root {
+  --pronouns-color-accent: #2196f3;
+  --pronouns-color-icon: gray;
+  --pronouns-color-muted: #6b7280;
+  --pronouns-color-badge-bg: #f1f5f9;
+  --pronouns-color-ipa: #4b5563;
+  --pronouns-color-jp: #374151;
+  --pronouns-color-body: #111827;
+}
+
 .container {
   margin: 0 auto;
   background: var(--surface-1);
@@ -14,7 +25,7 @@
 }
 
 .headerIcon {
-  color: gray;
+  color: var(--pronouns-color-icon);
   margin-top: auto;
 }
 /* 見出し番号 */
@@ -36,7 +47,7 @@
   margin: 0;
   font-family: var(--font-family-heading);
   font-weight: 700;
-  color: #2196f3;
+  color: var(--pronouns-color-accent);
   margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
@@ -108,8 +119,8 @@
 /* Sequential index badge */
 .termIndex {
   font-size: var(--fs-12);
-  color: #6b7280;
-  background: #f1f5f9;
+  color: var(--pronouns-color-muted);
+  background: var(--pronouns-color-badge-bg);
   padding-left: var(--space-025);
   padding-right: var(--space-025);
   border-radius: var(--radius-2);
@@ -125,7 +136,7 @@
 .ipa {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   font-size: var(--fs-14);
-  color: #4b5563;
+  color: var(--pronouns-color-ipa);
   background: transparent;
   padding: 0;
   border: none;
@@ -136,7 +147,7 @@
 
 .jp {
   font-size: var(--fs-14);
-  color: #374151;
+  color: var(--pronouns-color-jp);
 }
 
 /* JP行 + 例文トグルボタンを左右に配置 */
@@ -148,7 +159,7 @@
 
 /* Button to expand/collapse example sentences */
 .examplesButton {
-  color: gray;
+  color: var(--pronouns-color-icon);
   margin-left: auto;
   flex: 0 0 auto;
   font-size: var(--fs-12);
@@ -162,10 +173,7 @@
     box-shadow 0.15s ease,
     transform 0.05s ease;
 }
-.examplesButton:hover {
-  background: #f9fafb;
-  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.06);
-}
+
 .examplesButton:active {
   transform: translateY(0.0625rem);
 }
@@ -230,11 +238,23 @@
   color: gray;
 }
 
-.iconButton:hover {
-  background: #f9fafb;
-  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.06);
+.iconButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-2);
+  border: var(--border-width-1) solid var(--border-color-200);
+  background: var(--surface-1);
+  color: var(--pronouns-color-body);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease;
+  padding: var(--space-025);
+  color: var(--pronouns-color-icon);
 }
-
-.iconButton:active {
-  transform: translateY(0.0625rem);
+.iconButton:hover {
+  background: var(--pronouns-color-hover-bg);
+  box-shadow: var(--pronouns-shadow-hover);
 }
