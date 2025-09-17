@@ -95,7 +95,8 @@
   font-size: var(--fs-12);
   color: #6b7280;
   background: #f1f5f9;
-  padding: calc(var(--rem) * 0.125) calc(var(--rem) * 0.375);
+  padding-left: var(--space-025);
+  padding-right: var(--space-025);
   border-radius: var(--radius-2);
 }
 
