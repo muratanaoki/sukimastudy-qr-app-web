@@ -29,3 +29,5 @@ export type PronounData = {
   title: string; // 日本語タイトル
   items: PronounItem[]; // 本体
 };
+
+export type RawPronounItem = Omit<PronounItem, 'index'>;

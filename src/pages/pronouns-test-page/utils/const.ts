@@ -1,9 +1,4 @@
-import { PronounItem, PronounData } from './type';
-
-// NOTE: group は表示/ロジックでは未使用（廃止）。
-// データ編集の負担を減らすため、データソース側では一時的に保持して
-// 消費側（ページ）で除去してから使用します。
-type RawPronounItem = Omit<PronounItem, 'index'>;
+import { PronounItem, PronounData, RawPronounItem } from './type';
 
 const DATA_RAW_SOURCE: RawPronounItem[] = [
   // 01. Personal / Possessive / Reflexive
