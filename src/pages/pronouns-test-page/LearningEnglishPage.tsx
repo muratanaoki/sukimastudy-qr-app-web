@@ -6,19 +6,20 @@ import { User } from 'lucide-react';
 
 export default function LearningEnglishPage() {
   const speech = useSpeech();
-  const filtered = DATA; // 今後フィルターや検索を入れる余地
+  // 今後フィルターや検索を入れる余地
+  const { groupNo, title, items } = DATA;
 
   return (
     <div className={styles.container}>
       <main>
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h1 className={styles.titleNumber}>01.</h1>
-            <h1 className={styles.title}>人称・所有・再帰代名詞</h1>
+            <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
+            <h1 className={styles.title}>{title}</h1>
             <User className={styles.headerIcon} />
           </div>
           <ul className={styles.cardGrid}>
-            {filtered.map((it) => (
+            {items.map((it) => (
               <PronounCard key={it.index} item={it} speech={speech} />
             ))}
           </ul>

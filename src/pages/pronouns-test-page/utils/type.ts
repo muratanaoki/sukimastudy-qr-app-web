@@ -22,3 +22,10 @@ export type PronounItem = {
 };
 
 export type ExampleEntry = { en?: string; jp?: string };
+
+// ページ全体のラップデータ（単一グループ運用想定）
+export type PronounData = {
+  groupNo: number; // 連番（将来複数化してもよい）
+  title: string; // 日本語タイトル
+  items: PronounItem[]; // 本体
+};

@@ -1,4 +1,4 @@
-import { PronounItem } from './type';
+import { PronounItem, PronounData } from './type';
 
 // NOTE: group は表示/ロジックでは未使用（廃止）。
 // データ編集の負担を減らすため、データソース側では一時的に保持して
@@ -907,4 +907,14 @@ const DATA_RAW_SOURCE: RawPronounItem[] = [
 
 export const DATA_RAW: Omit<PronounItem, 'index'>[] = DATA_RAW_SOURCE.map(({ ...rest }) => rest);
 
-export const DATA: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
+const ITEMS: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
+
+// ラップした単一グループデータ
+export const DATA: PronounData = {
+  groupNo: 1,
+  title: '人称・所有・再帰代名詞',
+  items: ITEMS,
+};
+
+// アイテム配列を直接使いたい場合用（オプショナル）
+export const PRONOUN_ITEMS = ITEMS;
