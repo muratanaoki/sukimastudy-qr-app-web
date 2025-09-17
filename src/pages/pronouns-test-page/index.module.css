@@ -1,17 +1,26 @@
 /* Local color tokens for this page */
 :root {
-  --pronouns-color-accent: #2196f3;
-  --pronouns-color-icon: gray;
-  --pronouns-color-muted: #6b7280;
-  --pronouns-color-badge-bg: #f1f5f9;
-  --pronouns-color-ipa: #4b5563;
-  --pronouns-color-jp: #374151;
-  --pronouns-color-body: #111827;
+  /* ---- Base scale (visual tokens) ---- */
+  --color-neutral-900: #111827;
+  --color-neutral-700: #374151;
+  --color-neutral-500: #6b7280;
+  --color-neutral-100: #f1f5f9;
+  --color-accent-500: #2196f3;
+  --color-bg-subtle: #f2f8fd;
+
+  --pronouns-text-primary: var(--color-neutral-900);
+  --pronouns-text-secondary: var(--color-neutral-700);
+  --pronouns-text-tertiary: var(--color-neutral-500);
+  --pronouns-text-ipa: var(--pronouns-text-tertiary); /* may diverge later */
+  --pronouns-icon-default: var(--pronouns-text-tertiary);
+  --pronouns-badge-bg: var(--color-neutral-100);
+  --pronouns-surface-page: var(--color-bg-subtle);
+  --pronouns-accent: var(--color-accent-500);
 }
 
 .container {
   margin: 0 auto;
-  background: var(--surface-1);
+  background: var(--pronouns-surface-page);
 }
 
 /* セクション先頭の大見出しと右端アイコンを左右に配置 */
@@ -34,7 +43,7 @@
   font-family: var(--font-family-heading);
   font-size: var(--step-h3);
   font-weight: bold;
-  color: gray;
+  color: var(--pronouns-color-muted);
   line-height: 1;
   letter-spacing: 0.0125rem;
   padding-right: var(--space-050);
@@ -47,7 +56,7 @@
   margin: 0;
   font-family: var(--font-family-heading);
   font-weight: 700;
-  color: var(--pronouns-color-accent);
+  color: var(--pronouns-accent);
   margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
@@ -57,7 +66,7 @@
 
 .section {
   padding: var(--space-150);
-  background: var(--surface-2);
+  background: var(--pronouns-surface-page);
 }
 
 .card {
@@ -119,8 +128,8 @@
 /* Sequential index badge */
 .termIndex {
   font-size: var(--fs-12);
-  color: var(--pronouns-color-muted);
-  background: var(--pronouns-color-badge-bg);
+  color: var(--pronouns-text-tertiary);
+  background: var(--pronouns-badge-bg);
   padding-left: var(--space-025);
   padding-right: var(--space-025);
   border-radius: var(--radius-2);
@@ -136,7 +145,7 @@
 .ipa {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   font-size: var(--fs-14);
-  color: var(--pronouns-color-ipa);
+  color: var(--pronouns-text-ipa);
   background: transparent;
   padding: 0;
   border: none;
@@ -147,7 +156,7 @@
 
 .jp {
   font-size: var(--fs-14);
-  color: var(--pronouns-color-jp);
+  color: var(--pronouns-text-secondary);
 }
 
 /* JP行 + 例文トグルボタンを左右に配置 */
@@ -159,7 +168,7 @@
 
 /* Button to expand/collapse example sentences */
 .examplesButton {
-  color: var(--pronouns-color-icon);
+  color: var(--pronouns-icon-default);
   margin-left: auto;
   flex: 0 0 auto;
   font-size: var(--fs-12);
@@ -195,7 +204,7 @@
 
 .exampleJp {
   font-size: var(--fs-12);
-  color: #4b5563;
+  color: var(--pronouns-text-tertiary);
   line-height: 1;
 }
 
@@ -228,14 +237,13 @@
   border-radius: var(--radius-2);
   border: var(--border-width-1) solid var(--border-color-200);
   background: var(--surface-1);
-  color: #111827;
+  color: var(--pronouns-icon-default);
   cursor: pointer;
   transition:
     background 0.15s ease,
     box-shadow 0.15s ease,
     transform 0.05s ease;
   padding: var(--space-025);
-  color: gray;
 }
 
 .iconButton {
