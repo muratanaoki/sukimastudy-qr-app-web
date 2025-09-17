@@ -180,32 +180,18 @@
 .exampleBody {
   display: flex;
   flex-direction: column; /* 例文→訳を縦積み */
-  gap: calc(var(--rem) * 0.1875); /* 英文と和訳の距離は小～中の間で控えめ */
   min-width: 0; /* 子の省略に必要 */
   flex: 1 1 auto; /* 横幅を伸縮 */
 }
 
-/* .level は廃止 */
-
 .exampleEn {
-  font-size: var(--fs-14);
-  color: var(--c-strong);
-  /* allow wrapping within flex container */
+  font-size: var(--fs-16);
   min-width: 0;
   flex: 0 1 auto; /* 本文領域内で省略可 */
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-  /* 2行まで表示し、それ以上は省略 */
-  display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .exampleJp {
-  font-size: calc(var(--rem) * 0.75); /* 補助情報（訳）は英文より小さく */
-  line-height: 1.45; /* 小さめ文字の可読性確保 */
+  font-size: var(--fs-14);
   color: #4b5563;
 }
 
