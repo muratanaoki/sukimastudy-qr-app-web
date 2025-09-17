@@ -4,10 +4,11 @@ import { Volume2 } from 'lucide-react';
 import type { PronounItem } from '../utils/type';
 import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../hooks/useSpeech';
-import { buildExamples, hasAnyExample } from '../utils/function';
+import { buildExamples } from '../utils/function';
 
-function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
+function EnglishWordCardInner({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
   const examples = useMemo(() => buildExamples(item), [item]);
+  const hasExamples = examples.length > 0;
   const [open, setOpen] = useState(false);
   const listId = useId();
 
@@ -39,7 +40,7 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
           </div>
           <div className={styles.jpRow}>
             <div className={styles.jp}>{item.jp}</div>
-            {hasAnyExample(item) && (
+            {hasExamples && (
               <button
                 type="button"
                 className={styles.examplesButton}
@@ -61,5 +62,5 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
   );
 }
 
-export const PronounCard = memo(PronounCardBase);
-export default PronounCard;
+export const EnglishWord = memo(EnglishWordCardInner);
+export default EnglishWord;

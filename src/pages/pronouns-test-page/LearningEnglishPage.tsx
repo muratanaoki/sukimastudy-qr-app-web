@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import { DATA } from './utils/const';
 import { useSpeech } from './hooks/useSpeech';
-import { PronounCard } from './components/PronounCard';
+import { EnglishWord } from './components/EnglishWord';
 import { User } from 'lucide-react';
 
 export default function LearningEnglishPage() {
@@ -20,7 +20,7 @@ export default function LearningEnglishPage() {
           </div>
           <ul className={styles.cardGrid}>
             {items.map((it) => (
-              <PronounCard key={it.index} item={it} speech={speech} />
+              <EnglishWord key={it.index} item={it} speech={speech} />
             ))}
           </ul>
         </section>
