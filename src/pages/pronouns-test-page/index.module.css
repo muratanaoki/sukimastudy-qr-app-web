@@ -78,22 +78,21 @@
 
 .termRow {
   display: flex;
-  align-items: baseline; /* 単語とIPAのベースラインを揃える */
+  align-items: center; /* 単語とIPAのベースラインを揃える */
   gap: var(--space-100); /* 本体とボタン間は中 */
   flex-wrap: wrap;
 }
 
-
 .termBody {
   display: inline-flex;
-  align-items: baseline;
+  align-items: flex-end;
   gap: var(--space-025);
 }
 
 /* 単語行の再生ボタンを右端に寄せる */
 
 .index {
-  font-size: calc(var(--rem) * 0.6875);
+  font-size: var(--fs-14);
   color: #6b7280;
   background: #f1f5f9;
   padding: calc(var(--rem) * 0.125) calc(var(--rem) * 0.375);
@@ -104,6 +103,8 @@
   font-size: var(--fs-20);
   font-weight: 700;
   letter-spacing: 0.0125rem;
+
+  line-height: 0.8;
 }
 
 .ipa {
@@ -115,6 +116,7 @@
   border: none;
   border-radius: 0;
   white-space: nowrap;
+  line-height: 0.95;
 }
 
 .jp {
@@ -221,10 +223,9 @@
 
 /* --- icon buttons --- */
 .iconButton {
-  display: inline-flex;
+  display: flex;
   justify-content: center;
-  width: calc(var(--rem) * 1.75);
-  height: calc(var(--rem) * 1.75);
+  align-items: center;
   border-radius: var(--radius-2);
   border: var(--border-width-1) solid var(--border-color-200);
   background: var(--surface-1);
@@ -234,13 +235,7 @@
     background 0.15s ease,
     box-shadow 0.15s ease,
     transform 0.05s ease;
-}
-
-/* 例文の行のアイコン（左端配置） */
-.exampleEnRow .iconButton {
-  width: calc(var(--rem) * 1.5);
-  height: calc(var(--rem) * 1.5);
-  flex: 0 0 auto;
+  padding: var(--space-025);
 }
 
 .iconButton:hover {
@@ -251,14 +246,3 @@
 .iconButton:active {
   transform: translateY(0.0625rem);
 }
-
-/* アイコンサイズを安定させる */
-.iconButton svg {
-  width: calc(var(--rem) * 1.125);
-  height: calc(var(--rem) * 1.125);
-  /* ベースライン基準でわずかに下がって見える場合の微調整 */
-  position: relative;
-  top: 0.125em; /* フォント基準で下方向にシフト */
-}
-
-/* メディアクエリは不要（globalの流体タイポ/間隔トークンを使用） */

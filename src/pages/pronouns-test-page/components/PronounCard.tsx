@@ -24,12 +24,12 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
       <div className={styles.cardHeader}>
         <div className={styles.termRow}>
           <div className={styles.termBody}>
-            <span className={styles.term} lang="en">
+            <p className={styles.term} lang="en">
               {item.term}
-            </span>
-            <span className={styles.ipa} lang="en">
+            </p>
+            <p className={styles.ipa} lang="en">
               {item.ipa}
-            </span>
+            </p>
           </div>
           <button
             type="button"
