@@ -1,28 +1,14 @@
 /* Local color tokens for this page */
 :root {
   /* ---- Base scale (visual tokens) ---- */
-  --color-neutral-900: #111827;
-  --color-neutral-700: #3d3d3d;
-  --color-neutral-500: #6b7280;
-  --color-neutral-100: #f5f5f5;
+
   --color-accent-500: #2196f3;
   --color-bg-subtle: #f2f8fd;
-
-  --pronouns-text-primary: var(--color-neutral-900);
-  --pronouns-text-secondary: var(--color-neutral-700);
-  --pronouns-text-tertiary: var(--color-neutral-500);
-  --pronouns-text-ipa: var(--color-neutral-500);
-  --pronouns-icon-default: var(--color-neutral-500);
-  --pronouns-badge-bg: var(--color-neutral-100);
-  --pronouns-surface-page: var(--color-bg-subtle);
-  --pronouns-accent: var(--color-accent-500);
-  --pronouns-color-title-number: var(--color-neutral-500);
-  --pronouns-color-icon: var(--color-neutral-500);
 }
 
 .container {
   margin: 0 auto;
-  background: var(--pronouns-surface-page);
+  background: var(--color-bg-subtle);
 }
 
 /* セクション先頭の大見出しと右端アイコンを左右に配置 */
@@ -36,7 +22,7 @@
 }
 
 .headerIcon {
-  color: var(--pronouns-color-icon);
+  color: var(--color-neutral-500);
   margin-top: auto;
 }
 /* 見出し番号 */
@@ -45,7 +31,7 @@
   font-family: var(--font-family-heading);
   font-size: var(--step-h3);
   font-weight: bold;
-  color: var(--pronouns-color-title-number);
+  color: var(--color-neutral-500);
   line-height: 1;
   letter-spacing: 0.0125rem;
   padding-right: var(--space-050);
@@ -58,7 +44,7 @@
   margin: 0;
   font-family: var(--font-family-heading);
   font-weight: 700;
-  color: var(--pronouns-accent);
+  color: var(--color-accent-500);
   margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
@@ -68,7 +54,7 @@
 
 .section {
   padding: var(--space-150);
-  background: var(--pronouns-surface-page);
+  background: var(--color-bg-subtle);
 }
 
 .card {
@@ -130,8 +116,8 @@
 /* Sequential index badge */
 .termIndex {
   font-size: var(--fs-12);
-  color: var(--pronouns-text-tertiary);
-  background: var(--pronouns-badge-bg);
+  color: var(--color-neutral-500);
+  background: var(--color-neutral-100);
   padding-left: var(--space-025);
   padding-right: var(--space-025);
   border-radius: var(--radius-2);
@@ -147,7 +133,7 @@
 .ipa {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   font-size: var(--fs-14);
-  color: var(--pronouns-text-ipa);
+  color: var(--color-neutral-500);
   background: transparent;
   padding: 0;
   border: none;
@@ -158,7 +144,6 @@
 
 .jp {
   font-size: var(--fs-14);
-  color: var(--pronouns-text-secondary);
 }
 
 /* JP行 + 例文トグルボタンを左右に配置 */
@@ -170,7 +155,7 @@
 
 /* Button to expand/collapse example sentences */
 .examplesButton {
-  color: var(--pronouns-icon-default);
+  color: var(--color-neutral-500);
   margin-left: auto;
   flex: 0 0 auto;
   font-size: var(--fs-12);
@@ -202,12 +187,11 @@
   min-width: 0;
   flex: 0 1 auto; /* 本文領域内で省略可 */
   line-height: 1;
-  color: var(--pronouns-text-secondary);
 }
 
 .exampleJp {
   font-size: var(--fs-12);
-  color: var(--pronouns-text-tertiary);
+  color: var(--color-neutral-500);
   line-height: 1;
 }
 
@@ -240,7 +224,7 @@
   border-radius: var(--radius-2);
   border: var(--border-width-1) solid var(--border-color-default);
   background: var(--surface-1);
-  color: var(--pronouns-icon-default);
+  color: var(--color-neutral-500);
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -249,23 +233,8 @@
   padding: var(--space-025);
 }
 
-.iconButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: var(--radius-2);
-  border: var(--border-width-1) solid var(--border-color-default);
-  background: var(--surface-1);
-  color: var(--pronouns-color-body);
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.05s ease;
-  padding: var(--space-025);
-  color: var(--pronouns-color-icon);
-}
+/* Consolidated duplicate .iconButton rule; removed unused pronouns color body/icon/hover tokens */
 .iconButton:hover {
-  background: var(--pronouns-color-hover-bg);
-  box-shadow: var(--pronouns-shadow-hover);
+  background: var(--color-neutral-100);
+  box-shadow: 0 0 0 1px var(--color-neutral-100);
 }
