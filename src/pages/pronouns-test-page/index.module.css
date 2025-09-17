@@ -11,11 +11,14 @@
   --pronouns-text-primary: var(--color-neutral-900);
   --pronouns-text-secondary: var(--color-neutral-700);
   --pronouns-text-tertiary: var(--color-neutral-500);
-  --pronouns-text-ipa: var(--pronouns-text-tertiary); /* may diverge later */
-  --pronouns-icon-default: var(--pronouns-text-tertiary);
+  --pronouns-text-ipa: var(--color-neutral-500);
+  --pronouns-icon-default: var(--color-neutral-500);
   --pronouns-badge-bg: var(--color-neutral-100);
   --pronouns-surface-page: var(--color-bg-subtle);
   --pronouns-accent: var(--color-accent-500);
+
+  --pronouns-color-title-number: var(--color-neutral-500);
+  --pronouns-color-icon: var(--color-neutral-500);
 }
 
 .container {
@@ -43,7 +46,7 @@
   font-family: var(--font-family-heading);
   font-size: var(--step-h3);
   font-weight: bold;
-  color: var(--pronouns-color-muted);
+  color: var(--pronouns-color-title-number);
   line-height: 1;
   letter-spacing: 0.0125rem;
   padding-right: var(--space-050);
