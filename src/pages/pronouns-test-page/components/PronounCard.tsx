@@ -55,7 +55,7 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
                 aria-expanded={open}
                 aria-controls={listId}
               >
-                例文{open ? 'を閉じる' : 'を表示'}
+                例文
               </button>
             )}
           </div>
