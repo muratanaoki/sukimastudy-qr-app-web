@@ -1,18 +1,10 @@
 import { memo, useMemo, useState, useId } from 'react';
 import styles from '../index.module.css';
 import { Volume2 } from 'lucide-react';
-import type { PronounItem, ExampleEntry } from '../utils/type';
-import { JLevel } from '../utils/enum';
+import type { PronounItem } from '../utils/type';
 import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../hooks/useSpeech';
-
-function buildExamples(it: PronounItem): ExampleEntry[] {
-  return [
-    { level: JLevel.J1, en: it.exJ1, jp: it.exJ1Jp },
-    { level: JLevel.J2, en: it.exJ2, jp: it.exJ2Jp },
-    { level: JLevel.J3, en: it.exJ3, jp: it.exJ3Jp },
-  ].filter((e) => e.en || e.jp);
-}
+import { buildExamples, hasAnyExample } from '../utils/function';
 
 function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
   const examples = useMemo(() => buildExamples(item), [item]);
@@ -47,15 +39,16 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
           </div>
           <div className={styles.jpRow}>
             <div className={styles.jp}>{item.jp}</div>
-            {examples.length > 0 && (
+            {hasAnyExample(item) && (
               <button
                 type="button"
                 className={styles.examplesButton}
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
                 aria-controls={listId}
+                title={open ? '例文を閉じる' : '例文を表示'}
               >
-                例文
+                {open ? '閉じる' : '例文'}
               </button>
             )}
           </div>
