@@ -54,9 +54,21 @@
   border-radius: var(--radius-3);
   padding: var(--space-100);
   background: var(--surface-1);
+  gap: var(--space-100);
   transition:
     box-shadow 0.15s ease,
     transform 0.05s ease;
+}
+
+.cardWidth100 {
+  width: 100%;
+}
+
+.cardFlex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-100);
 }
 
 .cardGrid {
@@ -157,18 +169,20 @@
 
 /* --- examples --- */
 .examples {
-  margin-top: var(--space-100);
   list-style: none;
   display: flex;
   flex-direction: column;
+  margin-top: var(--space-100);
+  /* padding-top: var(--space-100); */
+  /* border-top: var(--border-width-1) solid var(--border-color-200); */
   gap: var(--space-100);
 }
 
 .exampleItem {
+  /* border-top: var(--border-width-1) solid var(--border-color-200); */
+  /* padding-top: var(--space-100);
+  padding-bottom: var(--space-100); */
   background: var(--surface-1);
-  border: var(--border-width-1) solid var(--border-color-200);
-  border-radius: var(--radius-3);
-  padding: var(--space-100);
 }
 
 .exampleEnRow {
@@ -182,17 +196,20 @@
   flex-direction: column; /* 例文→訳を縦積み */
   min-width: 0; /* 子の省略に必要 */
   flex: 1 1 auto; /* 横幅を伸縮 */
+  gap: var(--space-050);
 }
 
 .exampleEn {
   font-size: var(--fs-16);
   min-width: 0;
   flex: 0 1 auto; /* 本文領域内で省略可 */
+  line-height: 1;
 }
 
 .exampleJp {
   font-size: var(--fs-14);
   color: #4b5563;
+  line-height: 1;
 }
 
 /* --- icon buttons --- */
@@ -210,6 +227,7 @@
     box-shadow 0.15s ease,
     transform 0.05s ease;
   padding: var(--space-025);
+  color: gray;
 }
 
 .iconButton:hover {

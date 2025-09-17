@@ -21,41 +21,45 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
 
   return (
     <li className={styles.card}>
-      <div className={styles.cardHeader}>
-        <div className={styles.termRow}>
-          <div className={styles.termBody}>
-            <p className={styles.term} lang="en">
-              {item.term}
-            </p>
-            <p className={styles.ipa} lang="en">
-              {item.ipa}
-            </p>
+      <div className={styles.cardFlex}>
+        <button
+          type="button"
+          className={styles.iconButton}
+          onClick={() => speech.speakWord(item.term)}
+          title="単語を再生"
+          aria-label={`Speak term ${item.term}`}
+        >
+          <Volume2 size={18} />
+        </button>
+        <div className={styles.cardWidth100}>
+          <div className={styles.cardHeader}>
+            <div className={styles.termRow}>
+              <div className={styles.termBody}>
+                <p className={styles.term} lang="en">
+                  {item.term}
+                </p>
+                <p className={styles.ipa} lang="en">
+                  {item.ipa}
+                </p>
+              </div>
+            </div>
+            <span className={styles.index}>#{item.index}</span>
           </div>
-          <button
-            type="button"
-            className={styles.iconButton}
-            onClick={() => speech.speakWord(item.term)}
-            title="単語を再生"
-            aria-label={`Speak term ${item.term}`}
-          >
-            <Volume2 size={18} />
-          </button>
+          <div className={styles.jpRow}>
+            <div className={styles.jp}>{item.jp}</div>
+            {examples.length > 0 && (
+              <button
+                type="button"
+                className={styles.examplesToggle}
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-controls={listId}
+              >
+                例文{open ? 'を閉じる' : 'を表示'}
+              </button>
+            )}
+          </div>
         </div>
-        <span className={styles.index}>#{item.index}</span>
-      </div>
-      <div className={styles.jpRow}>
-        <div className={styles.jp}>{item.jp}</div>
-        {examples.length > 0 && (
-          <button
-            type="button"
-            className={styles.examplesToggle}
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls={listId}
-          >
-            例文{open ? 'を閉じる' : 'を表示'}
-          </button>
-        )}
       </div>
       {open && (
         <ExampleList items={examples} onSpeak={(t) => speech.speakSentence(t)} listId={listId} />
