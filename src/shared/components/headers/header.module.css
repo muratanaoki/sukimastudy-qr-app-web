@@ -242,7 +242,6 @@
   margin: 0;
   display: grid;
   grid-template-columns: 1fr;
-  background-color: var(--surface-2);
 }
 
 .subLink {
