@@ -21,7 +21,7 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
 
   return (
     <li className={styles.card}>
-      <div className={styles.cardFlex}>
+      <div className={styles.cardRow}>
         <button
           type="button"
           className={styles.iconButton}
@@ -31,7 +31,7 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
         >
           <Volume2 size={18} />
         </button>
-        <div className={styles.cardWidth100}>
+        <div className={styles.cardContent}>
           <div className={styles.cardHeader}>
             <div className={styles.termRow}>
               <div className={styles.termBody}>
@@ -43,14 +43,14 @@ function PronounCardBase({ item, speech }: { item: PronounItem; speech: UseSpeec
                 </p>
               </div>
             </div>
-            <span className={styles.index}>#{item.index}</span>
+            <span className={styles.termIndex}>#{item.index}</span>
           </div>
           <div className={styles.jpRow}>
             <div className={styles.jp}>{item.jp}</div>
             {examples.length > 0 && (
               <button
                 type="button"
-                className={styles.examplesToggle}
+                className={styles.examplesButton}
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
                 aria-controls={listId}

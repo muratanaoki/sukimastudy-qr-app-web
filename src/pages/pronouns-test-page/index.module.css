@@ -17,7 +17,7 @@
   color: gray;
   margin-top: auto;
 }
-
+/* 見出し番号 */
 .titleNumber {
   margin: 0;
   font-family: var(--font-family-heading);
@@ -60,11 +60,13 @@
     transform 0.05s ease;
 }
 
-.cardWidth100 {
+/* Card main content wrapper */
+.cardContent {
   width: 100%;
 }
 
-.cardFlex {
+/* Leading icon + content row inside a card */
+.cardRow {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,7 +105,8 @@
 
 /* 単語行の再生ボタンを右端に寄せる */
 
-.index {
+/* Sequential index badge */
+.termIndex {
   font-size: var(--fs-12);
   color: #6b7280;
   background: #f1f5f9;
@@ -143,7 +146,8 @@
   gap: var(--space-100);
 }
 
-.examplesToggle {
+/* Button to expand/collapse example sentences */
+.examplesButton {
   color: gray;
   margin-left: auto;
   flex: 0 0 auto;
@@ -158,35 +162,12 @@
     box-shadow 0.15s ease,
     transform 0.05s ease;
 }
-
-.examplesToggle:hover {
+.examplesButton:hover {
   background: #f9fafb;
   box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.06);
 }
-
-.examplesToggle:active {
+.examplesButton:active {
   transform: translateY(0.0625rem);
-}
-
-/* --- examples --- */
-.examples {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--space-100);
-  padding-top: var(--space-100);
-  border-top: var(--border-width-1) solid var(--border-color-200);
-  gap: var(--space-100);
-}
-
-.exampleItem {
-  background: var(--surface-1);
-}
-
-.exampleEnRow {
-  display: flex;
-  align-items: center; /* アイコンとテキストブロックを上下中央に */
-  gap: var(--space-100); /* アイコンと本文の距離は中 */
 }
 
 .exampleBody {
@@ -208,6 +189,27 @@
   font-size: var(--fs-12);
   color: #4b5563;
   line-height: 1;
+}
+
+/* --- examples --- */
+.examples {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-100);
+  padding-top: var(--space-100);
+  border-top: var(--border-width-1) solid var(--border-color-200);
+  gap: var(--space-100);
+}
+
+.exampleItem {
+  background: var(--surface-1);
+}
+
+.exampleEnRow {
+  display: flex;
+  align-items: center; /* アイコンとテキストブロックを上下中央に */
+  gap: var(--space-100); /* アイコンと本文の距離は中 */
 }
 
 /* --- icon buttons --- */
