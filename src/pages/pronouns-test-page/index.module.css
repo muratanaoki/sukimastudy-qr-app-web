@@ -92,7 +92,7 @@
 /* 単語行の再生ボタンを右端に寄せる */
 
 .index {
-  font-size: var(--fs-14);
+  font-size: var(--fs-12);
   color: #6b7280;
   background: #f1f5f9;
   padding: calc(var(--rem) * 0.125) calc(var(--rem) * 0.375);
