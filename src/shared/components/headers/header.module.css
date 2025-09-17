@@ -162,11 +162,11 @@
 
 /* --- layered nav (genre > items) --- */
 .navSection {
-  border-bottom: var(--border-width-1) solid var(--border-color-200);
+  border-bottom: var(--border-width-1) solid var(--border-color-default);
 }
 
 .subListItem {
-  border-bottom: var(--border-width-1) solid var(--border-color-200);
+  border-bottom: var(--border-width-1) solid var(--border-color-default);
   min-height: var(--space-300);
   width: 100%;
 }
@@ -179,7 +179,7 @@
   font-weight: 700;
   color: var(--text-color);
   padding: var(--space-100) var(--space-100);
-  border-bottom: var(--border-width-1) solid var(--border-color-200);
+  border-bottom: var(--border-width-1) solid var(--border-color-default);
   margin-bottom: var(--space-100);
 }
 

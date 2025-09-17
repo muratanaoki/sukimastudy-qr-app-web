@@ -32,7 +32,7 @@
   justify-content: space-between;
   align-items: baseline;
   padding-bottom: var(--space-025);
-  border-bottom: var(--border-width-1) solid var(--border-color-200);
+  border-bottom: var(--border-width-1) solid var(--border-color-default);
   margin-bottom: var(--space-100);
 }
 
@@ -73,7 +73,7 @@
 }
 
 .card {
-  border: var(--border-width-1) solid var(--border-color-200);
+  border: var(--border-width-1) solid var(--border-color-default);
   border-radius: var(--radius-3);
   padding: var(--space-100);
   background: var(--surface-1);
@@ -176,7 +176,7 @@
   flex: 0 0 auto;
   font-size: var(--fs-12);
   background: var(--surface-1);
-  border: var(--border-width-1) solid var(--border-color-200);
+  border: var(--border-width-1) solid var(--border-color-default);
   border-radius: var(--radius-2);
   padding: var(--space-025) var(--space-050);
   cursor: pointer;
@@ -218,7 +218,7 @@
   flex-direction: column;
   margin-top: var(--space-100);
   padding-top: var(--space-100);
-  border-top: var(--border-width-1) solid var(--border-color-200);
+  border-top: var(--border-width-1) solid var(--border-color-default);
   gap: var(--space-100);
 }
 
@@ -238,7 +238,7 @@
   justify-content: center;
   align-items: center;
   border-radius: var(--radius-2);
-  border: var(--border-width-1) solid var(--border-color-200);
+  border: var(--border-width-1) solid var(--border-color-default);
   background: var(--surface-1);
   color: var(--pronouns-icon-default);
   cursor: pointer;
@@ -254,7 +254,7 @@
   justify-content: center;
   align-items: center;
   border-radius: var(--radius-2);
-  border: var(--border-width-1) solid var(--border-color-200);
+  border: var(--border-width-1) solid var(--border-color-default);
   background: var(--surface-1);
   color: var(--pronouns-color-body);
   cursor: pointer;

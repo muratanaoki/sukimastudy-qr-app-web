@@ -88,7 +88,12 @@
   /* Surface / Border tokens */
   --surface-1: #ffffff; /* 基本背景 */
   --surface-2: rgb(243 245 250 / 1); /* サブ背景（淡いグレー） */
-  --border-color-200: #d8d8d8;
+
+  /* Border scale (3階層) */
+  --border-color-subtle: #eaeaea; /* hairline / 軽い区切り */
+  --border-color-default: #dadada; /* 汎用カード枠 / ボタン枠 */
+  --border-color-strong: #cccccc; /* 見出し下線 / セクション分割 */
+  /* Legacy alias (段階的移行) */
   --border-width-1: 0.0625rem; /* 1px 相当 */
 
   /* 線/バー厚み */
