@@ -59,7 +59,7 @@
 .card {
   border: var(--border-width-1) solid var(--border-color-200);
   border-radius: var(--radius-3);
-  padding: var(--space-150);
+  padding: var(--space-100);
   background: var(--surface-1);
   transition:
     box-shadow 0.15s ease,
