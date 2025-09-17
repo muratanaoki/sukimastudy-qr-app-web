@@ -3,7 +3,7 @@ import '@/shared/styles/global.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import PronounsTestPage from './pages/pronouns-test-page/index.tsx';
+import LearningEnglishPage from './pages/pronouns-test-page/LearningEnglishPage.tsx';
 import Header from '@/shared/components/headers/header';
 
 const rootElement = document.getElementById('root');
@@ -18,7 +18,7 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Navigate to="/pronouns-test-page" replace />} />
-          <Route path="/pronouns-test-page" element={<PronounsTestPage />} />
+          <Route path="/pronouns-test-page" element={<LearningEnglishPage />} />
           <Route path="*" element={<Navigate to="/pronouns-test-page" replace />} />
         </Routes>
       </BrowserRouter>

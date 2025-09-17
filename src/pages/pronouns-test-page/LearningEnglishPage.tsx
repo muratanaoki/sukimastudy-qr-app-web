@@ -4,7 +4,7 @@ import { useSpeech } from './hooks/useSpeech';
 import { PronounCard } from './components/PronounCard';
 import { User } from 'lucide-react';
 
-export default function PronounsTestPage() {
+export default function LearningEnglishPage() {
   const speech = useSpeech();
   const filtered = DATA; // 今後フィルターや検索を入れる余地
 
