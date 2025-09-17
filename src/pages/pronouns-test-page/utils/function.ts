@@ -1,4 +1,3 @@
-import { JLevel } from './enum';
 import type { PronounItem, ExampleEntry } from './type';
 
 /**
@@ -7,9 +6,12 @@ import type { PronounItem, ExampleEntry } from './type';
  */
 export function buildExamples(item: PronounItem): ExampleEntry[] {
   return [
-    { level: JLevel.J1, en: item.exJ1, jp: item.exJ1Jp },
-    { level: JLevel.J2, en: item.exJ2, jp: item.exJ2Jp },
-    { level: JLevel.J3, en: item.exJ3, jp: item.exJ3Jp },
+    { en: item.exJ1, jp: item.exJ1Jp },
+    {
+      en: item.exJ2,
+      jp: item.exJ2Jp,
+    },
+    { en: item.exJ3, jp: item.exJ3Jp },
   ].filter((e) => !!(e.en || e.jp));
 }
 

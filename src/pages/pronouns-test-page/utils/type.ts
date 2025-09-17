@@ -1,5 +1,3 @@
-import { JLevel } from './enum';
-
 export type PronounItem = {
   /** 通し番号（1〜） */
   index: number;
@@ -23,4 +21,4 @@ export type PronounItem = {
   exJ3Jp?: string;
 };
 
-export type ExampleEntry = { level: JLevel; en?: string; jp?: string };
+export type ExampleEntry = { en?: string; jp?: string };
