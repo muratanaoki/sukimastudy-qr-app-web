@@ -7,7 +7,7 @@
 .sectionHeader {
   display: flex;
   justify-content: space-between;
-  align-items: baseline; /* 見出し番号とタイトルのベースライン揃え */
+  align-items: baseline;
   padding-bottom: var(--space-050);
   border-bottom: var(--border-width-1) solid var(--border-color-200);
   margin-bottom: var(--space-100);
@@ -25,8 +25,7 @@
   font-size: var(--step-h3);
   font-weight: bold;
   color: gray;
-  /* 実ベースラインは揃っていてもサイズ差で視覚的に沈んで見えるため光学補正 */
-  line-height: 1; /* ボックス高さを詰める */
+  line-height: 1;
   letter-spacing: 0.0125rem;
   padding-right: var(--space-050);
   position: relative;
