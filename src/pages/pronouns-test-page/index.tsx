@@ -10,7 +10,7 @@ export default function PronounsTestPage() {
 
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
+      <main>
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h1 className={styles.titleNumber}>01.</h1>

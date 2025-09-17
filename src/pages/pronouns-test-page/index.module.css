@@ -8,14 +8,13 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding-bottom: var(--space-050);
+  padding-bottom: var(--space-025);
   border-bottom: var(--border-width-1) solid var(--border-color-200);
   margin-bottom: var(--space-100);
 }
 
 .headerIcon {
   color: gray;
-  text-align: b;
   margin-top: auto;
 }
 
@@ -38,16 +37,11 @@
   font-family: var(--font-family-heading);
   font-weight: 700;
   color: #2196f3;
-  flex: 1 1 auto;
+  margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
   font-size: var(--step-h4);
   line-height: var(--lh-heading);
-}
-
-.main {
-  display: grid;
-  gap: calc(var(--rem) * 1.75);
 }
 
 .section {
@@ -65,14 +59,6 @@
     transform 0.05s ease;
 }
 
-.cardRow {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--rem) * 0.375); /* 一般行は中 */
-  line-height: 1.35;
-  margin: calc(var(--rem) * 0.125) 0;
-}
-
 .cardGrid {
   display: grid;
   grid-template-columns: 1fr; /* 1列固定 */
@@ -81,13 +67,13 @@
   padding: 0;
   margin: 0;
 }
+
 /* subGroup UI は未使用 */
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--rem) * 0.625);
-  margin-bottom: calc(var(--rem) * 0.375);
+  margin-bottom: var(--space-050);
 }
 
 .termRow {
@@ -97,17 +83,14 @@
   flex-wrap: wrap;
 }
 
+
 .termBody {
   display: inline-flex;
   align-items: baseline;
-  gap: calc(var(--rem) * 0.375); /* 単語とIPAの隣接は小さめ */
+  gap: var(--space-025);
 }
 
 /* 単語行の再生ボタンを右端に寄せる */
-.termRow .iconButton {
-  margin-left: auto;
-  flex: 0 0 auto;
-}
 
 .index {
   font-size: calc(var(--rem) * 0.6875);
@@ -239,7 +222,6 @@
 /* --- icon buttons --- */
 .iconButton {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
   width: calc(var(--rem) * 1.75);
   height: calc(var(--rem) * 1.75);
@@ -270,17 +252,13 @@
   transform: translateY(0.0625rem);
 }
 
-/* アクセシビリティ: キーボードフォーカス可視化 */
-.iconButton:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 0.1875rem rgba(59, 130, 246, 0.35);
-  border-color: #93c5fd;
-}
-
 /* アイコンサイズを安定させる */
 .iconButton svg {
   width: calc(var(--rem) * 1.125);
   height: calc(var(--rem) * 1.125);
+  /* ベースライン基準でわずかに下がって見える場合の微調整 */
+  position: relative;
+  top: 0.125em; /* フォント基準で下方向にシフト */
 }
 
 /* メディアクエリは不要（globalの流体タイポ/間隔トークンを使用） */
