@@ -2,9 +2,9 @@
 :root {
   /* ---- Base scale (visual tokens) ---- */
   --color-neutral-900: #111827;
-  --color-neutral-700: #374151;
+  --color-neutral-700: #3d3d3d;
   --color-neutral-500: #6b7280;
-  --color-neutral-100: #f1f5f9;
+  --color-neutral-100: #f5f5f5;
   --color-accent-500: #2196f3;
   --color-bg-subtle: #f2f8fd;
 
@@ -202,6 +202,7 @@
   min-width: 0;
   flex: 0 1 auto; /* 本文領域内で省略可 */
   line-height: 1;
+  color: var(--pronouns-text-secondary);
 }
 
 .exampleJp {
