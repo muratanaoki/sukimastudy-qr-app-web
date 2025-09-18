@@ -900,7 +900,7 @@ const DATA_RAW_SOURCE: RawPronounItem[] = [
   },
 ];
 
-export const DATA_RAW: Omit<PronounItem, 'index'>[] = DATA_RAW_SOURCE.map(({ ...rest }) => rest);
+export const DATA_RAW: RawPronounItem[] = DATA_RAW_SOURCE.map(({ ...rest }) => rest);
 
 const ITEMS: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
 
@@ -910,6 +910,3 @@ export const DATA: PronounData = {
   title: '人称・所有・再帰代名詞',
   items: ITEMS,
 };
-
-// アイテム配列を直接使いたい場合用（オプショナル）
-export const PRONOUN_ITEMS = ITEMS;

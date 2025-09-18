@@ -1,13 +1,35 @@
 import styles from './index.module.css';
-import { DATA } from './utils/const';
 import { useSpeech } from './hooks/useSpeech';
 import { EnglishWord } from './components/EnglishWord';
-import { User } from 'lucide-react';
+import { User, FileCheck } from 'lucide-react';
+import type { PronounData } from './utils/type';
+import { useEffect, useState } from 'react';
 
-export default function LearningEnglishPage() {
+export type LearningEnglishPageProps = {
+  data: PronounData;
+};
+
+export default function LearningEnglishPage({ data }: LearningEnglishPageProps) {
   const speech = useSpeech();
-  // 今後フィルターや検索を入れる余地
-  const { groupNo, title, items } = DATA;
+  const { groupNo, title, items } = data;
+  const [hideFab, setHideFab] = useState(false);
+
+  useEffect(() => {
+    const handler = () => {
+      const { scrollY, innerHeight } = window;
+      const docHeight = document.documentElement.scrollHeight;
+      // 一番下近く (余白 16px) に到達したら非表示
+      const atBottom = scrollY + innerHeight >= docHeight - 16;
+      setHideFab(atBottom);
+    };
+    handler();
+    window.addEventListener('scroll', handler, { passive: true });
+    window.addEventListener('resize', handler);
+    return () => {
+      window.removeEventListener('scroll', handler);
+      window.removeEventListener('resize', handler);
+    };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -25,6 +47,12 @@ export default function LearningEnglishPage() {
           </ul>
         </section>
       </main>
+      <div className={hideFab ? `${styles.testFabWrapper} hide` : styles.testFabWrapper}>
+        <button type="button" className={styles.testFabButton} aria-label="テスト開始">
+          <FileCheck size={22} />
+          <span className={styles.testFabText}>テスト</span>
+        </button>
+      </div>
     </div>
   );
 }

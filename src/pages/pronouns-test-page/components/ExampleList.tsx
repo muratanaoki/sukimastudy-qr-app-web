@@ -23,7 +23,7 @@ export function ExampleList({ items, onSpeak, listId }: ExampleListProps) {
                 title="例文を再生"
                 aria-label={`例文${idx + 1}を再生`}
               >
-                <Volume2 />
+                <Volume2 className={styles.iconSize} />
               </button>
             )}
             <div className={styles.exampleBody}>

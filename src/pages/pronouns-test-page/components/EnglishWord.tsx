@@ -22,7 +22,7 @@ function EnglishWordCardInner({ item, speech }: { item: PronounItem; speech: Use
           title="単語を再生"
           aria-label={`Speak term ${item.term}`}
         >
-          <Volume2 size={18} />
+          <Volume2 className={styles.iconSize} />
         </button>
         <div className={styles.cardContent}>
           <div className={styles.cardHeader}>
