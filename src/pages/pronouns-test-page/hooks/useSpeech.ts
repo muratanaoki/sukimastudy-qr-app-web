@@ -1,5 +1,45 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+// --- Browser / Voice detection helpers -------------------------------------------------
+// Safari 判定（できるだけ誤検出を避ける）
+// ポイント:
+//  - Safari 以外でも UA に 'Safari' は入る (Chrome, Edge, SamsungBrowser など)
+//  - vendor が 'Apple Computer, Inc.' であることを確認
+//  - iOS Chrome/Edge は UA に CriOS / EdgiOS を含むので除外
+//  - 他ブラウザの識別子 (OPR, FxiOS, SamsungBrowser など) を除外
+//  - UA 縮小(User-Agent Reduction)の将来的影響を受ける可能性があるため完全保証は不可
+const isSafari = () => {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent;
+  const vendor = navigator.vendor || '';
+  const hasSafariToken = /Safari/i.test(ua);
+  const isAppleVendor = /Apple/i.test(vendor); // 'Apple Computer, Inc.'
+  const excluded = /(Chrome|CriOS|Chromium|Edg|EdgiOS|OPR|OPiOS|FxiOS|Brave|SamsungBrowser)/i.test(
+    ua
+  );
+  return hasSafariToken && isAppleVendor && !excluded;
+};
+
+// Safari 系（システム組み込み英語音声）優先候補
+const SAFARI_VOICE_CANDIDATES: string[] = [
+  'Samantha',
+  'Alex',
+  'Victoria',
+  'Daniel',
+  'Kate',
+  'Karen',
+];
+
+// Chrome 系（Google 音声 + 共通 fallback）
+const CHROME_VOICE_CANDIDATES: string[] = [
+  'Google US English',
+  'Google UK English Female',
+  'Google UK English Male',
+  'Samantha',
+  'Alex',
+  'Victoria',
+];
+
 export type UseSpeechOptions = {
   defaultLang?: string; // e.g. 'en-US'
   preferredVoiceNames?: string[]; // 優先したいボイス名（部分一致OK）
@@ -8,15 +48,14 @@ export type UseSpeechOptions = {
   pitch?: number; // 共通ピッチ
 };
 
+// NOTE: SSR / ビルド時は navigator 不在のため Chrome 前提の配列を返しておき、
+// クライアントで useMemo によるマージ時に利用される（現状 DEFAULTS は静的評価）。
 const DEFAULTS: Required<UseSpeechOptions> = {
   defaultLang: 'en-US',
-  preferredVoiceNames: [
-    'Google US English',
-    'Google UK English Female',
-    'Google UK English Male',
-    'Samantha',
-    'Alex',
-  ],
+  preferredVoiceNames: (() => {
+    if (typeof navigator === 'undefined') return CHROME_VOICE_CANDIDATES; // SSR 安全策
+    return isSafari() ? SAFARI_VOICE_CANDIDATES : CHROME_VOICE_CANDIDATES;
+  })(),
   wordRate: 0.9,
   sentenceRate: 1.0,
   pitch: 1.0,

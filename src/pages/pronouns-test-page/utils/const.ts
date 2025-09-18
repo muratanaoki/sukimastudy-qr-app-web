@@ -3,7 +3,7 @@ import { PronounItem, PronounData, RawPronounItem } from './type';
 const DATA_RAW_SOURCE: RawPronounItem[] = [
   // 01. Personal / Possessive / Reflexive
   {
-    term: 'I',
+    term: 'I\u2060', // ZERO WIDTH WORD JOINER (音は出ない)
     ipa: '/aɪ/',
     jp: '私は',
     exJ1: 'I am fifteen.',
