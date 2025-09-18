@@ -17,6 +17,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   const { groupNo, title, items } = data;
   const hideFab = useFabHideOnBottom();
   const [showTest, setShowTest] = useState(false);
+  const [selectedRange, setSelectedRange] = useState<{ start: number; end: number } | null>(null);
 
   // NOTE: CSS Modules では `.testFabWrapper.hide` という複合セレクタ内の `hide` も個別にハッシュ化され export される。
   // そのため文字列 'hide' を直接付与しても一致せず、 styles.hide を併用する必要がある。
@@ -26,6 +27,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
 
   const openTest = useCallback(() => {
     setShowTest(true);
+    setSelectedRange(null); // 開くたびリセット
   }, []);
 
   const closeTest = useCallback(() => {
@@ -62,7 +64,21 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
           <span className={styles.testFabText}>テスト</span>
         </button>
       </div>
-      {showTest && <TestIntroDialog items={items} onClose={closeTest} />}
+      {showTest && (
+        <TestIntroDialog
+          items={items}
+          onClose={closeTest}
+          selectedRange={selectedRange}
+          onSelectRange={(seg) => {
+            setSelectedRange({ start: seg.start, end: seg.end });
+            console.log('Select range', seg.start, seg.end, seg.items.length);
+          }}
+          onStart={(seg) => {
+            console.log('Start test range', seg.start, seg.end, seg.items.length);
+            closeTest();
+          }}
+        />
+      )}
     </div>
   );
 }

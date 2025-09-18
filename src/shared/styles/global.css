@@ -10,6 +10,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Zen+Maru+Gothic:wght@400&display=swap'); /* Zen Maru Gothic 重複インポート（ウェイト追加用）。統合検討余地あり */
 
 :root {
+  --main-color: #f2f8fd; /* メインカラー（青） */
+  --sub-color: #2196f3; /* サブカラー */
+  --accent-color: #1976d2; /* アクセントカラー（濃い青） */
+
   /* ---------------------------------
     Token 命名規則（抜粋 / 要約）
     ---------------------------------
@@ -141,7 +145,7 @@ body {
 /* ---------------------------------
   Headings
   --------------------------------- */
-h1 {
+/* h1 {
   font-size: var(--step-h1);
   line-height: var(--lh-heading);
 }
@@ -156,7 +160,7 @@ h3 {
 h4 {
   font-size: var(--step-h4);
   line-height: var(--lh-heading);
-}
+} */
 
 /* ナビ開閉時：ドロワー表示中の背面スクロール抑止 */
 html.no-scroll,

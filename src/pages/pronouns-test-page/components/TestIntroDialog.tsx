@@ -1,31 +1,38 @@
 import styles from '../index.module.css';
-import { Book, Settings } from 'lucide-react';
+import { FileCheck, Settings } from 'lucide-react';
 import type { PronounData } from '../utils/type';
-import { useEffect, useCallback } from 'react';
+import { useMemo } from 'react';
+import { useEscapeKey } from '../hooks/useEscapeKey';
+import { segmentItems } from '../utils/function';
 
 export type TestIntroDialogProps = {
   items: PronounData['items'];
   onClose: () => void;
+  onSelectRange?: (range: { start: number; end: number; items: PronounData['items'] }) => void;
+  onStart?: (range: { start: number; end: number; items: PronounData['items'] }) => void;
+  segmentSize?: number; // default 10
+  selectedRange?: { start: number; end: number } | null;
 };
 
-export function TestIntroDialog({ items, onClose }: TestIntroDialogProps) {
-  // Escape で閉じる (フォーカストラップは今後必要なら追加)
-  const handleKey = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    },
-    [onClose]
-  );
-  useEffect(() => {
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [handleKey]);
+export function TestIntroDialog({
+  items,
+  onClose,
+  onSelectRange,
+  onStart,
+  segmentSize = 10,
+  selectedRange,
+}: TestIntroDialogProps) {
+  // Escape で閉じる
+  useEscapeKey(onClose, true);
 
-  const first = items[0]?.index ?? 0;
-  const last = items[items.length - 1]?.index ?? 0;
+  // --- range segmentation (memoized) ---
+  const segments = useMemo(
+    () => segmentItems(items, segmentSize, { assumeSorted: false }),
+    [items, segmentSize]
+  );
+  const selectedSegment = selectedRange
+    ? segments.find((s) => s.start === selectedRange.start && s.end === selectedRange.end)
+    : undefined;
 
   return (
     <div
@@ -36,22 +43,56 @@ export function TestIntroDialog({ items, onClose }: TestIntroDialogProps) {
     >
       <div className={styles.testDialog}>
         <div className={styles.testDialogIconWrap}>
-          <Book className={styles.testDialogIcon} />
+          <FileCheck className={styles.testDialogIcon} />
         </div>
         <div className={styles.testDialogInner}>
-          <div className={styles.testDialogHeaderRow}>
-            <h2 id="test-intro-title" className={styles.testDialogTitle}>{`${first}~${last}語`}</h2>
+          <div className={styles.testDialogHeaderRow1}>
             <button type="button" className={styles.testDialogSettingButton} aria-label="設定変更">
               <Settings className={styles.testDialogSettingIcon} />
               <span className={styles.testDialogSettingText}>設定変更</span>
             </button>
           </div>
+          <div className={styles.testDialogHeaderRow2}>
+            <h2 id="test-intro-title" className={styles.testDialogTitle}>
+              テスト範囲を選択
+            </h2>
+          </div>
+          <div className={styles.testRangeGrid} role="list">
+            {segments.map((seg) => {
+              const isSelected =
+                selectedRange && seg.start === selectedRange.start && seg.end === selectedRange.end;
+              return (
+                <button
+                  key={`${seg.start}-${seg.end}`}
+                  type="button"
+                  role="listitem"
+                  aria-pressed={isSelected ? 'true' : 'false'}
+                  className={
+                    isSelected
+                      ? `${styles.testRangeButton} ${styles.testRangeButtonSelected}`
+                      : styles.testRangeButton
+                  }
+                  onClick={() => onSelectRange?.(seg)}
+                >
+                  {seg.start}~{seg.end}語
+                  {seg.items.length < segmentSize && seg.items.length !== 0 && (
+                    <span className={styles.testRangeBadge}>{seg.items.length}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
           <div className={styles.testDialogActions}>
             <button type="button" className={styles.testDialogSecondaryButton} onClick={onClose}>
-              ここで中断
+              閉じる
             </button>
-            <button type="button" className={styles.testDialogPrimaryButton}>
-              はじめる
+            <button
+              type="button"
+              className={styles.testDialogPrimaryButton}
+              disabled={!selectedSegment}
+              onClick={() => selectedSegment && onStart?.(selectedSegment)}
+            >
+              スタート
             </button>
           </div>
         </div>

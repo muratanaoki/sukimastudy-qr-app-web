@@ -1,14 +1,6 @@
-/* Local color tokens for this page */
-:root {
-  /* ---- Base scale (visual tokens) ---- */
-
-  --color-accent-500: #2196f3;
-  --color-bg-subtle: #f2f8fd;
-}
-
 .container {
   margin: 0 auto;
-  background: var(--color-bg-subtle);
+  background: var(--main-color);
 }
 
 /* セクション先頭の大見出しと右端アイコンを左右に配置 */
@@ -44,7 +36,7 @@
   margin: 0;
   font-family: var(--font-family-heading);
   font-weight: 700;
-  color: var(--color-accent-500);
+  color: var(--sub-color);
   margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
@@ -54,7 +46,7 @@
 
 .section {
   padding: var(--space-150);
-  background: var(--color-bg-subtle);
+  background: var(--main-color);
 }
 
 .card {
@@ -170,10 +162,6 @@
     transform 0.05s ease;
 }
 
-.examplesButton:active {
-  transform: translateY(0.0625rem);
-}
-
 .exampleBody {
   display: flex;
   flex-direction: column; /* 例文→訳を縦積み */
@@ -268,14 +256,13 @@
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  background: #1976d2; /* 濃い青 */
+  background-color: var(--accent-color);
   color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-025);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition:
     background 0.2s ease,
     transform 0.1s ease;
@@ -305,10 +292,12 @@
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(4px);
-  color: #ffffff;
-  background-color: white;
   animation: fadeInOverlay 0.3s ease;
+  backdrop-filter: blur(4px);
+  padding-left: var(--space-150);
+  padding-right: var(--space-150);
+  max-width: var(--container-max);
+  margin: auto;
 }
 
 @keyframes fadeInOverlay {
@@ -320,40 +309,18 @@
   }
 }
 
-.testOverlayContent {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-150);
-  position: relative;
-  overflow: hidden;
-}
-
 /* --- Test Dialog Card (centered) --- */
 .testDialog {
   position: relative;
-  width: min(44rem, 92vw);
+  width: 100%;
   margin: auto;
-  background: #ffffff;
+  background: var(--surface-1);
   color: var(--color-neutral-900);
-  border-radius: var(--radius-4, 0.75rem);
-  padding: var(--space-300) var(--space-200) var(--space-200);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius-3);
+  padding: var(--space-150);
   display: flex;
   flex-direction: column;
-  animation: scaleInCard 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-@keyframes scaleInCard {
-  0% {
-    transform: translateY(12px) scale(0.96);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+  border: var(--border-width-1) solid var(--border-color-default);
 }
 
 .testDialogIconWrap {
@@ -361,87 +328,55 @@
   top: 0;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
-  background: #e3f2fd;
+  background: var(--main-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .testDialogIcon {
   width: 2.2rem;
   height: 2.2rem;
-  color: #1976d2;
-}
-
-.testDialogClose {
-  position: absolute;
-  top: var(--space-150);
-  right: var(--space-150);
-  background: transparent;
-  border: none;
-  font-size: var(--fs-20);
-  cursor: pointer;
-  color: var(--color-neutral-500);
-  line-height: 1;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-2);
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.testDialogClose:hover {
-  background: var(--color-neutral-100);
-  color: var(--color-neutral-900);
+  color: var(--sub-color);
 }
 
 .testDialogInner {
-  margin-top: var(--space-150);
   display: flex;
   flex-direction: column;
-  gap: var(--space-150);
 }
 
-.testDialogHeaderRow {
+.testDialogHeaderRow1 {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-100);
+  justify-content: flex-end;
+  margin-bottom: var(--space-100);
+}
+
+.testDialogHeaderRow2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .testDialogTitle {
-  margin: 0;
-  font-size: var(--step-h4);
-  font-weight: 700;
-  color: #1976d2;
-  letter-spacing: 0.02em;
+  font-size: var(--fs-18);
+  margin-bottom: var(--space-050);
 }
 
 .testDialogSettingButton {
   display: inline-flex;
   align-items: center;
   gap: var(--space-025);
-  background: transparent;
+  background: var(--surface-1);
   border: none;
-  color: #1976d2;
+  color: var(--accent-color);
   font-weight: 600;
   font-size: var(--fs-14);
   cursor: pointer;
   padding: var(--space-025) var(--space-050);
-  border-radius: var(--radius-2);
-  transition: background 0.2s ease;
-}
-
-.testDialogSettingButton:hover {
-  background: #e3f2fd;
 }
 
 .testDialogSettingIcon {
@@ -454,34 +389,68 @@
 
 .testDialogBody {
   font-size: var(--fs-14);
-  line-height: 1.65;
 }
 
 .testDialogLead {
   margin: 0 0 var(--space-050);
 }
 
-.testDialogHowto {
-  margin: 0 0 var(--space-100) 0;
-  padding-left: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-050);
-  font-size: var(--fs-14);
-}
-
-.testDialogTotal {
-  margin: 0;
-  text-align: center;
-  font-size: var(--fs-12);
-  font-weight: 600;
-  color: var(--color-neutral-500);
-}
-
 .testDialogActions {
   display: flex;
   gap: var(--space-100);
-  margin-top: var(--space-050);
+}
+
+/* --- Range selection grid --- */
+.testRangeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-075);
+  margin-bottom: var(--space-150);
+}
+
+.testRangeButton {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #0288d1;
+  color: #0288d1;
+  font-size: var(--fs-14);
+  font-weight: 600;
+  padding: var(--space-075);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-025);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.08s ease;
+}
+
+.testRangeButtonSelected {
+  background: #0288d1;
+  color: #fff;
+  border-color: #0288d1;
+  box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.25);
+}
+
+.testDialogPrimaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #8fc9e6;
+  border-color: #8fc9e6;
+}
+
+.testRangeBadge {
+  background: #0288d1;
+  color: #fff;
+  font-size: var(--fs-10);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+  border-radius: 999px;
 }
 
 .testDialogSecondaryButton,
@@ -489,29 +458,23 @@
   flex: 1 1 0;
   font-size: var(--fs-16);
   font-weight: 600;
-  padding: var(--space-100) var(--space-150);
+  padding: var(--space-075);
   border-radius: var(--radius-2);
   cursor: pointer;
   transition:
     background 0.2s ease,
     color 0.2s ease,
     box-shadow 0.2s ease;
-  border: 2px solid #0288d1;
+  border: 1px solid #0288d1;
 }
 
 .testDialogSecondaryButton {
   background: #fff;
   color: #0288d1;
 }
-.testDialogSecondaryButton:hover {
-  background: #e1f5fe;
-}
 
 .testDialogPrimaryButton {
   background: #0288d1;
   color: #fff;
   border-color: #0288d1;
-}
-.testDialogPrimaryButton:hover {
-  background: #0277bd;
 }

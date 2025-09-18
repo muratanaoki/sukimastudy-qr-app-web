@@ -31,3 +31,5 @@ export type PronounData = {
 };
 
 export type RawPronounItem = Omit<PronounItem, 'index'>;
+
+export type Segment = { start: number; end: number; items: PronounData['items'] };
