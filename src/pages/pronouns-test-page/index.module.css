@@ -256,7 +256,7 @@
     transform 0.25s ease;
 }
 
-.testFabWrapper.hide {
+.hide {
   pointer-events: none;
   opacity: 0;
   transform: translateY(0.75rem);

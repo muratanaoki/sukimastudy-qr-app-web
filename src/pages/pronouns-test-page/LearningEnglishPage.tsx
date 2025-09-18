@@ -18,7 +18,6 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
     const handler = () => {
       const { scrollY, innerHeight } = window;
       const docHeight = document.documentElement.scrollHeight;
-      // 一番下近く (余白 16px) に到達したら非表示
       const atBottom = scrollY + innerHeight >= docHeight - 16;
       setHideFab(atBottom);
     };
@@ -30,6 +29,12 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
       window.removeEventListener('resize', handler);
     };
   }, []);
+
+  // NOTE: CSS Modules では `.testFabWrapper.hide` という複合セレクタ内の `hide` も個別にハッシュ化され export される。
+  // そのため文字列 'hide' を直接付与しても一致せず、 styles.hide を併用する必要がある。
+  const fabWrapperClass = hideFab
+    ? `${styles.testFabWrapper} ${styles.hide}`
+    : styles.testFabWrapper;
 
   return (
     <div className={styles.container}>
@@ -47,7 +52,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
           </ul>
         </section>
       </main>
-      <div className={hideFab ? `${styles.testFabWrapper} hide` : styles.testFabWrapper}>
+      <div className={fabWrapperClass}>
         <button type="button" className={styles.testFabButton} aria-label="テスト開始">
           <FileCheck className={styles.testFabIcon} />
           <span className={styles.testFabText}>テスト</span>
