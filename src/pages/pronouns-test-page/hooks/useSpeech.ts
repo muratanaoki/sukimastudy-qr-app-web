@@ -1,44 +1,48 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+// =====================================================================================
+// Speech (Web Speech Synthesis) Hook
+// 目的:
+//  - ブラウザ差異 (Safari / Chrome) を意識しつつ最小限 API で単語/文読み上げを提供
+//  - 可読性向上のためロジックを小さな純関数へ分解
+// =====================================================================================
+
 // --- Browser / Voice detection helpers -------------------------------------------------
-// Safari 判定（できるだけ誤検出を避ける）
-// ポイント:
-//  - Safari 以外でも UA に 'Safari' は入る (Chrome, Edge, SamsungBrowser など)
-//  - vendor が 'Apple Computer, Inc.' であることを確認
-//  - iOS Chrome/Edge は UA に CriOS / EdgiOS を含むので除外
-//  - 他ブラウザの識別子 (OPR, FxiOS, SamsungBrowser など) を除外
-//  - UA 縮小(User-Agent Reduction)の将来的影響を受ける可能性があるため完全保証は不可
-const isSafari = () => {
+// ---- Browser / Voice detection helpers ----------------------------------------------
+const detectSafari = (): boolean => {
   if (typeof navigator === 'undefined') return false;
   const ua = navigator.userAgent;
   const vendor = navigator.vendor || '';
-  const hasSafariToken = /Safari/i.test(ua);
-  const isAppleVendor = /Apple/i.test(vendor); // 'Apple Computer, Inc.'
-  const excluded = /(Chrome|CriOS|Chromium|Edg|EdgiOS|OPR|OPiOS|FxiOS|Brave|SamsungBrowser)/i.test(
-    ua
-  );
-  return hasSafariToken && isAppleVendor && !excluded;
+  if (!/Safari/i.test(ua)) return false;
+  if (!/Apple/i.test(vendor)) return false;
+  // 除外ブラウザ (iOS Chrome/Edge/Firefox/Opera, 各種 Chromium 派生など)
+  if (/(Chrome|CriOS|Chromium|Edg|EdgiOS|OPR|OPiOS|FxiOS|Brave|SamsungBrowser)/i.test(ua))
+    return false;
+  return true;
 };
 
-// Safari 系（システム組み込み英語音声）優先候補
-const SAFARI_VOICE_CANDIDATES: string[] = [
+const SAFARI_VOICE_CANDIDATES = [
   'Samantha',
   'Alex',
   'Victoria',
   'Daniel',
   'Kate',
   'Karen',
-];
-
-// Chrome 系（Google 音声 + 共通 fallback）
-const CHROME_VOICE_CANDIDATES: string[] = [
+] as const;
+const CHROME_VOICE_CANDIDATES = [
   'Google US English',
   'Google UK English Female',
   'Google UK English Male',
   'Samantha',
   'Alex',
   'Victoria',
-];
+] as const;
+
+const resolvePreferredVoiceNames = (): string[] => {
+  // navigator 不在 (SSR) は Chrome 前提で返す（後段 useMemo で上書き可能）
+  if (typeof navigator === 'undefined') return [...CHROME_VOICE_CANDIDATES];
+  return detectSafari() ? [...SAFARI_VOICE_CANDIDATES] : [...CHROME_VOICE_CANDIDATES];
+};
 
 export type UseSpeechOptions = {
   defaultLang?: string; // e.g. 'en-US'
@@ -48,21 +52,17 @@ export type UseSpeechOptions = {
   pitch?: number; // 共通ピッチ
 };
 
-// NOTE: SSR / ビルド時は navigator 不在のため Chrome 前提の配列を返しておき、
-// クライアントで useMemo によるマージ時に利用される（現状 DEFAULTS は静的評価）。
-const DEFAULTS: Required<UseSpeechOptions> = {
+const buildDefaultOptions = (): Required<UseSpeechOptions> => ({
   defaultLang: 'en-US',
-  preferredVoiceNames: (() => {
-    if (typeof navigator === 'undefined') return CHROME_VOICE_CANDIDATES; // SSR 安全策
-    return isSafari() ? SAFARI_VOICE_CANDIDATES : CHROME_VOICE_CANDIDATES;
-  })(),
+  preferredVoiceNames: resolvePreferredVoiceNames(),
   wordRate: 0.9,
   sentenceRate: 1.0,
   pitch: 1.0,
-};
+});
 
 export function useSpeech(options?: UseSpeechOptions) {
-  const opts = useMemo(() => ({ ...DEFAULTS, ...(options || {}) }), [options]);
+  // options 変更時に default を再度生成（ブラウザ条件は通常固定なので build 一度でも良いが、テスト容易性を優先）
+  const opts = useMemo(() => ({ ...buildDefaultOptions(), ...(options || {}) }), [options]);
   const [supported, setSupported] = useState<boolean>(false);
   const [speaking, setSpeaking] = useState<boolean>(false);
   const voicesRef = useRef<SpeechSynthesisVoice[] | null>(null);
@@ -96,45 +96,57 @@ export function useSpeech(options?: UseSpeechOptions) {
   }, []);
 
   const pickVoice = (targetLang = 'en') => {
-    const vs = voicesRef.current || [];
-    const lower = (s?: string) => s?.toLowerCase() ?? '';
-    // 0) 明示選択があれば最優先
+    const list = voicesRef.current || [];
+    if (!list.length) return undefined;
+    const norm = (s?: string) => s?.toLowerCase() ?? '';
+    // 0) 明示選択
     if (selectedVoiceName) {
-      const v = vs.find((x) => lower(x.name) === lower(selectedVoiceName));
-      if (v) return v;
+      const chosen = list.find((v) => norm(v.name) === norm(selectedVoiceName));
+      if (chosen) return chosen;
     }
-    // 1) 名前の優先順位
-    for (const pref of opts.preferredVoiceNames.map((n) => n.toLowerCase())) {
-      const m = vs.find((v) => lower(v.name).includes(pref));
-      if (m) return m;
+    // 1) 名前優先 (部分一致)
+    const loweredPrefs = opts.preferredVoiceNames.map((n) => n.toLowerCase());
+    for (const pref of loweredPrefs) {
+      const hit = list.find((v) => norm(v.name).includes(pref));
+      if (hit) return hit;
     }
-    // 2) 言語優先（en-US → en-GB → en-*）
+    // 2) 言語優先
+    const lang = targetLang.toLowerCase();
     return (
-      vs.find((v) => lower(v.lang).startsWith(`${targetLang}-us`)) ||
-      vs.find((v) => lower(v.lang).startsWith(`${targetLang}-gb`)) ||
-      vs.find((v) => lower(v.lang).startsWith(targetLang)) ||
+      list.find((v) => norm(v.lang).startsWith(`${lang}-us`)) ||
+      list.find((v) => norm(v.lang).startsWith(`${lang}-gb`)) ||
+      list.find((v) => norm(v.lang).startsWith(lang)) ||
       undefined
     );
+  };
+
+  const createUtterance = (
+    text: string,
+    local?: { rate?: number; pitch?: number; lang?: string }
+  ): SpeechSynthesisUtterance => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = local?.lang ?? opts.defaultLang;
+    u.rate = local?.rate ?? opts.sentenceRate;
+    u.pitch = local?.pitch ?? opts.pitch;
+    const voice = pickVoice(u.lang.slice(0, 2));
+    if (voice) u.voice = voice;
+    return u;
   };
 
   const speak = (text: string, local?: { rate?: number; pitch?: number; lang?: string }) => {
     if (!supported || !text) return;
     const synth = window.speechSynthesis;
+    // 直前のキューを明示 flush（短い単語連続読みで遅延を避ける）
     try {
       synth.cancel();
-    } catch (e) {
-      // ignore cancel failures
+    } catch {
+      /* ignore */
     }
-    const u = new SpeechSynthesisUtterance(text);
-    const lang = local?.lang ?? opts.defaultLang;
-    u.lang = lang;
-    u.rate = local?.rate ?? opts.sentenceRate;
-    u.pitch = local?.pitch ?? opts.pitch;
-    const voice = pickVoice(lang.slice(0, 2));
-    if (voice) u.voice = voice;
+    const u = createUtterance(text, local);
     u.onstart = () => setSpeaking(true);
-    u.onend = () => setSpeaking(false);
-    u.onerror = () => setSpeaking(false);
+    const finish = () => setSpeaking(false);
+    u.onend = finish;
+    u.onerror = finish;
     synth.speak(u);
   };
 
