@@ -49,7 +49,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
       </main>
       <div className={hideFab ? `${styles.testFabWrapper} hide` : styles.testFabWrapper}>
         <button type="button" className={styles.testFabButton} aria-label="テスト開始">
-          <FileCheck size={22} />
+          <FileCheck className={styles.testFabIcon} />
           <span className={styles.testFabText}>テスト</span>
         </button>
       </div>

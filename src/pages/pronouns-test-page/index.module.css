@@ -242,14 +242,12 @@
 /* --- Floating Test Button (FAB) --- */
 .testFabWrapper {
   position: fixed;
-  right: 1.25rem;
-  bottom: 1.25rem;
-  z-index: 100;
+  right: var(--space-150);
+  bottom: var(--space-150);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-decoration: none;
-  gap: 0.25rem;
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
@@ -273,32 +271,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
+  gap: var(--space-025);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition:
     background 0.2s ease,
     transform 0.1s ease;
-  font: inherit;
   text-align: center;
 }
 
-.testFabButton:hover {
-  background: #1565c0;
-}
-
-.testFabButton:active {
-  transform: translateY(2px);
+.testFabIcon {
+  font-size: var(--fs-18);
 }
 
 .testFabText {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-size: var(--fs-10);
+  font-weight: 700;
   color: #ffffff;
   line-height: 1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  user-select: none;
-  font-family: var(--font-family-sans, system-ui, sans-serif);
 }
 
 .iconSize {
