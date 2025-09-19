@@ -10,12 +10,20 @@ export type TestIntroDialogProps = {
   items: PronounData['items'];
   onClose: () => void;
   onSelectRange?: (range: { start: number; end: number; items: PronounData['items'] }) => void;
-  onStart?: (range: { start: number; end: number; items: PronounData['items'] }) => void;
+  onStart?: (payload: {
+    start: number;
+    end: number;
+    items: PronounData['items'];
+    questionOrder: QuestionOrder;
+    answerMode: AnswerMode;
+  }) => void;
   segmentSize?: number; // default 10
   selectedRange?: { start: number; end: number } | null;
 };
 
 type AnswerOption = 'ari' | 'nashi';
+type QuestionOrder = 'standard' | 'random';
+type AnswerMode = 'normal' | 'listening';
 type Segment = { start: number; end: number; items: PronounData['items'] };
 
 function AnswerOptionSelector({
@@ -116,6 +124,126 @@ function RangeGrid({
   );
 }
 
+function QuestionOrderSelector({
+  value,
+  onChange,
+}: {
+  value: QuestionOrder;
+  onChange: (v: QuestionOrder) => void;
+}) {
+  return (
+    <div className={styles.testChoiceRow} role="radiogroup" aria-label="出題方法">
+      <label
+        htmlFor="question-order-standard"
+        className={clsx(
+          styles.testChoiceItem,
+          value === 'standard' && styles.testChoiceItemSelected
+        )}
+      >
+        <input
+          id="question-order-standard"
+          name="question-order"
+          type="radio"
+          className={styles.testChoiceInput}
+          checked={value === 'standard'}
+          onChange={() => onChange('standard')}
+        />
+        {value === 'standard' ? (
+          <CircleCheck
+            aria-hidden="true"
+            className={clsx(styles.testChoiceIcon, styles.testChoiceIconSelected)}
+          />
+        ) : (
+          <Circle aria-hidden="true" className={styles.testChoiceIcon} />
+        )}
+        <span>標準</span>
+      </label>
+      <label
+        htmlFor="question-order-random"
+        className={clsx(styles.testChoiceItem, value === 'random' && styles.testChoiceItemSelected)}
+      >
+        <input
+          id="question-order-random"
+          name="question-order"
+          type="radio"
+          className={styles.testChoiceInput}
+          checked={value === 'random'}
+          onChange={() => onChange('random')}
+        />
+        {value === 'random' ? (
+          <CircleCheck
+            aria-hidden="true"
+            className={clsx(styles.testChoiceIcon, styles.testChoiceIconSelected)}
+          />
+        ) : (
+          <Circle aria-hidden="true" className={styles.testChoiceIcon} />
+        )}
+        <span>ランダム</span>
+      </label>
+    </div>
+  );
+}
+
+function AnswerModeSelector({
+  value,
+  onChange,
+}: {
+  value: AnswerMode;
+  onChange: (v: AnswerMode) => void;
+}) {
+  return (
+    <div className={styles.testChoiceRow} role="radiogroup" aria-label="解答モード">
+      <label
+        htmlFor="answer-mode-normal"
+        className={clsx(styles.testChoiceItem, value === 'normal' && styles.testChoiceItemSelected)}
+      >
+        <input
+          id="answer-mode-normal"
+          name="answer-mode"
+          type="radio"
+          className={styles.testChoiceInput}
+          checked={value === 'normal'}
+          onChange={() => onChange('normal')}
+        />
+        {value === 'normal' ? (
+          <CircleCheck
+            aria-hidden="true"
+            className={clsx(styles.testChoiceIcon, styles.testChoiceIconSelected)}
+          />
+        ) : (
+          <Circle aria-hidden="true" className={styles.testChoiceIcon} />
+        )}
+        <span>通常</span>
+      </label>
+      <label
+        htmlFor="answer-mode-listening"
+        className={clsx(
+          styles.testChoiceItem,
+          value === 'listening' && styles.testChoiceItemSelected
+        )}
+      >
+        <input
+          id="answer-mode-listening"
+          name="answer-mode"
+          type="radio"
+          className={styles.testChoiceInput}
+          checked={value === 'listening'}
+          onChange={() => onChange('listening')}
+        />
+        {value === 'listening' ? (
+          <CircleCheck
+            aria-hidden="true"
+            className={clsx(styles.testChoiceIcon, styles.testChoiceIconSelected)}
+          />
+        ) : (
+          <Circle aria-hidden="true" className={styles.testChoiceIcon} />
+        )}
+        <span>リスニング</span>
+      </label>
+    </div>
+  );
+}
+
 export function TestIntroDialog({
   items,
   onClose,
@@ -139,10 +267,19 @@ export function TestIntroDialog({
 
   // 解答の選択肢（単一選択: あり / なし）
   const [answerOption, setAnswerOption] = useState<AnswerOption>('ari');
+  // 出題方法（標準 / ランダム）
+  const [questionOrder, setQuestionOrder] = useState<QuestionOrder>('standard');
+  // 解答モード（通常 / リスニング）
+  const [answerMode, setAnswerMode] = useState<AnswerMode>('normal');
 
   const handleStart = useCallback(() => {
-    if (selectedSegment) onStart?.(selectedSegment);
-  }, [onStart, selectedSegment]);
+    if (selectedSegment)
+      onStart?.({
+        ...selectedSegment,
+        questionOrder,
+        answerMode,
+      });
+  }, [onStart, selectedSegment, questionOrder, answerMode]);
 
   return (
     <div
@@ -156,15 +293,19 @@ export function TestIntroDialog({
           <FileCheck className={styles.testDialogIcon} />
         </div>
         <div className={styles.testDialogInner}>
-          <div className={styles.testDialogHeaderLeftRow}>
-            <h2 className={styles.testDialogTitle}>解答の選択肢</h2>
-            <AnswerOptionSelector value={answerOption} onChange={setAnswerOption} />
-          </div>
-          <div className={styles.testDialogHeaderLeftRow}>
-            <h2 className={styles.testDialogTitle}>出題方法</h2>
-          </div>
-          <div className={styles.testDialogHeaderLeftRow}>
-            <h2 className={styles.testDialogTitle}>解答モード</h2>
+          <div className={styles.testDialogHeader}>
+            <div className={styles.testDialogHeaderLeftRow}>
+              <h2 className={styles.testDialogTitle}>解答の選択肢</h2>
+              <AnswerOptionSelector value={answerOption} onChange={setAnswerOption} />
+            </div>
+            <div className={styles.testDialogHeaderLeftRow}>
+              <h2 className={styles.testDialogTitle}>解答モード</h2>
+              <AnswerModeSelector value={answerMode} onChange={setAnswerMode} />
+            </div>
+            <div className={styles.testDialogHeaderLeftRow}>
+              <h2 className={styles.testDialogTitle}>出題方法</h2>
+              <QuestionOrderSelector value={questionOrder} onChange={setQuestionOrder} />
+            </div>
           </div>
           <div className={styles.testDialogHeaderLeftRow}>
             <h2 className={styles.testDialogTitle}>テスト範囲を選択</h2>

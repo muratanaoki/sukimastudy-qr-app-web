@@ -72,7 +72,16 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
             console.log('Select range', seg.start, seg.end, seg.items.length);
           }}
           onStart={(seg) => {
-            console.log('Start test range', seg.start, seg.end, seg.items.length);
+            console.log(
+              'Start test range',
+              seg.start,
+              seg.end,
+              seg.items.length,
+              'order=',
+              seg.questionOrder,
+              'mode=',
+              seg.answerMode
+            );
             closeTest();
           }}
         />
