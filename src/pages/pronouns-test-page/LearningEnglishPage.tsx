@@ -1,4 +1,4 @@
-import styles from './index.module.css';
+import styles from './learningEnglishPage.module.css';
 import { useSpeech } from './hooks/useSpeech';
 import { EnglishWord } from './components/EnglishWord';
 import type { PronounGroup } from './utils/type';

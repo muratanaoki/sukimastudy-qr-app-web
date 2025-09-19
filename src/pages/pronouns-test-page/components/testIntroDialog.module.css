@@ -1,0 +1,158 @@
+/* --- Fullscreen Test Overlay --- */
+.testOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: fadeInOverlay 0.3s ease;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  padding-left: var(--space-150);
+  padding-right: var(--space-150);
+  max-width: var(--container-max);
+  margin: auto;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Test Dialog Card (centered) --- */
+.testDialog {
+  position: relative;
+  width: 100%;
+  max-width: calc(var(--container-max) / 2);
+  margin: auto;
+  background: var(--surface-1);
+  color: var(--color-neutral-900);
+  border-radius: var(--radius-3);
+  padding: var(--space-150);
+  display: flex;
+  flex-direction: column;
+  border: var(--border-width-1) solid var(--border-color-default);
+}
+
+.testDialogHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-025);
+}
+
+.testDialogIconWrap {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: var(--base-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.testDialogIcon {
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--main-color);
+}
+
+.testDialogInner {
+  display: flex;
+  flex-direction: column;
+}
+
+.testDialogHeaderLeftRow {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--space-075);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.testDialogHeaderRightRow {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: var(--space-075);
+  -webkit-overflow-scrolling: touch;
+}
+
+.testDialogTitle {
+  font-size: var(--fs-18);
+  margin: 0;
+  white-space: nowrap;
+  min-width: 9em;
+  flex: 0 0 auto;
+}
+
+.testDialogActions {
+  display: flex;
+  gap: var(--space-100);
+}
+
+/* --- Settings button (header right) --- */
+.testDialogSettingsButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-025);
+  background: transparent;
+  color: var(--color-neutral-600);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  justify-content: center;
+  font-size: var(--fs-16);
+}
+
+.testDialogSettingsButton svg {
+  width: var(--fs-16);
+  height: var(--fs-16);
+}
+
+/* --- Range selection grid --- */
+.testRangeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-075);
+  margin-top: var(--space-050);
+  margin-bottom: var(--space-150);
+}
+
+.testRangeButton {
+  color: var(--color-neutral-500);
+  position: relative;
+  background: #ffffff;
+  border: 2px solid var(--color-neutral-200);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  padding: var(--space-075);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-025);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.08s ease;
+}
+
+.testRangeButtonSelected {
+  color: var(--color-neutral-500);
+  border: 2px solid var(--main-color);
+}

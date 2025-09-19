@@ -1,4 +1,4 @@
-import styles from '../index.module.css';
+import styles from './testIntroDialog.module.css';
 import { FileCheck, Settings } from 'lucide-react';
 import type { PronounItem } from '../utils/type';
 import { useCallback, useMemo } from 'react';
