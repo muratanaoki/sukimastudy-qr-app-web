@@ -376,6 +376,7 @@
 
 .testDialogTitle {
   font-size: var(--fs-18);
+  margin-bottom: var(--space-025);
 }
 
 .testDialogBody {
@@ -401,7 +402,7 @@
 .testChoiceItem {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-050);
+  gap: var(--space-025);
   background: transparent;
   color: var(--color-neutral-800);
   border-radius: var(--radius-2);
