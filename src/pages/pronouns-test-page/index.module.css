@@ -370,13 +370,20 @@
 
 .testDialogHeaderLeftRow {
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  align-items: baseline; /* テキストのベースラインを揃える */
+  flex-direction: row; /* タイトルと選択肢を横並びに */
+  flex-wrap: nowrap; /* スマホ/タブレットでも一行維持 */
+  gap: var(--space-075);
+  overflow-x: auto; /* 幅が足りない時は横スクロールで一行維持 */
+  -webkit-overflow-scrolling: touch;
 }
 
 .testDialogTitle {
   font-size: var(--fs-18);
-  margin-bottom: var(--space-025);
+  margin: 0; /* 横並びにするため下余白を除去 */
+  white-space: nowrap; /* タイトル自体も折り返さない */
+  min-width: 9em; /* タイトル列を一定幅にして選択肢の開始位置を揃える */
+  flex: 0 0 auto;
 }
 
 .testDialogBody {
@@ -397,6 +404,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-075);
+  flex-wrap: nowrap; /* 折り返し防止で一行維持 */
+  font-size: var(--fs-14); /* 視認性と情報量のバランス */
 }
 
 .testChoiceItem {
@@ -417,8 +426,8 @@
 }
 
 .testChoiceIcon {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1rem; /* テキストとの釣り合いを最適化 */
+  height: 1rem;
   color: var(--color-neutral-400);
 }
 
@@ -435,6 +444,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
   gap: var(--space-075);
+  margin-top: var(--space-050); /* タイトルとグリッドの間隔を確保 */
   margin-bottom: var(--space-150);
 }
 
