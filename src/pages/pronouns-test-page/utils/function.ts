@@ -1,4 +1,4 @@
-import type { PronounItem, ExampleEntry, PronounData, Segment } from './type';
+import type { PronounItem, ExampleEntry, Segment } from './type';
 
 // PronounItem から例文配列を生成（空のものは除外）
 export function buildExamples(item: PronounItem): ExampleEntry[] {
@@ -17,7 +17,7 @@ export function buildExamples(item: PronounItem): ExampleEntry[] {
  * items が既に昇順なら sort コストを避けたいケースのために `assumeSorted` フラグあり。
  */
 export function segmentItems(
-  items: PronounData['items'],
+  items: PronounItem[],
   segmentSize: number,
   { assumeSorted = false }: { assumeSorted?: boolean } = {}
 ): Segment[] {

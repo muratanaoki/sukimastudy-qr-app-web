@@ -1,19 +1,19 @@
 import styles from '../index.module.css';
 import { FileCheck, CircleCheck, Circle } from 'lucide-react';
-import type { PronounData } from '../utils/type';
+import type { PronounItem } from '../utils/type';
 import { useCallback, useMemo, useState } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
 import clsx from 'clsx';
 
 export type TestIntroDialogProps = {
-  items: PronounData['items'];
+  items: PronounItem[];
   onClose: () => void;
-  onSelectRange?: (range: { start: number; end: number; items: PronounData['items'] }) => void;
+  onSelectRange?: (range: { start: number; end: number; items: PronounItem[] }) => void;
   onStart?: (payload: {
     start: number;
     end: number;
-    items: PronounData['items'];
+    items: PronounItem[];
     questionOrder: QuestionOrder;
     answerMode: AnswerMode;
   }) => void;
@@ -24,7 +24,7 @@ export type TestIntroDialogProps = {
 type AnswerOption = 'ari' | 'nashi';
 type QuestionOrder = 'standard' | 'random';
 type AnswerMode = 'normal' | 'listening';
-type Segment = { start: number; end: number; items: PronounData['items'] };
+type Segment = { start: number; end: number; items: PronounItem[] };
 
 function AnswerOptionSelector({
   value,

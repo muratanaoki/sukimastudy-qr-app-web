@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react';
 export type PronounItem = {
   /** 通し番号（1〜） */
   index: number;
@@ -23,13 +24,14 @@ export type PronounItem = {
 
 export type ExampleEntry = { en?: string; jp?: string };
 
-// ページ全体のラップデータ（単一グループ運用想定）
-export type PronounData = {
+// 単一グループ
+export type PronounGroup = {
   groupNo: number; // 連番（将来複数化してもよい）
   title: string; // 日本語タイトル
   items: PronounItem[]; // 本体
+  icon: LucideIcon; // 見出し用アイコン（未指定時は既定の User）
 };
 
 export type RawPronounItem = Omit<PronounItem, 'index'>;
 
-export type Segment = { start: number; end: number; items: PronounData['items'] };
+export type Segment = { start: number; end: number; items: PronounItem[] };

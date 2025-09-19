@@ -1,7 +1,7 @@
-import { PronounItem, PronounData, RawPronounItem } from './type';
+import { PronounGroup, PronounItem, RawPronounItem } from './type';
+import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
 
-const DATA_RAW_SOURCE: RawPronounItem[] = [
-  // 01. Personal / Possessive / Reflexive
+const DATA_RAW_SOURCE1: RawPronounItem[] = [
   {
     term: 'I\u2060', // ZERO WIDTH WORD JOINER (音は出ない)
     ipa: '/aɪ/',
@@ -438,7 +438,9 @@ const DATA_RAW_SOURCE: RawPronounItem[] = [
     exJ2Jp: '彼らは新しい先生に自己紹介しました。',
     exJ3Jp: '彼らは限界まで自分たちを追い込みました。',
   },
+];
 
+const DATA_RAW_SOURCE2: RawPronounItem[] = [
   // 02. Indefinite (person/thing)
   {
     term: 'someone',
@@ -575,8 +577,9 @@ const DATA_RAW_SOURCE: RawPronounItem[] = [
     exJ2Jp: '昨日は何も変わりませんでした。',
     exJ3Jp: 'まだ何も決まっていません。',
   },
+];
 
-  // 03. Indefinite (quantity/partitive)
+const DATA_RAW_SOURCE3: RawPronounItem[] = [
   {
     term: 'one',
     ipa: '/wʌn/',
@@ -900,13 +903,112 @@ const DATA_RAW_SOURCE: RawPronounItem[] = [
   },
 ];
 
-export const DATA_RAW: RawPronounItem[] = DATA_RAW_SOURCE.map(({ ...rest }) => rest);
+const DATA_RAW_SOURCE4: RawPronounItem[] = [
+  {
+    term: 'this',
+    ipa: '/ðɪs/',
+    jp: 'これ',
+    exJ1: 'This is my pen.',
+    exJ2: 'This tastes sweet.',
+    exJ3: 'This has become my favorite song.',
+    exJ1Jp: 'これは私のペンです。',
+    exJ2Jp: 'これは甘い味がします。',
+    exJ3Jp: 'これは私のお気に入りの曲になりました。',
+  },
+  {
+    term: 'these',
+    ipa: '/ðiːz/',
+    jp: 'これら',
+    exJ1: 'These are my shoes.',
+    exJ2: 'These look expensive.',
+    exJ3: 'These have been very helpful.',
+    exJ1Jp: 'これらは私の靴です。',
+    exJ2Jp: 'これらは高そうに見えます。',
+    exJ3Jp: 'これらはとても役立ってきました。',
+  },
+  {
+    term: 'that',
+    ipa: '/ðæt/',
+    jp: 'それ、あれ',
+    exJ1: 'That is our school.',
+    exJ2: 'That sounds interesting.',
+    exJ3: 'That has happened before.',
+    exJ1Jp: 'あれは私たちの学校です。',
+    exJ2Jp: 'それはおもしろそうに聞こえます。',
+    exJ3Jp: 'それは以前にも起きたことがあります。',
+  },
+  {
+    term: 'those',
+    ipa: '/ðoʊz/',
+    jp: 'それら、あれら',
+    exJ1: 'Those are new bikes.',
+    exJ2: 'Those look heavy.',
+    exJ3: 'Those have already sold out.',
+    exJ1Jp: 'あれらは新しい自転車です。',
+    exJ2Jp: 'あれらは重そうに見えます。',
+    exJ3Jp: 'あれらはすでに売り切れました。',
+  },
+  {
+    term: 'such',
+    ipa: '/sʌtʃ/',
+    jp: 'そのようなもの、こと',
+    exJ1: 'This is such a big dog.',
+    exJ2: 'It was such a fun game.',
+    exJ3: 'Such problems have happened in the past.',
+    exJ1Jp: 'これはとても大きな犬です。',
+    exJ2Jp: 'とても楽しい試合でした。',
+    exJ3Jp: 'そのような問題は過去にも起きています。',
+  },
+  {
+    term: 'same',
+    ipa: '/seɪm/',
+    jp: '同じもの、こと',
+    exJ1: 'I chose the same.',
+    exJ2: 'We have the same idea.',
+    exJ3: 'They arrived at the same time as yesterday.',
+    exJ1Jp: '私は同じものを選びました。',
+    exJ2Jp: '私たちは同じ考えを持っています。',
+    exJ3Jp: '彼らは昨日と同じ時間に到着しました。',
+  },
+];
 
-const ITEMS: PronounItem[] = DATA_RAW.map((d, i) => ({ index: i + 1, ...d }));
+export const DATA_RAW1: RawPronounItem[] = DATA_RAW_SOURCE1.map(({ ...rest }) => rest);
+export const DATA_RAW2: RawPronounItem[] = DATA_RAW_SOURCE2.map(({ ...rest }) => rest);
+export const DATA_RAW3: RawPronounItem[] = DATA_RAW_SOURCE3.map(({ ...rest }) => rest);
+export const DATA_RAW4: RawPronounItem[] = DATA_RAW_SOURCE4.map(({ ...rest }) => rest);
 
-// ラップした単一グループデータ
-export const DATA: PronounData = {
-  groupNo: 1,
-  title: '人称・所有・再帰代名詞',
-  items: ITEMS,
-};
+const ITEMS1: PronounItem[] = DATA_RAW1.map((d, i) => ({ index: i + 1, ...d }));
+const ITEMS2: PronounItem[] = DATA_RAW2.map((d, i) => ({ index: i + 1, ...d }));
+const ITEMS3: PronounItem[] = DATA_RAW3.map((d, i) => ({ index: i + 1, ...d }));
+const ITEMS4: PronounItem[] = DATA_RAW4.map((d, i) => ({ index: i + 1, ...d }));
+
+// ラップしたグループ配列データ
+export const DATA: PronounGroup[] = [
+  {
+    groupNo: 1,
+    title: '人称・所有・再帰代名詞',
+    items: ITEMS1,
+    icon: User,
+  },
+
+  {
+    groupNo: 2,
+    title: '不定代名詞（人・物・事）',
+    items: ITEMS2,
+    icon: Users,
+  },
+
+  {
+    groupNo: 3,
+    title: '不定代名詞（数量・全体・部分など）',
+    items: ITEMS3,
+    icon: ChartColumn,
+  },
+
+  {
+    groupNo: 4,
+    title: '指示代名詞・その他',
+    items: ITEMS4,
+    icon: MousePointer,
+  },
+];
