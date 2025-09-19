@@ -19,8 +19,6 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   const [showTest, setShowTest] = useState(false);
   const [selectedRange, setSelectedRange] = useState<{ start: number; end: number } | null>(null);
 
-  // NOTE: CSS Modules では `.testFabWrapper.hide` という複合セレクタ内の `hide` も個別にハッシュ化され export される。
-  // そのため文字列 'hide' を直接付与しても一致せず、 styles.hide を併用する必要がある。
   const fabWrapperClass = hideFab
     ? `${styles.testFabWrapper} ${styles.hide}`
     : styles.testFabWrapper;

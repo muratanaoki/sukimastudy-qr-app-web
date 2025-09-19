@@ -10,8 +10,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Zen+Maru+Gothic:wght@400&display=swap'); /* Zen Maru Gothic 重複インポート（ウェイト追加用）。統合検討余地あり */
 
 :root {
-  --main-color: #f2f8fd; /* メインカラー（青） */
-  --sub-color: #2196f3; /* サブカラー */
+  --base-color: #f2f8fd; /* メインカラー（青） */
+  --main-color: #2196f3; /* サブカラー */
   --accent-color: #1976d2; /* アクセントカラー（濃い青） */
 
   /* ---------------------------------
@@ -32,9 +32,54 @@
   --font-family: 'Noto Sans', 'M PLUS Rounded 1c', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
   /* 見出し・装飾用のフォントスタック（ページ個別指定から移設） */
   --font-family-heading: 'Zen Maru Gothic', system-ui, -apple-system, 'Noto Sans JP', sans-serif;
-  --color-neutral-900: #303030;
-  --color-neutral-500: #6b7280;
-  --color-neutral-100: #f5f5f5;
+  /* Neutral (再定義: 均等階調 / Lab 近似で暗度ステップを滑らかに)
+    目的: グラデーションや elevation に使用した際の段差感を低減
+    既存利用箇所へ影響: テキスト(#303030→#1c1e20 相対的に僅かに濃く) / 背景(#f5f5f5→#e6eaec)
+    必要なら後続で --font-color を個別再調整可 */
+  --color-neutral-950: #111213; /* base darkest */
+  --color-neutral-900: #1c1e20; /* body text (high contrast) */
+  --color-neutral-800: #2a2d30; /* subdued heading / icon strong */
+  --color-neutral-700: #3a3f43; /* secondary strong */
+  --color-neutral-600: #4d5358; /* secondary text */
+  --color-neutral-500: #5f676e; /* tertiary text / icons */
+  --color-neutral-400: #7a8289; /* muted label */
+  --color-neutral-300: #9aa2a9; /* borders (strong) */
+  --color-neutral-200: #c2c9ce; /* borders (subtle) / subtle surface */
+  --color-neutral-100: #e6eaec; /* elevated bg */
+  --color-neutral-050: #f8f9fa; /* app base light */
+
+  /* グラデーションプリセット（必要に応じて拡張） */
+  --gradient-neutral-vertical: linear-gradient(
+    to bottom,
+    var(--color-neutral-050) 0%,
+    var(--color-neutral-100) 12%,
+    var(--color-neutral-200) 28%,
+    var(--color-neutral-300) 44%,
+    var(--color-neutral-400) 60%,
+    var(--color-neutral-500) 74%,
+    var(--color-neutral-600) 86%,
+    var(--color-neutral-700) 94%,
+    var(--color-neutral-800) 100%
+  );
+  --gradient-neutral-soft: linear-gradient(
+    145deg,
+    var(--color-neutral-050) 0%,
+    var(--color-neutral-100) 25%,
+    var(--color-neutral-200) 45%,
+    var(--color-neutral-300) 60%,
+    var(--color-neutral-400) 75%,
+    var(--color-neutral-500) 90%,
+    var(--color-neutral-600) 100%
+  );
+  /* 追加: ラジアル (カード軽い強調背景向け) */
+  --gradient-neutral-radial: radial-gradient(
+    circle at 30% 25%,
+    var(--color-neutral-050) 0%,
+    var(--color-neutral-100) 40%,
+    var(--color-neutral-200) 70%,
+    var(--color-neutral-300) 100%
+  );
+  /* 使用例: background: var(--gradient-neutral-soft); */
   --font-color: var(--color-neutral-900);
 
   /* -----------------------------
