@@ -356,7 +356,7 @@
   margin-bottom: var(--space-100);
 }
 
-.testDialogHeaderRow2 {
+.testDialogHeaderLeftRow {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -365,24 +365,6 @@
 .testDialogTitle {
   font-size: var(--fs-18);
   margin-bottom: var(--space-050);
-}
-
-.testDialogSettingButton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-025);
-  background: var(--surface-1);
-  border: none;
-  color: var(--color-neutral-500);
-  font-weight: 600;
-  font-size: var(--fs-14);
-  cursor: pointer;
-  padding: var(--space-025) var(--space-050);
-}
-
-.testDialogSettingIcon {
-  width: 1rem;
-  height: 1rem;
 }
 
 .testDialogBody {
@@ -410,8 +392,7 @@
   color: var(--color-neutral-500);
   position: relative;
   background: #ffffff;
-  border: 1px solid var(--color-neutral-200);
-  box-shadow: 0 0 0 1px var(--color-neutral-200);
+  border: 2px solid var(--color-neutral-200);
   font-size: var(--fs-14);
   font-weight: 600;
   padding: var(--space-075);
@@ -430,8 +411,7 @@
 
 .testRangeButtonSelected {
   color: var(--color-neutral-500);
-  border: 1px solid var(--accent-color);
-  box-shadow: 0 0 0 1px var(--accent-color);
+  border: 2px solid var(--main-color);
 }
 
 .testDialogPrimaryButton:disabled {
@@ -453,13 +433,12 @@
     background 0.2s ease,
     color 0.2s ease,
     box-shadow 0.2s ease;
-  border: 1px solid var(--accent-color);
+  border: 2px solid var(--accent-color);
 }
 
 .testDialogSecondaryButton {
-  background: #fff;
   color: var(--accent-color);
-  box-shadow: 0 0 0 1px var(--accent-color);
+  background: #fff;
 }
 
 .testDialogPrimaryButton {

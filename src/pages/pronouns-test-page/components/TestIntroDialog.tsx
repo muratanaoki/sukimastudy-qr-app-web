@@ -46,13 +46,8 @@ export function TestIntroDialog({
           <FileCheck className={styles.testDialogIcon} />
         </div>
         <div className={styles.testDialogInner}>
-          <div className={styles.testDialogHeaderRow1}>
-            <button type="button" className={styles.testDialogSettingButton} aria-label="設定変更">
-              <Settings className={styles.testDialogSettingIcon} />
-              <span className={styles.testDialogSettingText}>設定変更</span>
-            </button>
-          </div>
-          <div className={styles.testDialogHeaderRow2}>
+          <div className={styles.testDialogHeaderRow1}></div>
+          <div className={styles.testDialogHeaderLeftRow}>
             <h2 id="test-intro-title" className={styles.testDialogTitle}>
               テスト範囲を選択
             </h2>
