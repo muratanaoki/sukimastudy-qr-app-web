@@ -1,5 +1,5 @@
 import { memo, useMemo, useState, useId } from 'react';
-import styles from '../index.module.css';
+import styles from '../learningEnglishPage.module.css';
 import { Volume2 } from 'lucide-react';
 import type { PronounItem } from '../utils/type';
 import { ExampleList } from './ExampleList';

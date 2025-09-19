@@ -94,13 +94,18 @@ export function TestIntroDialog({
                 aria-label="設定を変更"
                 title="設定を変更"
               >
-                <Settings aria-hidden="true" />
-                設定
+                <Settings
+                  strokeWidth={2.2}
+                  className={styles.testDialogSettingsIcon}
+                  aria-hidden="true"
+                />
+                <span>設定変更</span>
               </button>
             </div>
           </div>
           <div className={styles.testDialogHeaderLeftRow}>
-            <h2 className={styles.testDialogTitle}>テスト範囲を選択</h2>
+            <span>01.</span>
+            <span className={styles.testDialogTitle}>人称・所有・再帰代名詞</span>
           </div>
           <RangeGrid
             segments={segments}
@@ -108,12 +113,8 @@ export function TestIntroDialog({
             onSelectRange={onSelectRange}
           />
           <div className={styles.testDialogActions}>
-            <SecondaryButton type="button" onClick={onClose}>
-              閉じる
-            </SecondaryButton>
-            <PrimaryButton type="button" disabled={!selectedSegment}>
-              スタート
-            </PrimaryButton>
+            <SecondaryButton onClick={onClose}>閉じる</SecondaryButton>
+            <PrimaryButton disabled={!selectedSegment}>スタート</PrimaryButton>
           </div>
         </div>
       </div>

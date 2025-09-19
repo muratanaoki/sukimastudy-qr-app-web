@@ -1,15 +1,24 @@
 import clsx from 'clsx';
 import styles from './secondaryButton.module.css';
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { forwardRef, ReactNode, MouseEventHandler } from 'react';
 
-export type SecondaryButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type SecondaryButtonProps = {
+  children?: ReactNode;
   className?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
 };
 
 export const SecondaryButton = forwardRef<HTMLButtonElement, SecondaryButtonProps>(
-  ({ className, children, ...props }, ref) => {
+  ({ className, children, onClick, disabled }, ref) => {
     return (
-      <button ref={ref} className={clsx(styles.button, className)} {...props}>
+      <button
+        ref={ref}
+        className={clsx(styles.button, className)}
+        onClick={onClick}
+        disabled={disabled}
+        type="button"
+      >
         {children}
       </button>
     );
