@@ -5,6 +5,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
 import clsx from 'clsx';
+import { PrimaryButton } from '../../../shared/components/primary-button/PrimaryButton';
+import { SecondaryButton } from '../../../shared/components/secondary-button/SecondaryButton';
 
 export type TestIntroDialogProps = {
   items: PronounItem[];
@@ -328,17 +330,12 @@ export function TestIntroDialog({
             onSelectRange={onSelectRange}
           />
           <div className={styles.testDialogActions}>
-            <button type="button" className={styles.testDialogSecondaryButton} onClick={onClose}>
+            <SecondaryButton type="button" onClick={onClose}>
               閉じる
-            </button>
-            <button
-              type="button"
-              className={styles.testDialogPrimaryButton}
-              disabled={!selectedSegment}
-              onClick={handleStart}
-            >
+            </SecondaryButton>
+            <PrimaryButton type="button" disabled={!selectedSegment} onClick={handleStart}>
               スタート
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       </div>

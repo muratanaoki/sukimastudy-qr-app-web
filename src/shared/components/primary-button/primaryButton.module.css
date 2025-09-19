@@ -1,0 +1,30 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-050);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+  background: var(--accent-color);
+  color: #fff;
+  border: 2px solid var(--accent-color);
+  padding: var(--space-075);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #8fc9e6;
+  border-color: #8fc9e6;
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 128, 255, 0.25);
+}

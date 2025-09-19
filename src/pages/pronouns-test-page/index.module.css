@@ -509,36 +509,3 @@
   color: var(--color-neutral-500);
   border: 2px solid var(--main-color);
 }
-
-.testDialogPrimaryButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: #8fc9e6;
-  border-color: #8fc9e6;
-}
-
-.testDialogSecondaryButton,
-.testDialogPrimaryButton {
-  flex: 1 1 0;
-  font-size: var(--fs-16);
-  font-weight: 600;
-  padding: var(--space-075);
-  border-radius: var(--radius-2);
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
-  border: 2px solid var(--accent-color);
-}
-
-.testDialogSecondaryButton {
-  color: var(--accent-color);
-  background: #fff;
-}
-
-.testDialogPrimaryButton {
-  background: var(--accent-color);
-  color: #fff;
-  border-color: var(--accent-color);
-}
