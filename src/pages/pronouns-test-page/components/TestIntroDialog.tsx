@@ -46,11 +46,17 @@ export function TestIntroDialog({
           <FileCheck className={styles.testDialogIcon} />
         </div>
         <div className={styles.testDialogInner}>
-          <div className={styles.testDialogHeaderRow1}></div>
           <div className={styles.testDialogHeaderLeftRow}>
-            <h2 id="test-intro-title" className={styles.testDialogTitle}>
-              テスト範囲を選択
-            </h2>
+            <h2 className={styles.testDialogTitle}>解答の選択肢</h2>
+          </div>
+          <div className={styles.testDialogHeaderLeftRow}>
+            <h2 className={styles.testDialogTitle}>出題方法</h2>
+          </div>
+          <div className={styles.testDialogHeaderLeftRow}>
+            <h2 className={styles.testDialogTitle}>解答モード</h2>
+          </div>
+          <div className={styles.testDialogHeaderLeftRow}>
+            <h2 className={styles.testDialogTitle}>テスト範囲を選択</h2>
           </div>
           <div className={styles.testRangeGrid} role="list">
             {segments.map((seg) => {
