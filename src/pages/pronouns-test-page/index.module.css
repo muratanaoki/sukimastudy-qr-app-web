@@ -321,7 +321,7 @@
   background: var(--surface-1);
   color: var(--color-neutral-900);
   border-radius: var(--radius-3);
-  padding: var(--space-200) var(--space-150) var(--space-150) var(--space-150);
+  padding: var(--space-150);
   display: flex;
   flex-direction: column;
   border: var(--border-width-1) solid var(--border-color-default);
@@ -418,61 +418,12 @@
   cursor: pointer;
   font: inherit; /* 親のフォントスケールに追従 */
   justify-content: center;
-}
-
-.testDialogSettingsButton:hover {
-  color: var(--color-neutral-800);
-}
-
-.testDialogSettingsButton:focus-visible {
-  outline: none;
-  background: var(--color-neutral-050);
-  border-radius: var(--radius-2);
+  font-size: var(--fs-16);
 }
 
 .testDialogSettingsButton svg {
-  width: var(--fs-18);
-  height: var(--fs-18);
-}
-
-/* --- Answer choice checkboxes (あり/なし) --- */
-.testChoiceRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-075);
-  flex-wrap: nowrap; /* 折り返し防止で一行維持 */
-  font-size: var(--fs-14); /* 視認性と情報量のバランス */
-}
-
-.testChoiceItem {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-025);
-  background: transparent;
-  color: var(--color-neutral-800);
-  border-radius: var(--radius-2);
-  cursor: pointer;
-  user-select: none;
-}
-
-.testChoiceInput {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.testChoiceIcon {
-  width: 1rem; /* テキストとの釣り合いを最適化 */
-  height: 1rem;
-  color: var(--color-neutral-400);
-}
-
-.testChoiceItemSelected {
-  color: var(--main-color);
-}
-
-.testChoiceIconSelected {
-  color: var(--main-color);
+  width: var(--fs-16);
+  height: var(--fs-16);
 }
 
 /* --- Range selection grid --- */
