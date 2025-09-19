@@ -361,14 +361,12 @@
 
 .testDialogHeaderLeftRow {
   display: flex;
-
   justify-content: center;
   flex-direction: column;
 }
 
 .testDialogTitle {
   font-size: var(--fs-18);
-  margin-bottom: var(--space-050);
 }
 
 .testDialogBody {
@@ -382,6 +380,44 @@
 .testDialogActions {
   display: flex;
   gap: var(--space-100);
+}
+
+/* --- Answer choice checkboxes (あり/なし) --- */
+.testChoiceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-075);
+}
+
+.testChoiceItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+  background: transparent;
+  color: var(--color-neutral-800);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.testChoiceInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.testChoiceIcon {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--color-neutral-400);
+}
+
+.testChoiceItemSelected {
+  color: var(--main-color);
+}
+
+.testChoiceIconSelected {
+  color: var(--main-color);
 }
 
 /* --- Range selection grid --- */
