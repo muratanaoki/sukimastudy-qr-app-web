@@ -1,5 +1,5 @@
 import styles from '../index.module.css';
-import { FileCheck, CircleCheck, Circle } from 'lucide-react';
+import { FileCheck, CircleCheck, Circle, Settings } from 'lucide-react';
 import type { PronounItem } from '../utils/type';
 import { useCallback, useMemo, useState } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
@@ -252,7 +252,6 @@ export function TestIntroDialog({
   segmentSize = 10,
   selectedRange,
 }: TestIntroDialogProps) {
-  // Escape で閉じる
   useEscapeKey(onClose, true);
 
   // --- range segmentation (memoized) ---
@@ -294,6 +293,18 @@ export function TestIntroDialog({
         </div>
         <div className={styles.testDialogInner}>
           <div className={styles.testDialogHeader}>
+            <div className={styles.testDialogHeaderRightRow}>
+              <button
+                type="button"
+                className={styles.testDialogSettingsButton}
+                aria-label="設定を変更"
+                title="設定を変更"
+              >
+                <Settings aria-hidden="true" />
+                設定
+              </button>
+            </div>
+
             <div className={styles.testDialogHeaderLeftRow}>
               <h2 className={styles.testDialogTitle}>解答の選択肢</h2>
               <AnswerOptionSelector value={answerOption} onChange={setAnswerOption} />

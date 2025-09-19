@@ -331,9 +331,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-025);
-  padding-bottom: var(--space-050);
-  border-bottom: var(--border-width-1) solid var(--border-color-default);
-  margin-bottom: var(--space-050);
 }
 
 .testDialogIconWrap {
@@ -370,11 +367,21 @@
 
 .testDialogHeaderLeftRow {
   display: flex;
-  align-items: baseline; /* テキストのベースラインを揃える */
-  flex-direction: row; /* タイトルと選択肢を横並びに */
-  flex-wrap: nowrap; /* スマホ/タブレットでも一行維持 */
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: var(--space-075);
-  overflow-x: auto; /* 幅が足りない時は横スクロールで一行維持 */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.testDialogHeaderRightRow {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: var(--space-075);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -397,6 +404,35 @@
 .testDialogActions {
   display: flex;
   gap: var(--space-100);
+}
+
+/* --- Settings button (header right) --- */
+.testDialogSettingsButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-025);
+  background: transparent;
+  color: var(--color-neutral-600);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit; /* 親のフォントスケールに追従 */
+  justify-content: center;
+}
+
+.testDialogSettingsButton:hover {
+  color: var(--color-neutral-800);
+}
+
+.testDialogSettingsButton:focus-visible {
+  outline: none;
+  background: var(--color-neutral-050);
+  border-radius: var(--radius-2);
+}
+
+.testDialogSettingsButton svg {
+  width: var(--fs-18);
+  height: var(--fs-18);
 }
 
 /* --- Answer choice checkboxes (あり/なし) --- */
