@@ -1,4 +1,4 @@
-import styles from '../learningEnglishPage.module.css';
+import styles from './exampleList.module.css';
 import { Volume2 } from 'lucide-react';
 import type { ExampleEntry } from '../utils/type';
 

@@ -1,0 +1,68 @@
+/* ExampleList 専用スタイル（learningEnglishPage.module.css から抽出） */
+
+.examples {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-100);
+  padding-top: var(--space-100);
+  border-top: var(--border-width-1) solid var(--border-color-default);
+  gap: var(--space-100);
+}
+
+.exampleItem {
+  background: var(--surface-1);
+}
+
+.exampleEnRow {
+  display: flex;
+  align-items: center; /* アイコンとテキストブロックを上下中央に */
+  gap: var(--space-100); /* アイコンと本文の距離は中 */
+}
+
+.exampleBody {
+  display: flex;
+  flex-direction: column; /* 例文→訳を縦積み */
+  min-width: 0; /* 子の省略に必要 */
+  flex: 1 1 auto; /* 横幅を伸縮 */
+  gap: var(--space-050);
+}
+
+.exampleEn {
+  font-size: var(--fs-16);
+  min-width: 0;
+  flex: 0 1 auto; /* 本文領域内で省略可 */
+  line-height: 1;
+}
+
+.exampleJp {
+  font-size: var(--fs-12);
+  color: var(--color-neutral-500);
+  line-height: 1;
+}
+
+.iconButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-2);
+  border: var(--border-width-1) solid var(--border-color-default);
+  background: var(--surface-1);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease;
+  padding: var(--space-025);
+}
+
+.iconButton:hover {
+  background: var(--color-neutral-100);
+  box-shadow: 0 0 0 1px var(--color-neutral-100);
+}
+
+.iconSize {
+  width: var(--fs-20);
+  height: var(--fs-20);
+}

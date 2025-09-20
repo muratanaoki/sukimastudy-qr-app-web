@@ -162,47 +162,7 @@
     transform 0.05s ease;
 }
 
-.exampleBody {
-  display: flex;
-  flex-direction: column; /* 例文→訳を縦積み */
-  min-width: 0; /* 子の省略に必要 */
-  flex: 1 1 auto; /* 横幅を伸縮 */
-  gap: var(--space-050);
-}
-
-.exampleEn {
-  font-size: var(--fs-16);
-  min-width: 0;
-  flex: 0 1 auto; /* 本文領域内で省略可 */
-  line-height: 1;
-}
-
-.exampleJp {
-  font-size: var(--fs-12);
-  color: var(--color-neutral-500);
-  line-height: 1;
-}
-
-/* --- examples --- */
-.examples {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--space-100);
-  padding-top: var(--space-100);
-  border-top: var(--border-width-1) solid var(--border-color-default);
-  gap: var(--space-100);
-}
-
-.exampleItem {
-  background: var(--surface-1);
-}
-
-.exampleEnRow {
-  display: flex;
-  align-items: center; /* アイコンとテキストブロックを上下中央に */
-  gap: var(--space-100); /* アイコンと本文の距離は中 */
-}
+/* ExampleList 専用のスタイルは components/exampleList.module.css へ移動 */
 
 /* --- icon buttons --- */
 .iconButton {
