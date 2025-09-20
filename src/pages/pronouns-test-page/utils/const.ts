@@ -1,4 +1,4 @@
-import { PronounGroup, PronounItem, RawPronounItem } from './type';
+import { PronounGroup, PronounItem, RawPronounItem, PosGroup } from './type';
 import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
 
 const DATA_RAW_SOURCE1: RawPronounItem[] = [
@@ -1011,5 +1011,19 @@ export const DATA: PronounGroup[] = [
     icon: MousePointer,
     url: '/pronouns/4',
     items: withIndex(DATA_RAW4),
+  },
+];
+
+// 上位の「品詞グループ」レイヤ（とりあえず代名詞のみ）
+// - pos: 品詞キー（URLにも使える識別子）
+// - url: 品詞トップのURL
+// - title: 表示名
+// - groups: 下位のグループ配列（上の DATA をそのまま利用）
+export const POS_GROUPS: PosGroup[] = [
+  {
+    pos: 'pronouns',
+    url: '/pronouns',
+    title: '代名詞',
+    groups: DATA,
   },
 ];

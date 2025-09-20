@@ -36,3 +36,14 @@ export type PronounGroup = {
 export type RawPronounItem = Omit<PronounItem, 'index'>;
 
 export type Segment = { start: number; end: number; items: PronounItem[] };
+
+// 上位の品詞レベル（将来拡張を見越してユニオンで定義）
+export type PartOfSpeech = 'pronouns';
+
+// 品詞グループ（上位）: URL と表示名、下位グループの配列
+export type PosGroup = {
+  pos: PartOfSpeech;
+  url: string;
+  title: string;
+  groups: PronounGroup[];
+};
