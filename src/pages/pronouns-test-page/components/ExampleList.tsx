@@ -8,7 +8,7 @@ export type ExampleListProps = {
   listId?: string;
 };
 
-export function ExampleList({ items, onSpeak, listId }: ExampleListProps) {
+export const ExampleList = ({ items, onSpeak, listId }: ExampleListProps) => {
   if (!items.length) return null;
   return (
     <ul className={styles.examples} id={listId} aria-live="polite">
@@ -39,6 +39,4 @@ export function ExampleList({ items, onSpeak, listId }: ExampleListProps) {
       ))}
     </ul>
   );
-}
-
-export default ExampleList;
+};

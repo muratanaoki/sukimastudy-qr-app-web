@@ -6,7 +6,7 @@ import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../hooks/useSpeech';
 import { buildExamples } from '../utils/function';
 
-function EnglishWordCardInner({ item, speech }: { item: PronounItem; speech: UseSpeech }) {
+const EnglishWordCardInner = ({ item, speech }: { item: PronounItem; speech: UseSpeech }) => {
   const examples = useMemo(() => buildExamples(item), [item]);
   const hasExamples = examples.length > 0;
   const [open, setOpen] = useState(false);
@@ -60,7 +60,6 @@ function EnglishWordCardInner({ item, speech }: { item: PronounItem; speech: Use
       )}
     </li>
   );
-}
+};
 
 export const EnglishWord = memo(EnglishWordCardInner);
-export default EnglishWord;

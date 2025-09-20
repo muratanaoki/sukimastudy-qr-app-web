@@ -17,7 +17,7 @@ export type TestIntroDialogProps = {
   selectedRange?: { start: number; end: number } | null;
 };
 
-function RangeGrid({
+const RangeGrid = ({
   segments,
   selectedRange,
   onSelectRange,
@@ -25,7 +25,7 @@ function RangeGrid({
   segments: Segment[];
   selectedRange: { start: number; end: number } | null | undefined;
   onSelectRange?: (seg: Segment) => void;
-}) {
+}) => {
   const isSelected = useCallback(
     (seg: Segment) =>
       !!selectedRange && seg.start === selectedRange.start && seg.end === selectedRange.end,
@@ -51,15 +51,15 @@ function RangeGrid({
       ))}
     </div>
   );
-}
+};
 
-export function TestIntroDialog({
+export const TestIntroDialog = ({
   items,
   onClose,
   onSelectRange,
   segmentSize = 10,
   selectedRange,
-}: TestIntroDialogProps) {
+}: TestIntroDialogProps) => {
   useEscapeKey(onClose, true);
 
   const segments = useMemo(
@@ -118,4 +118,4 @@ export function TestIntroDialog({
       </div>
     </div>
   );
-}
+};
