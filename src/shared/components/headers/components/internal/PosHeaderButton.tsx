@@ -1,4 +1,4 @@
-import styles from '../../header.module.css';
+import styles from './posHeaderButton.module.css';
 
 export type PosHeaderButtonProps = {
   title: string;

@@ -1,5 +1,5 @@
 import { forwardRef, memo } from 'react';
-import styles from '../header.module.css';
+import styles from './hamburgerButton.module.css';
 
 export type HamburgerButtonProps = {
   open: boolean;

@@ -31,60 +31,7 @@
   align-items: center;
 }
 
-.hamburger {
-  position: relative; /* バーを中央基準で絶対配置するため */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  /* gap は不要（バーは絶対配置） */
-  flex-direction: column;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  width: var(--space-150);
-  height: var(--space-150);
-  overflow: visible; /* 変形時の見切れ防止 */
-  --bar-gap: var(--space-050); /* 上下オフセット量（約8px） */
-}
-
-.bar {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--space-150);
-  height: var(--thickness-1);
-  background: var(--color-neutral-900);
-  border-radius: var(--radius-1); /* 細線用の角丸 */
-  transform: translate(-50%, -50%);
-  transform-origin: center;
-  transition:
-    transform 200ms ease,
-    opacity 150ms ease,
-    background-color 200ms ease;
-}
-
-/* 閉状態（ハンバーガー）: 中央基準で上下にオフセット */
-.hamburger:not([data-open='true']) .bar:nth-child(1) {
-  transform: translate(-50%, calc(-50% - var(--bar-gap)));
-}
-.hamburger:not([data-open='true']) .bar:nth-child(2) {
-  transform: translate(-50%, -50%);
-}
-.hamburger:not([data-open='true']) .bar:nth-child(3) {
-  transform: translate(-50%, calc(-50% + var(--bar-gap)));
-}
-
-/* ハンバーガー開状態のアニメーション */
-/* 開状態（X）: 中央で交差 */
-.hamburger[data-open='true'] .bar:nth-child(1) {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.hamburger[data-open='true'] .bar:nth-child(2) {
-  opacity: 0;
-}
-.hamburger[data-open='true'] .bar:nth-child(3) {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
+/* removed: moved hamburger/bar styles to components/hamburgerButton.module.css */
 
 /* オーバーレイのナビ（ヘッダー直下〜画面下端） */
 .nav {
@@ -163,56 +110,4 @@
   margin-bottom: var(--space-100);
 }
 
-.sectionButton {
-  appearance: none;
-  width: 100%;
-  background: transparent;
-  border: none;
-  font-weight: 700;
-  color: var(--color-neutral-900);
-  padding-left: var(--space-150);
-  padding-right: var(--space-150);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: var(--space-350);
-  font-size: var(--fs-18);
-}
-
-/* 右側の＋/−アイコン（要素版） */
-.plusMinus {
-  position: relative; /* 擬似要素の絶対配置基準 */
-  display: inline-block;
-  width: var(--space-150);
-  height: var(--space-150); /* クリック領域を少し広めに */
-  flex: 0 0 auto; /* 右端の位置を安定させる */
-}
-
-.plusMinus::after,
-.plusMinus::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--space-100); /* 横方向の長さ */
-  height: var(--thickness-1); /* 太さ */
-  background: var(--color-neutral-900);
-  border-radius: var(--radius-1);
-  transform-origin: center;
-  transition:
-    transform 150ms ease,
-    opacity 150ms ease;
-}
-/* 横棒（−） */
-.plusMinus::after {
-  transform: translate(-50%, -50%);
-}
-/* 縦棒（｜）: 初期は90度回転で縦に見せる */
-.plusMinus::before {
-  transform: translate(-50%, -50%) rotate(-90deg);
-}
-/* 開いたら縦棒を横に回転させて重ねる → 一本のマイナスに */
-.plusMinus[data-open='true']::before {
-  transform: translate(-50%, -50%) rotate(0deg);
-}
+/* removed: moved sectionButton/plusMinus styles to components/internal/posHeaderButton.module.css */
