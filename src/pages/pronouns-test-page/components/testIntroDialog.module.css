@@ -128,8 +128,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
   gap: var(--space-075);
-  margin-top: var(--space-050);
-  margin-bottom: var(--space-150);
 }
 
 .testRangeButton {
@@ -156,11 +154,6 @@
 .testRangeButtonSelected {
   color: var(--color-neutral-500);
   border: 2px solid var(--main-color);
-}
-
-/* --- Group block inside dialog --- */
-.testDialogGroupBlock {
-  margin-top: var(--space-100);
 }
 
 .headerIcon {

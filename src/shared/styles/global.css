@@ -190,22 +190,26 @@ body {
 /* ---------------------------------
   Headings
   --------------------------------- */
-/* h1 {
+h1 {
   font-size: var(--step-h1);
   line-height: var(--lh-heading);
+  margin: 0;
 }
 h2 {
   font-size: var(--step-h2);
   line-height: var(--lh-heading);
+  margin: 0;
 }
 h3 {
   font-size: var(--step-h3);
   line-height: var(--lh-heading);
+  margin: 0;
 }
 h4 {
   font-size: var(--step-h4);
   line-height: var(--lh-heading);
-} */
+  margin: 0;
+}
 
 /* ナビ開閉時：ドロワー表示中の背面スクロール抑止 */
 html.no-scroll,

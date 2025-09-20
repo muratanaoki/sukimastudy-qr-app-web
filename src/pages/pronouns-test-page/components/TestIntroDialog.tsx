@@ -176,7 +176,7 @@ export const TestIntroDialog = ({
           </div>
           <h1>代名詞</h1>
           {groupsWithSegments.map(({ groupNo, title, icon: Icon, segments }) => (
-            <div key={groupNo} className={styles.testDialogGroupBlock}>
+            <div key={groupNo}>
               <GroupHeader groupNo={groupNo} title={title} Icon={Icon} />
               <RangeGrid
                 groupNo={groupNo}
