@@ -7,9 +7,14 @@ import { NAV_SECTIONS } from './utils/const';
 import { SectionList } from './components/SectionList';
 import { HamburgerButton } from './components/HamburgerButton';
 import logoPng from '../../images/logo.png';
+import { useHeaderHeightVar } from '../../hooks/useHeaderHeightVar';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
+import { useNoScrollClass } from '../../hooks/useNoScrollClass';
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
   // アコーディオン（ジャンル）開閉状態（定義から初期化）
   const initialOpen = useMemo(
     () =>
@@ -31,57 +36,28 @@ export const Header = () => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
 
-  // Close menu on route change
+  // ルート変更でクローズ
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
 
-  // Close when clicking outside
-  useEffect(() => {
-    if (!open) return;
-    const onClickOutside = (e: MouseEvent) => {
-      if (!wrapperRef.current) return;
-      if (!wrapperRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('click', onClickOutside);
-    return () => document.removeEventListener('click', onClickOutside);
-  }, [open]);
+  // 外側クリックでクローズ
+  useOnClickOutside(wrapperRef, open, () => setOpen(false));
 
-  // Lock page scroll when nav is open
-  useEffect(() => {
-    const root = document.documentElement;
-    if (open) {
-      root.classList.add('no-scroll');
-    } else {
-      root.classList.remove('no-scroll');
-    }
-    return () => root.classList.remove('no-scroll');
-  }, [open]);
+  // ナビ開時は body スクロールを止める
+  useNoScrollClass(open);
 
-  // Esc キーでクローズ & フォーカス返却
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setOpen(false);
-        // 次のフレームでフォーカス返却（クローズ後に安全に）
-        requestAnimationFrame(() => {
-          hamburgerRef.current?.focus();
-        });
-      }
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [open]);
+  // ヘッダー高さを CSS 変数へ
+  useHeaderHeightVar(headerRef);
+
+  // Esc でクローズ + フォーカス返却
+  useEscapeToClose(hamburgerRef, open, () => setOpen(false));
 
   const handleToggleOpen = useCallback(() => setOpen((v) => !v), []);
 
   return (
-    <div className={styles.wrapper} ref={wrapperRef}>
-      <header className={styles.header}>
+    <div ref={wrapperRef}>
+      <header ref={headerRef} className={styles.header}>
         <div className={styles.left}>
           <div className={styles.logo}>
             <img src={logoPng} alt="Sukima Study ロゴ" className={styles.logoImage} />

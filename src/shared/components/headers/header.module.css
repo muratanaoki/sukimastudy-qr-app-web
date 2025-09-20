@@ -1,18 +1,11 @@
-.wrapper {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-100);
-  --header-height: calc(var(--rem) * 3.5);
-  --header-bg: var(--surface-1);
-}
-
 .header {
-  min-height: var(--header-height);
-  background: var(--header-bg);
+  background: var(--surface-1);
   border-bottom: var(--border-width-1) solid var(--border-color-soft);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-top: var(--space-050);
+  padding-bottom: var(--space-050);
   padding-right: var(--space-150);
   padding-left: var(--space-150);
   overflow: visible;
@@ -30,9 +23,7 @@
 }
 
 .logoImage {
-  display: block;
-  height: calc(var(--header-height) * 0.6);
-  width: auto;
+  width: 9rem;
 }
 
 .right {
@@ -100,14 +91,13 @@
   position: fixed;
   left: 0;
   right: 0;
-  top: var(--header-height);
   bottom: 0;
   z-index: var(--z-90); /* ヘッダーの下、コンテンツの上 */
   background: var(--surface-1);
   border-bottom: var(--border-width-1) solid var(--border-color-soft);
   /* ヘッダー直下から “下にスライドして現れる” 表現 */
-  --nav-max-height: calc(100vh - var(--header-height));
-  height: var(--nav-max-height);
+  top: var(--header-height, 0px);
+  max-height: calc(100vh - var(--header-height, 0px));
   max-width: var(--container-max);
   margin: auto;
   opacity: 0;
