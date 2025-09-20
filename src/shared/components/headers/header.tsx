@@ -8,7 +8,7 @@ import { SectionList } from './components/SectionList';
 import { HamburgerButton } from './components/HamburgerButton';
 import logoPng from '../../images/logo.png';
 
-const Header = () => {
+export const Header = () => {
   const [open, setOpen] = useState(false);
   // アコーディオン（ジャンル）開閉状態（定義から初期化）
   const initialOpen = useMemo(
@@ -83,7 +83,6 @@ const Header = () => {
     <div className={styles.wrapper} ref={wrapperRef}>
       <header className={styles.header}>
         <div className={styles.left}>
-          {/* ロゴ（PNG） */}
           <div className={styles.logo}>
             <img src={logoPng} alt="Sukima Study ロゴ" className={styles.logoImage} />
           </div>
@@ -107,5 +106,3 @@ const Header = () => {
     </div>
   );
 };
-
-export default Header;

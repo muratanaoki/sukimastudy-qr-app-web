@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import LearningEnglishPage from './pages/pronouns-test-page/LearningEnglishPage.tsx';
 import { DATA } from './pages/pronouns-test-page/utils/const';
-import Header from './shared/components/headers/Header.tsx';
+import { Header } from './shared/components/headers/Header.tsx';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
