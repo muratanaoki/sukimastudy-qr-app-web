@@ -157,3 +157,14 @@
   color: var(--color-neutral-500);
   border: 2px solid var(--main-color);
 }
+
+/* --- Group block inside dialog --- */
+.testDialogGroupBlock {
+  margin-top: var(--space-100);
+}
+
+.headerIcon {
+  width: var(--fs-18);
+  height: var(--fs-18);
+  color: var(--color-neutral-500);
+}

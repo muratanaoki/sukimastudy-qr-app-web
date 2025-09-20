@@ -17,7 +17,11 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
 
   const hideFab = useFabHideOnBottom();
   const [showTest, setShowTest] = useState(false);
-  const [selectedRange, setSelectedRange] = useState<{ start: number; end: number } | null>(null);
+  const [selectedRange, setSelectedRange] = useState<{
+    groupNo: number;
+    start: number;
+    end: number;
+  } | null>(null);
 
   const fabWrapperClass = hideFab
     ? `${styles.testFabWrapper} ${styles.hide}`
@@ -67,15 +71,15 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
       </div>
       {showTest && (
         <TestIntroDialog
-          items={data[0].items}
+          items={data}
           onClose={closeTest}
           selectedRange={selectedRange}
           onSelectRange={(seg) => {
-            setSelectedRange({ start: seg.start, end: seg.end });
-            console.log('Select range', seg.start, seg.end, seg.items.length);
+            setSelectedRange({ groupNo: seg.groupNo, start: seg.start, end: seg.end });
+            console.log('Select range', seg.groupNo, seg.start, seg.end, seg.items.length);
           }}
           onStart={(seg) => {
-            console.log('Start test range', seg.start, seg.end, seg.items.length);
+            console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
             closeTest();
           }}
         />

@@ -1,6 +1,6 @@
 import styles from './testIntroDialog.module.css';
 import { FileCheck, Settings } from 'lucide-react';
-import type { PronounItem, Segment } from '../utils/type';
+import type { PronounGroup, Segment } from '../utils/type';
 import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
@@ -9,27 +9,53 @@ import { PrimaryButton } from '../../../shared/components/primary-button/Primary
 import { SecondaryButton } from '../../../shared/components/secondary-button/SecondaryButton';
 
 export type TestIntroDialogProps = {
-  items: PronounItem[];
+  items: PronounGroup[];
   onClose: () => void;
-  onSelectRange?: (range: { start: number; end: number; items: PronounItem[] }) => void;
-  onStart?: (payload: { start: number; end: number; items: PronounItem[] }) => void;
+  onSelectRange?: (range: RangeSelectionPayload) => void;
+  onStart?: (payload: RangeSelectionPayload) => void;
   segmentSize?: number; // default 10
-  selectedRange?: { start: number; end: number } | null;
+  selectedRange?: SelectedRange;
 };
 
+// ===== Types =====
+type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
+type RangeSelectionPayload = { groupNo: number } & Segment;
+
+// ===== Small Presentational Components =====
+const GroupHeader = ({
+  groupNo,
+  title,
+  Icon,
+}: {
+  groupNo: number;
+  title: string;
+  Icon?: React.ComponentType<any>;
+}) => (
+  <div className={styles.testDialogHeaderLeftRow}>
+    <span>{String(groupNo).padStart(2, '0')}.</span>
+    <span className={styles.testDialogTitle}>{title}</span>
+    {Icon && <Icon className={styles.headerIcon} aria-hidden="true" />}
+  </div>
+);
+
 const RangeGrid = ({
+  groupNo,
   segments,
   selectedRange,
   onSelectRange,
 }: {
+  groupNo: number;
   segments: Segment[];
-  selectedRange: { start: number; end: number } | null | undefined;
-  onSelectRange?: (seg: Segment) => void;
+  selectedRange: SelectedRange;
+  onSelectRange?: (payload: RangeSelectionPayload) => void;
 }) => {
   const isSelected = useCallback(
     (seg: Segment) =>
-      !!selectedRange && seg.start === selectedRange.start && seg.end === selectedRange.end,
-    [selectedRange]
+      !!selectedRange &&
+      groupNo === selectedRange.groupNo &&
+      seg.start === selectedRange.start &&
+      seg.end === selectedRange.end,
+    [groupNo, selectedRange]
   );
 
   return (
@@ -44,7 +70,7 @@ const RangeGrid = ({
             styles.testRangeButton,
             isSelected(seg) && styles.testRangeButtonSelected
           )}
-          onClick={() => onSelectRange?.(seg)}
+          onClick={() => onSelectRange?.({ groupNo, ...seg })}
         >
           {seg.start}~{seg.end}語
         </button>
@@ -53,23 +79,71 @@ const RangeGrid = ({
   );
 };
 
+// ===== Hooks =====
+const useGroupsWithSegments = (groups: PronounGroup[], segmentSize: number) =>
+  useMemo(
+    () =>
+      groups.map((g) => ({
+        groupNo: g.groupNo,
+        title: g.title,
+        icon: g.icon,
+        segments: segmentItems(g.items, segmentSize, { assumeSorted: false }),
+      })),
+    [groups, segmentSize]
+  );
+
+const useSelectedSegment = (
+  groupsWithSegments: Array<{
+    groupNo: number;
+    title: string;
+    icon: any;
+    segments: Segment[];
+  }>,
+  selectedRange: SelectedRange
+) =>
+  useMemo(() => {
+    if (!selectedRange) return undefined;
+    const group = groupsWithSegments.find((g) => g.groupNo === selectedRange.groupNo);
+    return group?.segments.find(
+      (s) => s.start === selectedRange.start && s.end === selectedRange.end
+    );
+  }, [groupsWithSegments, selectedRange]);
+
 export const TestIntroDialog = ({
   items,
   onClose,
   onSelectRange,
+  onStart,
   segmentSize = 10,
   selectedRange,
 }: TestIntroDialogProps) => {
   useEscapeKey(onClose, true);
 
-  const segments = useMemo(
-    () => segmentItems(items, segmentSize, { assumeSorted: false }),
-    [items, segmentSize]
+  // Data derivations
+  const groupsWithSegments = useGroupsWithSegments(items, segmentSize);
+  const selectedSegment = useSelectedSegment(groupsWithSegments, selectedRange);
+
+  // Handlers
+  const handleSelectRange = useCallback(
+    (seg: RangeSelectionPayload) =>
+      onSelectRange?.({
+        groupNo: seg.groupNo,
+        start: seg.start,
+        end: seg.end,
+        items: seg.items,
+      }),
+    [onSelectRange]
   );
-  const selectedSegment = useMemo(() => {
-    if (!selectedRange) return undefined;
-    return segments.find((s) => s.start === selectedRange.start && s.end === selectedRange.end);
-  }, [segments, selectedRange]);
+
+  const handleStart = useCallback(() => {
+    if (!selectedSegment || !selectedRange) return;
+    onStart?.({
+      groupNo: selectedRange.groupNo,
+      start: selectedSegment.start,
+      end: selectedSegment.end,
+      items: selectedSegment.items,
+    });
+  }, [onStart, selectedRange, selectedSegment]);
 
   return (
     <div
@@ -101,18 +175,22 @@ export const TestIntroDialog = ({
             </div>
           </div>
           <h1>代名詞</h1>
-          <div className={styles.testDialogHeaderLeftRow}>
-            <span>01.</span>
-            <span className={styles.testDialogTitle}>人称・所有・再帰代名詞</span>
-          </div>
-          <RangeGrid
-            segments={segments}
-            selectedRange={selectedRange}
-            onSelectRange={onSelectRange}
-          />
+          {groupsWithSegments.map(({ groupNo, title, icon: Icon, segments }) => (
+            <div key={groupNo} className={styles.testDialogGroupBlock}>
+              <GroupHeader groupNo={groupNo} title={title} Icon={Icon} />
+              <RangeGrid
+                groupNo={groupNo}
+                segments={segments}
+                selectedRange={selectedRange}
+                onSelectRange={handleSelectRange}
+              />
+            </div>
+          ))}
           <div className={styles.testDialogActions}>
             <SecondaryButton onClick={onClose}>閉じる</SecondaryButton>
-            <PrimaryButton disabled={!selectedSegment}>スタート</PrimaryButton>
+            <PrimaryButton disabled={!selectedSegment || !selectedRange} onClick={handleStart}>
+              スタート
+            </PrimaryButton>
           </div>
         </div>
       </div>
