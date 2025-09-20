@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styles from '../../header.module.css';
+import styles from './groupList.module.css';
 import type { PosGroup } from '@/pages/pronouns-test-page/utils/type';
 
 const formatNo = (idx: number) => `${String(idx + 1).padStart(2, '0')}.`;

@@ -155,16 +155,6 @@
   border-bottom: var(--border-width-1) solid var(--border-color-default);
 }
 
-.subListItem {
-  border-bottom: var(--border-width-1) solid var(--border-color-default);
-  min-height: var(--space-300);
-  width: 100%;
-}
-
-.subListItem:last-of-type {
-  border-bottom: none;
-}
-
 .sectionTitle {
   font-weight: 700;
   color: var(--color-neutral-900);
@@ -225,43 +215,4 @@
 /* 開いたら縦棒を横に回転させて重ねる → 一本のマイナスに */
 .plusMinus[data-open='true']::before {
   transform: translate(-50%, -50%) rotate(0deg);
-}
-
-.subList {
-  list-style: none;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-.subLink {
-  width: 100%;
-  text-decoration: none;
-  color: var(--color-neutral-900);
-  border-radius: var(--radius-3);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  font-weight: bold;
-  padding-left: var(--space-200);
-  padding-right: var(--space-200);
-}
-
-.subListItemNo {
-  font-size: var(--fs-18);
-  line-height: 1;
-  padding-right: var(--space-100);
-  top: 0.04em;
-  position: relative;
-}
-
-.subListItemText {
-  font-size: var(--fs-16);
-  line-height: var(--fs-16);
-}
-
-.subListItemLeftBox {
-  display: flex;
-  align-items: baseline;
 }
