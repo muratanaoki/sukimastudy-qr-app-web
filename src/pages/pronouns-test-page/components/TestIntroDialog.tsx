@@ -1,6 +1,6 @@
 import styles from './testIntroDialog.module.css';
 import { FileCheck, Settings } from 'lucide-react';
-import type { PronounItem } from '../utils/type';
+import type { PronounItem, Segment } from '../utils/type';
 import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
@@ -16,8 +16,6 @@ export type TestIntroDialogProps = {
   segmentSize?: number; // default 10
   selectedRange?: { start: number; end: number } | null;
 };
-
-type Segment = { start: number; end: number; items: PronounItem[] };
 
 function RangeGrid({
   segments,
@@ -64,7 +62,6 @@ export function TestIntroDialog({
 }: TestIntroDialogProps) {
   useEscapeKey(onClose, true);
 
-  // --- range segmentation (memoized) ---
   const segments = useMemo(
     () => segmentItems(items, segmentSize, { assumeSorted: false }),
     [items, segmentSize]
@@ -103,6 +100,7 @@ export function TestIntroDialog({
               </button>
             </div>
           </div>
+          <h1>代名詞</h1>
           <div className={styles.testDialogHeaderLeftRow}>
             <span>01.</span>
             <span className={styles.testDialogTitle}>人称・所有・再帰代名詞</span>
