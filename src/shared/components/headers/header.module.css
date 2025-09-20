@@ -197,7 +197,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: var(--space-350);
-  font-size: var(--fs-20);
+  font-size: var(--fs-18);
 }
 
 /* 右側の＋/−アイコン（要素版） */
@@ -259,9 +259,11 @@
 }
 
 .subListItemNo {
-  font-size: var(--fs-20);
-  line-height: var(--fs-20);
+  font-size: var(--fs-18);
+  line-height: 1;
   padding-right: var(--space-100);
+  top: 0.04em;
+  position: relative;
 }
 
 .subListItemText {

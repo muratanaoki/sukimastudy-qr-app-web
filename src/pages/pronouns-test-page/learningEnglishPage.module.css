@@ -21,7 +21,7 @@
 .titleNumber {
   margin: 0;
   font-family: var(--font-family-heading);
-  font-size: var(--step-h3);
+  font-size: var(--fs-22);
   font-weight: bold;
   color: var(--color-neutral-500);
   line-height: 1;
@@ -40,7 +40,7 @@
   margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
-  font-size: var(--step-h4);
+  font-size: var(--fs-18);
   line-height: var(--lh-heading);
 }
 
@@ -107,7 +107,7 @@
 
 /* Sequential index badge */
 .termIndex {
-  font-size: var(--fs-12);
+  font-size: var(--fs-14);
   color: var(--color-neutral-500);
   background: var(--color-neutral-100);
   padding-left: var(--space-025);
@@ -135,7 +135,7 @@
 }
 
 .jp {
-  font-size: var(--fs-14);
+  font-size: var(--fs-16);
 }
 
 /* JP行 + 例文トグルボタンを左右に配置 */
@@ -150,7 +150,7 @@
   color: var(--color-neutral-500);
   margin-left: auto;
   flex: 0 0 auto;
-  font-size: var(--fs-12);
+  font-size: var(--fs-14);
   background: var(--surface-1);
   border: var(--border-width-1) solid var(--border-color-default);
   border-radius: var(--radius-2);
@@ -234,13 +234,13 @@
 }
 
 .testFabText {
-  font-size: var(--fs-10);
+  font-size: var(--fs-12);
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
 }
 
 .iconSize {
-  width: var(--fs-20);
-  height: var(--fs-20);
+  width: var(--fs-18);
+  height: var(--fs-18);
 }

@@ -108,28 +108,21 @@
   /* 固定フォントサイズ
     - 最低限の UI 用プリセット（ボタン/ラベルなど）
     - 過度な種類追加は避ける（可変は step 系で対応） */
-  --fs-10: calc(var(--rem) * 0.625); /* UI最小（補助的に使用可） */
-  --fs-12: calc(var(--rem) * 0.75); /* 注釈/補助テキスト（可読性確保のため多用注意） */
-  --fs-14: calc(var(--rem) * 0.875); /* 小さめテキスト */
-  --fs-16: calc(var(--rem) * 1); /* 本文ベース */
-  --fs-20: calc(var(--rem) * 1.25); /* 少し強調 */
+  --fs-10: calc(var(--rem) * 0.25);
+  --fs-12: calc(var(--rem) * 0.5);
+  --fs-14: calc(var(--rem) * 0.75);
+  --fs-16: calc(var(--rem) * 1);
+  --fs-18: calc(var(--rem) * 1.25);
+  --fs-20: calc(var(--rem) * 1.5);
+  --fs-22: calc(var(--rem) * 1.75);
+  --fs-24: calc(var(--rem) * 2);
+  --fs-26: calc(var(--rem) * 2.25);
 
   /* 行間/レイアウトベース */
   --lh-body: 1.7; /* 本文の行間 */
   --lh-heading: 1.25; /* 見出しの行間（タイトめ） */
 
   --container-max: 68.75rem; /* レイアウト全体の最大幅 */
-
-  /* 見出し流体スケール (h1-h4)
-     - 比率: 1.25 のモジュラースケール（min / max で均等）
-       h4(min)=1.25 → h3=1.5625 → h2=1.953 → h1=2.441
-       h4(max)=1.5  → h3=1.875  → h2=2.344 → h1=2.93
-     - 中央の vw 式は既存係数を概ね踏襲（微調整はデザイン側判断）
-     - 比率変更時: まず h4 の min/max を決め、上に 1.25 ずつ掛けて再算出 */
-  --step-h4: clamp(1.25rem, 0.9vw + 1.05rem, 1.5rem); /* h4 */
-  --step-h3: clamp(1.5625rem, 1.4vw + 1.15rem, 1.875rem); /* h3 */
-  --step-h2: clamp(1.953rem, 2.1vw + 1.25rem, 2.344rem); /* h2 */
-  --step-h1: clamp(2.441rem, 3.2vw + 1.35rem, 2.93rem); /* h1 */
 
   /* 角丸スケール
     - 小: ボタン/タグ / 中: カード / 大: モーダル/レイアウト */
@@ -192,22 +185,22 @@ body {
   --------------------------------- */
 h1 {
   font-size: var(--step-h1);
-  line-height: var(--lh-heading);
+  line-height: 1;
   margin: 0;
 }
 h2 {
   font-size: var(--step-h2);
-  line-height: var(--lh-heading);
+  line-height: 1;
   margin: 0;
 }
 h3 {
   font-size: var(--step-h3);
-  line-height: var(--lh-heading);
+  line-height: 1;
   margin: 0;
 }
 h4 {
   font-size: var(--step-h4);
-  line-height: var(--lh-heading);
+  line-height: 1;
   margin: 0;
 }
 

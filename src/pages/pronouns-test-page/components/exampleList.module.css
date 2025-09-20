@@ -36,7 +36,7 @@
 }
 
 .exampleJp {
-  font-size: var(--fs-12);
+  font-size: var(--fs-14);
   color: var(--color-neutral-500);
   line-height: 1;
 }
@@ -63,6 +63,6 @@
 }
 
 .iconSize {
-  width: var(--fs-20);
-  height: var(--fs-20);
+  width: var(--fs-18);
+  height: var(--fs-18);
 }
