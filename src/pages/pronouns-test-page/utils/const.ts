@@ -972,36 +972,44 @@ const DATA_RAW_SOURCE4: RawPronounItem[] = [
   },
 ];
 
-// 共通ユーティリティ
-const cloneRaw = (src: RawPronounItem[]): RawPronounItem[] => src.map((item) => ({ ...item }));
+// 共通ユーティリティ（必要最低限に）
 const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
   raw.map((d, i) => ({ index: i + 1, ...d }));
 
-// 生データと ITEM の生成を配列ドリブンで行う（エクスポート名は互換維持）
-const RAW_SOURCES = [
-  DATA_RAW_SOURCE1,
-  DATA_RAW_SOURCE2,
-  DATA_RAW_SOURCE3,
-  DATA_RAW_SOURCE4,
-] as const;
-const RAW_LIST = RAW_SOURCES.map(cloneRaw);
+// 生データ（そのままエクスポート）
+export const DATA_RAW1: RawPronounItem[] = DATA_RAW_SOURCE1;
+export const DATA_RAW2: RawPronounItem[] = DATA_RAW_SOURCE2;
+export const DATA_RAW3: RawPronounItem[] = DATA_RAW_SOURCE3;
+export const DATA_RAW4: RawPronounItem[] = DATA_RAW_SOURCE4;
 
-export const DATA_RAW1: RawPronounItem[] = RAW_LIST[0];
-export const DATA_RAW2: RawPronounItem[] = RAW_LIST[1];
-export const DATA_RAW3: RawPronounItem[] = RAW_LIST[2];
-export const DATA_RAW4: RawPronounItem[] = RAW_LIST[3];
-
-const ITEMS_LIST = RAW_LIST.map(withIndex);
-
-// ラップしたグループ配列データ
-const GROUP_META = [
-  { groupNo: 1, title: '人称・所有・再帰代名詞', icon: User },
-  { groupNo: 2, title: '不定代名詞（人・物・事）', icon: Users },
-  { groupNo: 3, title: '不定代名詞（数量・部分など）', icon: ChartColumn },
-  { groupNo: 4, title: '指示代名詞・その他', icon: MousePointer },
-] as const;
-
-export const DATA: PronounGroup[] = GROUP_META.map((meta, idx) => ({
-  ...meta,
-  items: ITEMS_LIST[idx],
-}));
+// 画面で使うグループ配列（直書きでシンプルに）
+export const DATA: PronounGroup[] = [
+  {
+    groupNo: 1,
+    title: '人称・所有・再帰代名詞',
+    icon: User,
+    url: '/pronouns/1',
+    items: withIndex(DATA_RAW1),
+  },
+  {
+    groupNo: 2,
+    title: '不定代名詞（人・物・事）',
+    icon: Users,
+    url: '/pronouns/2',
+    items: withIndex(DATA_RAW2),
+  },
+  {
+    groupNo: 3,
+    title: '不定代名詞（数量・部分など）',
+    icon: ChartColumn,
+    url: '/pronouns/3',
+    items: withIndex(DATA_RAW3),
+  },
+  {
+    groupNo: 4,
+    title: '指示代名詞・その他',
+    icon: MousePointer,
+    url: '/pronouns/4',
+    items: withIndex(DATA_RAW4),
+  },
+];

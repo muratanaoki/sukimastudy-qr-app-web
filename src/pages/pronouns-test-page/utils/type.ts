@@ -29,6 +29,7 @@ export type PronounGroup = {
   groupNo: number; // 連番（将来複数化してもよい）
   title: string; // 日本語タイトル
   items: PronounItem[]; // 本体
+  url: string; // グループの URL
   icon: LucideIcon; // 見出し用アイコン（未指定時は既定の User）
 };
 
