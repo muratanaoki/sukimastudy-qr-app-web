@@ -1,0 +1,11 @@
+.navList {
+  list-style: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* --- layered nav (genre > items) --- */
+.navSection {
+  border-bottom: var(--border-width-1) solid var(--border-color-default);
+}

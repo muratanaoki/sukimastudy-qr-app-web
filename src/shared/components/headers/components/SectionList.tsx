@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import styles from '../header.module.css';
+import styles from './sectionList.module.css';
 import type { PosGroup } from '@/pages/pronouns-test-page/utils/type';
 import { usePosOpenMap } from '../hooks/usePosOpenMap';
 import { PosHeaderButton } from './internal/PosHeaderButton';
