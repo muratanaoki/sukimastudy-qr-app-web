@@ -9,7 +9,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: '人称・所有・再帰代名詞', to: '' },
       { label: '不定代名詞（人・物・事）', to: '' },
-      { label: '不定代名詞（数量・全体・部分など）', to: '' },
+      { label: '不定代名詞（数量・部分など）', to: '' },
       { label: '指示代名詞・その他', to: '' },
     ],
   },

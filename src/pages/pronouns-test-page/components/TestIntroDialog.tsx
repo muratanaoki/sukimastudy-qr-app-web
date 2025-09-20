@@ -31,11 +31,11 @@ const GroupHeader = ({
   title: string;
   Icon?: React.ComponentType<any>;
 }) => (
-  <div className={styles.testDialogHeaderLeftRow}>
-    <span>{String(groupNo).padStart(2, '0')}.</span>
+  <h2 className={styles.testDialogHeaderLeftRow}>
+    <span aria-hidden="true">{String(groupNo).padStart(2, '0')}.</span>
     <span className={styles.testDialogTitle}>{title}</span>
     {Icon && <Icon className={styles.headerIcon} aria-hidden="true" />}
-  </div>
+  </h2>
 );
 
 const RangeGrid = ({
