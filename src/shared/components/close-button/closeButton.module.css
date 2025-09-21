@@ -1,0 +1,19 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-025);
+  background: white;
+  color: var(--color-neutral-400);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  justify-content: center;
+  font-size: var(--fs-16);
+  font-weight: 600;
+}
+
+.icon {
+  width: var(--fs-20);
+  height: var(--fs-20);
+}

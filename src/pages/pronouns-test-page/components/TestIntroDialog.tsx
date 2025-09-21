@@ -1,5 +1,5 @@
 import styles from './testIntroDialog.module.css';
-import { FileCheck, Settings, X } from 'lucide-react';
+import { FileCheck, Settings } from 'lucide-react';
 import type { PronounGroup, Segment } from '../utils/type';
 import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
@@ -8,6 +8,7 @@ import clsx from 'clsx';
 import { PrimaryButton } from '../../../shared/components/primary-button/PrimaryButton';
 import { useInitialSelect } from '../hooks/useInitialSelect';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
+import { CloseButton } from '@/shared/components/close-button/CloseButton';
 
 export type TestIntroDialogProps = {
   item: PronounGroup; // 単一グループに変更
@@ -150,15 +151,7 @@ export const TestIntroDialog = ({
         </div>
         <div className={styles.testDialogInner}>
           <div className={styles.testDialogHeaderRightRow}>
-            <button
-              type="button"
-              className={styles.testDialogXButton}
-              onClick={onClose}
-              aria-label="閉じる"
-              title="閉じる"
-            >
-              <X strokeWidth={2.2} className={styles.testDialogXIcon} aria-hidden="true" />
-            </button>
+            <CloseButton onClose={onClose} />
             <button
               type="button"
               className={styles.testDialogSettingsButton}
