@@ -1,12 +1,13 @@
 import styles from './testIntroDialog.module.css';
 import { FileCheck, Settings } from 'lucide-react';
 import type { PronounGroup, Segment } from '../utils/type';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
 import clsx from 'clsx';
 import { PrimaryButton } from '../../../shared/components/primary-button/PrimaryButton';
 import { SecondaryButton } from '../../../shared/components/secondary-button/SecondaryButton';
+import { useInitialSelect } from '../hooks/useInitialSelect';
 
 export type TestIntroDialogProps = {
   item: PronounGroup; // 単一グループに変更
@@ -28,7 +29,11 @@ const GroupHeader = ({
   groupNo: number;
   title: string;
   Icon?: React.ComponentType<any>;
-}) => <h2 className={styles.testDialogHeader}>{title}</h2>;
+}) => (
+  <h2 id="test-intro-title" className={styles.testDialogHeader}>
+    {title}
+  </h2>
+);
 
 const RangeGrid = ({
   groupNo,
@@ -113,17 +118,8 @@ export const TestIntroDialog = ({
   // Data derivations
   const groupWithSegments = useGroupWithSegments(item, segmentSize);
   const selectedSegment = useSelectedSegment(groupWithSegments, selectedRange);
-
-  // 初期選択: ダイアログを開いたときに最初のボタン（セグメント）を選択状態にする
-  const didInitRef = useRef(false);
-  useEffect(() => {
-    if (didInitRef.current) return;
-    if (!selectedRange && groupWithSegments.segments.length > 0) {
-      const firstSeg = groupWithSegments.segments[0];
-      onSelectRange?.({ groupNo: groupWithSegments.groupNo, ...firstSeg });
-    }
-    didInitRef.current = true;
-  }, [groupWithSegments, selectedRange, onSelectRange]);
+  // 初期選択（最初のボタンを選択）
+  useInitialSelect(groupWithSegments, selectedRange, onSelectRange);
 
   // Handlers
   const handleSelectRange = useCallback(
@@ -174,20 +170,19 @@ export const TestIntroDialog = ({
               設定変更
             </button>
           </div>
-          {(() => {
-            const { groupNo, title, icon: Icon, segments } = groupWithSegments;
-            return (
-              <div key={groupNo}>
-                <GroupHeader groupNo={groupNo} title={title} Icon={Icon} />
-                <RangeGrid
-                  groupNo={groupNo}
-                  segments={segments}
-                  selectedRange={selectedRange}
-                  onSelectRange={handleSelectRange}
-                />
-              </div>
-            );
-          })()}
+          <div key={groupWithSegments.groupNo}>
+            <GroupHeader
+              groupNo={groupWithSegments.groupNo}
+              title={groupWithSegments.title}
+              Icon={groupWithSegments.icon}
+            />
+            <RangeGrid
+              groupNo={groupWithSegments.groupNo}
+              segments={groupWithSegments.segments}
+              selectedRange={selectedRange}
+              onSelectRange={handleSelectRange}
+            />
+          </div>
           <div className={styles.testDialogActions}>
             <SecondaryButton className={styles.testDialogActionsButton} onClick={onClose}>
               閉じる
