@@ -56,8 +56,8 @@ export function GroupTabs({
             onClick={() => onChange(groupNo)}
             type="button"
           >
-            <IconComp className={styles.tabIcon} aria-hidden="true" />
             <span className={styles.tabAbbr}>{abbr}</span>
+            <IconComp className={styles.tabIcon} aria-hidden="true" />
           </button>
         );
       })}

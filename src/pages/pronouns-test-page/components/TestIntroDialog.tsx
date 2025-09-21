@@ -9,7 +9,7 @@ import { PrimaryButton } from '../../../shared/components/primary-button/Primary
 import { SecondaryButton } from '../../../shared/components/secondary-button/SecondaryButton';
 
 export type TestIntroDialogProps = {
-  items: PronounGroup[];
+  item: PronounGroup; // 単一グループに変更
   onClose: () => void;
   onSelectRange?: (range: RangeSelectionPayload) => void;
   onStart?: (payload: RangeSelectionPayload) => void;
@@ -80,37 +80,36 @@ const RangeGrid = ({
 };
 
 // ===== Hooks =====
-const useGroupsWithSegments = (groups: PronounGroup[], segmentSize: number) =>
+const useGroupWithSegments = (group: PronounGroup, segmentSize: number) =>
   useMemo(
-    () =>
-      groups.map((g) => ({
-        groupNo: g.groupNo,
-        title: g.title,
-        icon: g.icon,
-        segments: segmentItems(g.items, segmentSize, { assumeSorted: false }),
-      })),
-    [groups, segmentSize]
+    () => ({
+      groupNo: group.groupNo,
+      title: group.title,
+      icon: group.icon,
+      segments: segmentItems(group.items, segmentSize, { assumeSorted: false }),
+    }),
+    [group, segmentSize]
   );
 
 const useSelectedSegment = (
-  groupsWithSegments: Array<{
+  groupWithSegments: {
     groupNo: number;
     title: string;
     icon: any;
     segments: Segment[];
-  }>,
+  },
   selectedRange: SelectedRange
 ) =>
   useMemo(() => {
     if (!selectedRange) return undefined;
-    const group = groupsWithSegments.find((g) => g.groupNo === selectedRange.groupNo);
-    return group?.segments.find(
+    if (groupWithSegments.groupNo !== selectedRange.groupNo) return undefined;
+    return groupWithSegments.segments.find(
       (s) => s.start === selectedRange.start && s.end === selectedRange.end
     );
-  }, [groupsWithSegments, selectedRange]);
+  }, [groupWithSegments, selectedRange]);
 
 export const TestIntroDialog = ({
-  items,
+  item,
   onClose,
   onSelectRange,
   onStart,
@@ -120,8 +119,8 @@ export const TestIntroDialog = ({
   useEscapeKey(onClose, true);
 
   // Data derivations
-  const groupsWithSegments = useGroupsWithSegments(items, segmentSize);
-  const selectedSegment = useSelectedSegment(groupsWithSegments, selectedRange);
+  const groupWithSegments = useGroupWithSegments(item, segmentSize);
+  const selectedSegment = useSelectedSegment(groupWithSegments, selectedRange);
 
   // Handlers
   const handleSelectRange = useCallback(
@@ -175,17 +174,20 @@ export const TestIntroDialog = ({
             </div>
           </div>
           <h1>代名詞</h1>
-          {groupsWithSegments.map(({ groupNo, title, icon: Icon, segments }) => (
-            <div key={groupNo}>
-              <GroupHeader groupNo={groupNo} title={title} Icon={Icon} />
-              <RangeGrid
-                groupNo={groupNo}
-                segments={segments}
-                selectedRange={selectedRange}
-                onSelectRange={handleSelectRange}
-              />
-            </div>
-          ))}
+          {(() => {
+            const { groupNo, title, icon: Icon, segments } = groupWithSegments;
+            return (
+              <div key={groupNo}>
+                <GroupHeader groupNo={groupNo} title={title} Icon={Icon} />
+                <RangeGrid
+                  groupNo={groupNo}
+                  segments={segments}
+                  selectedRange={selectedRange}
+                  onSelectRange={handleSelectRange}
+                />
+              </div>
+            );
+          })()}
           <div className={styles.testDialogActions}>
             <SecondaryButton onClick={onClose}>閉じる</SecondaryButton>
             <PrimaryButton disabled={!selectedSegment || !selectedRange} onClick={handleStart}>

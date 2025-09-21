@@ -8,9 +8,10 @@ import { useBodyScrollLock } from './hooks/useBodyScrollLock';
 import { TestIntroDialog } from './components/TestIntroDialog';
 import { GroupTabs } from './components/GroupTabs';
 import { TestFabButton } from './components/TestFabButton';
+import { useSwipeTabs } from './hooks/useSwipeTabs';
 
 export type LearningEnglishPageProps = {
-  data: PronounGroup[]; // 配列
+  data: PronounGroup[]; // グループ一覧（ページ内表示は複数タブのまま）
 };
 
 export default function LearningEnglishPage({ data }: LearningEnglishPageProps) {
@@ -47,6 +48,10 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   // 背景スクロールロック
   useBodyScrollLock(showTest);
 
+  // 水平スワイプでタブ切替
+  const groupNos = useMemo(() => data.map((g) => g.groupNo), [data]);
+  const swipeRef = useSwipeTabs<HTMLDivElement>(activeGroupNo, groupNos, setActiveGroupNo);
+
   return (
     <div className={styles.container}>
       {/* タブバー */}
@@ -58,7 +63,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
           ariaLabel="品詞グループ"
         />
       )}
-      <main>
+      <main ref={swipeRef}>
         {data.map(({ groupNo, title, items, icon: IconComp }) => {
           const isActive = groupNo === activeGroupNo;
           return (
@@ -88,7 +93,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
       <TestFabButton hidden={hideFab} onClick={openTest} />
       {showTest && (
         <TestIntroDialog
-          items={data}
+          item={data.find((g) => g.groupNo === activeGroupNo) ?? data[0]}
           onClose={closeTest}
           selectedRange={selectedRange}
           onSelectRange={(seg) => {
