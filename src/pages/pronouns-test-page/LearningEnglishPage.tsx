@@ -15,12 +15,12 @@ export type LearningEnglishPageProps = {
 
 export default function LearningEnglishPage({ data }: LearningEnglishPageProps) {
   const speech = useSpeech();
-
-  const hideFab = useFabHideOnBottom();
   const [showTest, setShowTest] = useState(false);
   // タブのアクティブ状態: 初期は最初のグループ
   const initialGroupNo = useMemo(() => (data && data.length > 0 ? data[0].groupNo : 0), [data]);
   const [activeGroupNo, setActiveGroupNo] = useState<number>(initialGroupNo);
+  // タブ切替/内容変化で再評価されるよう依存に activeGroupNo を渡す
+  const hideFab = useFabHideOnBottom(16, [activeGroupNo]);
   // dataが変わってアクティブが存在しなくなった場合のフォールバック
   useEffect(() => {
     if (!data || data.length === 0) return;
