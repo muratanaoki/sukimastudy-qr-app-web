@@ -132,6 +132,10 @@
 }
 
 .testRangeButtonSelected {
-  color: var(--color-neutral-500);
-  border: 2px solid var(--main-color); /* 対比: 選択状態の明確化（最小限） */
+  /* 選択状態が他モジュールの基本スタイルに上書きされないよう優先度を上げる */
+  color: var(--main-color) !important;
+  /* base側で border ショートハンドが指定されているため、color だけ上書きでもOKだが安全のため指定 */
+  border: 2px solid var(--main-color) !important;
+  /* 視認性向上のための軽いハイライト */
+  background: var(--base-color) !important; /* 近似: アイコン背景 #e7f1fc と調和 */
 }
