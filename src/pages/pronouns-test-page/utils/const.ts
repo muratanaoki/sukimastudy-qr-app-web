@@ -987,6 +987,7 @@ export const DATA: PronounGroup[] = [
   {
     groupNo: 1,
     title: '人称・所有・再帰代名詞',
+    abbr: '人称',
     icon: User,
     url: '/pronouns/1',
     items: withIndex(DATA_RAW1),
@@ -994,6 +995,7 @@ export const DATA: PronounGroup[] = [
   {
     groupNo: 2,
     title: '不定代名詞（人・物・事）',
+    abbr: '不定',
     icon: Users,
     url: '/pronouns/2',
     items: withIndex(DATA_RAW2),
@@ -1001,6 +1003,7 @@ export const DATA: PronounGroup[] = [
   {
     groupNo: 3,
     title: '不定代名詞（数量・部分など）',
+    abbr: '数量',
     icon: ChartColumn,
     url: '/pronouns/3',
     items: withIndex(DATA_RAW3),
@@ -1008,6 +1011,7 @@ export const DATA: PronounGroup[] = [
   {
     groupNo: 4,
     title: '指示代名詞・その他',
+    abbr: '指示',
     icon: MousePointer,
     url: '/pronouns/4',
     items: withIndex(DATA_RAW4),
@@ -1024,6 +1028,12 @@ export const POS_GROUPS: PosGroup[] = [
     pos: 'pronouns',
     url: '/pronouns',
     title: '代名詞',
+    groups: DATA,
+  },
+  {
+    pos: 'others',
+    url: '/others',
+    title: 'その他',
     groups: DATA,
   },
 ];

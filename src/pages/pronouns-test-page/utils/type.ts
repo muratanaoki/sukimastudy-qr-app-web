@@ -28,6 +28,7 @@ export type ExampleEntry = { en?: string; jp?: string };
 export type PronounGroup = {
   groupNo: number; // 連番（将来複数化してもよい）
   title: string; // 日本語タイトル
+  abbr: string; // タブ用の短い表示（2文字程度）
   items: PronounItem[]; // 本体
   url: string; // グループの URL
   icon: LucideIcon; // 見出し用アイコン（未指定時は既定の User）
@@ -38,7 +39,7 @@ export type RawPronounItem = Omit<PronounItem, 'index'>;
 export type Segment = { start: number; end: number; items: PronounItem[] };
 
 // 上位の品詞レベル（将来拡張を見越してユニオンで定義）
-export type PartOfSpeech = 'pronouns';
+export type PartOfSpeech = 'pronouns' | 'others';
 
 // 品詞グループ（上位）: URL と表示名、下位グループの配列
 export type PosGroup = {

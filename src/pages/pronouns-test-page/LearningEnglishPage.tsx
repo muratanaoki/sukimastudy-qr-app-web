@@ -3,10 +3,11 @@ import { useSpeech } from './hooks/useSpeech';
 import { EnglishWord } from './components/EnglishWord';
 import type { PronounGroup } from './utils/type';
 import { useFabHideOnBottom } from './hooks/useFabHideOnBottom';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBodyScrollLock } from './hooks/useBodyScrollLock';
-import { FileCheck } from 'lucide-react';
 import { TestIntroDialog } from './components/TestIntroDialog';
+import { GroupTabs } from './components/GroupTabs';
+import { TestFabButton } from './components/TestFabButton';
 
 export type LearningEnglishPageProps = {
   data: PronounGroup[]; // 配列
@@ -17,15 +18,22 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
 
   const hideFab = useFabHideOnBottom();
   const [showTest, setShowTest] = useState(false);
+  // タブのアクティブ状態: 初期は最初のグループ
+  const initialGroupNo = useMemo(() => (data && data.length > 0 ? data[0].groupNo : 0), [data]);
+  const [activeGroupNo, setActiveGroupNo] = useState<number>(initialGroupNo);
+  // dataが変わってアクティブが存在しなくなった場合のフォールバック
+  useEffect(() => {
+    if (!data || data.length === 0) return;
+    const exists = data.some((g) => g.groupNo === activeGroupNo);
+    if (!exists) {
+      setActiveGroupNo(data[0].groupNo);
+    }
+  }, [data, activeGroupNo]);
   const [selectedRange, setSelectedRange] = useState<{
     groupNo: number;
     start: number;
     end: number;
   } | null>(null);
-
-  const fabWrapperClass = hideFab
-    ? `${styles.testFabWrapper} ${styles.hide}`
-    : styles.testFabWrapper;
 
   const openTest = useCallback(() => {
     setShowTest(true);
@@ -41,34 +49,43 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
 
   return (
     <div className={styles.container}>
+      {/* タブバー */}
+      {data.length > 0 && (
+        <GroupTabs
+          items={data}
+          activeGroupNo={activeGroupNo}
+          onChange={setActiveGroupNo}
+          ariaLabel="品詞グループ"
+        />
+      )}
       <main>
-        {data.map(({ groupNo, title, items, icon: IconComp }) => (
-          <section key={groupNo} className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
-              <h1 className={styles.title}>{title}</h1>
-              <IconComp className={styles.headerIcon} />
-            </div>
-            <ul className={styles.cardGrid}>
-              {items.map((it) => (
-                <EnglishWord key={it.index} item={it} speech={speech} />
-              ))}
-            </ul>
-          </section>
-        ))}
+        {data.map(({ groupNo, title, items, icon: IconComp }) => {
+          const isActive = groupNo === activeGroupNo;
+          return (
+            <section
+              key={groupNo}
+              id={`panel-${groupNo}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${groupNo}`}
+              hidden={!isActive}
+              className={styles.section}
+            >
+              <div className={styles.sectionHeader}>
+                <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
+                <h1 className={styles.title}>{title}</h1>
+                <IconComp className={styles.headerIcon} />
+              </div>
+              <ul className={styles.cardGrid}>
+                {items.map((it) => (
+                  <EnglishWord key={it.index} item={it} speech={speech} />
+                ))}
+              </ul>
+            </section>
+          );
+        })}
       </main>
 
-      <div className={fabWrapperClass}>
-        <button
-          type="button"
-          className={styles.testFabButton}
-          aria-label="テスト開始"
-          onClick={openTest}
-        >
-          <FileCheck className={styles.testFabIcon} />
-          <span className={styles.testFabText}>テスト</span>
-        </button>
-      </div>
+      <TestFabButton hidden={hideFab} onClick={openTest} />
       {showTest && (
         <TestIntroDialog
           items={data}
