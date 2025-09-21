@@ -1,6 +1,10 @@
 .container {
   margin: 0 auto;
   background: var(--base-color);
+  /* 画面下に白が見えないよう、ヘッダー分を差し引いたビューポート高を確保 */
+  min-height: calc(100vh - var(--header-height, 0px));
+  /* 動的ビューポート（モバイルのアドレスバー変動に追従） */
+  min-height: calc(100dvh - var(--header-height, 0px));
 }
 
 /* セクション先頭の大見出しと右端アイコンを左右に配置 */
