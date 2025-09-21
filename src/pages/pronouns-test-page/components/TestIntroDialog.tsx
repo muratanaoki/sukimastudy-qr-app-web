@@ -1,13 +1,11 @@
 import styles from './testIntroDialog.module.css';
-import { FileCheck, Settings } from 'lucide-react';
+import { FileCheck, Settings, X } from 'lucide-react';
 import type { PronounGroup, Segment } from '../utils/type';
 import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
 import clsx from 'clsx';
 import { PrimaryButton } from '../../../shared/components/primary-button/PrimaryButton';
-import { SecondaryButton } from '../../../shared/components/secondary-button/SecondaryButton';
-
 import { useInitialSelect } from '../hooks/useInitialSelect';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
 
@@ -154,6 +152,15 @@ export const TestIntroDialog = ({
           <div className={styles.testDialogHeaderRightRow}>
             <button
               type="button"
+              className={styles.testDialogXButton}
+              onClick={onClose}
+              aria-label="閉じる"
+              title="閉じる"
+            >
+              <X strokeWidth={2.2} className={styles.testDialogXIcon} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
               className={styles.testDialogSettingsButton}
               aria-label="設定を変更"
               title="設定を変更"
@@ -180,9 +187,6 @@ export const TestIntroDialog = ({
             />
           </div>
           <div className={styles.testDialogActions}>
-            <SecondaryButton className={styles.testDialogActionsButton} onClick={onClose}>
-              閉じる
-            </SecondaryButton>
             <PrimaryButton
               className={styles.testDialogActionsButton}
               disabled={!selectedSegment || !selectedRange}
