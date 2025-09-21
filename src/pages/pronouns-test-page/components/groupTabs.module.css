@@ -1,0 +1,50 @@
+/* --- Tabs (GroupTabs) --- */
+.tabBar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: grid;
+  gap: var(--space-050);
+  padding: var(--space-075) var(--space-150) var(--space-075) var(--space-150);
+  background: #ffffff;
+  border-bottom: var(--border-width-1) solid var(--border-color-default);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+  padding: var(--space-050) var(--space-075);
+  border-radius: var(--radius-2);
+  border: var(--border-width-1) solid var(--border-color-default);
+  background: var(--surface-1);
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+  justify-content: center;
+  width: 100%;
+}
+
+.tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent-color) 40%, transparent);
+}
+
+.tabActive {
+  background: color-mix(in oklab, var(--accent-color) 12%, var(--surface-1));
+  border-color: color-mix(in oklab, var(--accent-color) 40%, var(--border-color-default));
+}
+
+.tabIcon {
+  width: var(--fs-18);
+  height: var(--fs-18);
+  color: var(--color-neutral-600);
+}
+
+.tabAbbr {
+  font-size: var(--fs-14);
+  font-weight: 700;
+}

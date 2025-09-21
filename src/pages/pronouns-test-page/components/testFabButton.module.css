@@ -1,0 +1,52 @@
+/* --- Floating Test Button (FAB) --- */
+.testFabWrapper {
+  position: fixed;
+  /* 画面幅が container-max を超えた場合は中央配置されたコンテナ右端 + 余白に揃える
+     余白 = (ビューポート幅 - var(--container-max))/2 + 余白
+     通常（狭い画面）では負値になるため max() で下限を確保 */
+  right: max(var(--space-150), calc((100vw - var(--container-max)) / 2 + var(--space-150)));
+  bottom: var(--space-150);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.hide {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(0.75rem);
+}
+
+.testFabButton {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background-color: var(--accent-color);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-025);
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+  text-align: center;
+}
+
+.testFabIcon {
+  font-size: var(--fs-18);
+}
+
+.testFabText {
+  font-size: var(--fs-14);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}

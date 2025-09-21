@@ -1,4 +1,4 @@
-import styles from '../learningEnglishPage.module.css';
+import styles from './testFabButton.module.css';
 import { FileCheck } from 'lucide-react';
 
 export type TestFabButtonProps = {

@@ -1,4 +1,4 @@
-import styles from '../learningEnglishPage.module.css';
+import styles from './groupTabs.module.css';
 import type { PronounGroup } from '../utils/type';
 import { useCallback } from 'react';
 import { Key } from '@/shared/utils/enum';
