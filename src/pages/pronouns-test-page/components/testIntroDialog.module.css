@@ -121,45 +121,17 @@
   grid-column: 1 / -1; /* 両カラムを跨いで全幅表示 */
 }
 
-.testRangeButton {
-  color: var(--color-neutral-500);
-  position: relative;
-  background: #ffffff;
-  border: 2px solid var(--color-neutral-200);
-  font-size: var(--fs-16);
-  font-weight: 600;
-  border-radius: var(--radius-2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-025);
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.08s ease;
-  min-height: 2.75rem; /* タップ領域 ≧ 44px */
-}
-
-.testRangeButtonSelected {
-  color: var(--color-neutral-500);
-  border: 2px solid var(--main-color); /* 対比: 選択状態の明確化（最小限） */
-}
-
 .headerIcon {
   width: var(--fs-18);
   height: var(--fs-18);
   color: var(--color-neutral-500);
 }
 
-/* アクセシビリティ: フォーカス可視化（余計な装飾なし） */
-.testRangeButton:focus-visible,
-.testDialogSettingsButton:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
 .testDialogActionsButton {
   width: 100%;
+}
+
+.testRangeButtonSelected {
+  color: var(--color-neutral-500);
+  border: 2px solid var(--main-color); /* 対比: 選択状態の明確化（最小限） */
 }

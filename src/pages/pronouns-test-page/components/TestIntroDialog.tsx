@@ -7,7 +7,9 @@ import { segmentItems } from '../utils/function';
 import clsx from 'clsx';
 import { PrimaryButton } from '../../../shared/components/primary-button/PrimaryButton';
 import { SecondaryButton } from '../../../shared/components/secondary-button/SecondaryButton';
+
 import { useInitialSelect } from '../hooks/useInitialSelect';
+import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
 
 export type TestIntroDialogProps = {
   item: PronounGroup; // 単一グループに変更
@@ -58,19 +60,13 @@ const RangeGrid = ({
   return (
     <div className={styles.testRangeGrid} role="list">
       {segments.map((seg) => (
-        <button
+        <SelectableButton
           key={`${seg.start}-${seg.end}`}
-          type="button"
-          role="listitem"
-          aria-pressed={isSelected(seg) ? 'true' : 'false'}
-          className={clsx(
-            styles.testRangeButton,
-            isSelected(seg) && styles.testRangeButtonSelected
-          )}
+          className={clsx(isSelected(seg) && styles.testRangeButtonSelected)}
           onClick={() => onSelectRange?.({ groupNo, ...seg })}
         >
           {seg.start}~{seg.end}語
-        </button>
+        </SelectableButton>
       ))}
     </div>
   );
