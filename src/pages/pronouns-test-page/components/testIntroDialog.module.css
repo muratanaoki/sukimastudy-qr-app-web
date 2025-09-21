@@ -29,15 +29,10 @@
   background: var(--surface-1);
   color: var(--color-neutral-900);
   border-radius: var(--radius-3);
-  padding: var(--space-200);
+  padding: var(--space-100) var(--space-150) var(--space-150) var(--space-150);
   display: flex;
   flex-direction: column;
   border: var(--border-width-1) solid var(--border-color-default);
-}
-
-.testDialogHeader {
-  display: flex;
-  justify-content: flex-end; /* 設定ボタンは右上に整列 */
 }
 
 .testDialogIconWrap {
@@ -45,10 +40,10 @@
   top: 0;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 4rem;
-  height: 4rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border-radius: 50%;
-  background: var(--base-color);
+  background: #e7f1fc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,26 +60,29 @@
   flex-direction: column;
 }
 
-.testDialogHeaderLeftRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-075);
-}
-
 .testDialogHeaderRightRow {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--space-075);
+  justify-content: flex-end;
+  margin-bottom: var(--space-100);
 }
 
-.testDialogTitle {
-  font-size: var(--fs-18);
-  white-space: nowrap;
+.testDialogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: var(--space-075);
+  color: var(--main-color);
+  font-size: var(--fs-20);
+  font-family: var(--font-family-heading);
+  margin-bottom: var(--space-150);
 }
 
 .testDialogActions {
   display: flex;
-  gap: var(--space-100);
+  gap: var(--space-050);
   justify-content: flex-end; /* 整列: アクションは右寄せ */
 }
 
@@ -94,26 +92,33 @@
   align-items: center;
   gap: var(--space-025);
   background: white;
-  color: var(--color-neutral-600);
+  color: var(--color-neutral-400);
   border: none;
   padding: 0;
   cursor: pointer;
   font: inherit;
   justify-content: center;
-  font-size: var(--fs-14);
+  font-size: var(--fs-16);
   font-weight: 600;
 }
 
 .testDialogSettingsIcon {
-  width: var(--fs-16);
-  height: var(--fs-16);
+  width: var(--fs-18);
+  height: var(--fs-18);
 }
 
 /* --- Range selection grid --- */
 .testRangeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-  gap: var(--space-100);
+  /* 常に2列を維持 */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-050);
+  margin-bottom: var(--space-150);
+}
+
+/* 要素が1つだけのときは2列分に拡張 */
+.testRangeGrid > button:only-child {
+  grid-column: 1 / -1; /* 両カラムを跨いで全幅表示 */
 }
 
 .testRangeButton {
@@ -121,9 +126,8 @@
   position: relative;
   background: #ffffff;
   border: 2px solid var(--color-neutral-200);
-  font-size: var(--fs-14);
+  font-size: var(--fs-16);
   font-weight: 600;
-  padding: var(--space-100) var(--space-150);
   border-radius: var(--radius-2);
   cursor: pointer;
   display: flex;
@@ -154,4 +158,8 @@
 .testDialogSettingsButton:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
+}
+
+.testDialogActionsButton {
+  width: 100%;
 }

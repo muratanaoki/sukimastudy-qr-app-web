@@ -1,7 +1,7 @@
 import styles from './testIntroDialog.module.css';
 import { FileCheck, Settings } from 'lucide-react';
 import type { PronounGroup, Segment } from '../utils/type';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { segmentItems } from '../utils/function';
 import clsx from 'clsx';
@@ -23,20 +23,12 @@ type RangeSelectionPayload = { groupNo: number } & Segment;
 
 // ===== Small Presentational Components =====
 const GroupHeader = ({
-  groupNo,
   title,
-  Icon,
 }: {
   groupNo: number;
   title: string;
   Icon?: React.ComponentType<any>;
-}) => (
-  <h2 className={styles.testDialogHeaderLeftRow}>
-    <span aria-hidden="true">{String(groupNo).padStart(2, '0')}.</span>
-    <span className={styles.testDialogTitle}>{title}</span>
-    {Icon && <Icon className={styles.headerIcon} aria-hidden="true" />}
-  </h2>
-);
+}) => <h2 className={styles.testDialogHeader}>{title}</h2>;
 
 const RangeGrid = ({
   groupNo,
@@ -122,6 +114,17 @@ export const TestIntroDialog = ({
   const groupWithSegments = useGroupWithSegments(item, segmentSize);
   const selectedSegment = useSelectedSegment(groupWithSegments, selectedRange);
 
+  // 初期選択: ダイアログを開いたときに最初のボタン（セグメント）を選択状態にする
+  const didInitRef = useRef(false);
+  useEffect(() => {
+    if (didInitRef.current) return;
+    if (!selectedRange && groupWithSegments.segments.length > 0) {
+      const firstSeg = groupWithSegments.segments[0];
+      onSelectRange?.({ groupNo: groupWithSegments.groupNo, ...firstSeg });
+    }
+    didInitRef.current = true;
+  }, [groupWithSegments, selectedRange, onSelectRange]);
+
   // Handlers
   const handleSelectRange = useCallback(
     (seg: RangeSelectionPayload) =>
@@ -156,24 +159,21 @@ export const TestIntroDialog = ({
           <FileCheck className={styles.testDialogIcon} />
         </div>
         <div className={styles.testDialogInner}>
-          <div className={styles.testDialogHeader}>
-            <div className={styles.testDialogHeaderRightRow}>
-              <button
-                type="button"
-                className={styles.testDialogSettingsButton}
-                aria-label="設定を変更"
-                title="設定を変更"
-              >
-                <Settings
-                  strokeWidth={2.2}
-                  className={styles.testDialogSettingsIcon}
-                  aria-hidden="true"
-                />
-                <span>設定変更</span>
-              </button>
-            </div>
+          <div className={styles.testDialogHeaderRightRow}>
+            <button
+              type="button"
+              className={styles.testDialogSettingsButton}
+              aria-label="設定を変更"
+              title="設定を変更"
+            >
+              <Settings
+                strokeWidth={2.2}
+                className={styles.testDialogSettingsIcon}
+                aria-hidden="true"
+              />
+              設定変更
+            </button>
           </div>
-          <h1>代名詞</h1>
           {(() => {
             const { groupNo, title, icon: Icon, segments } = groupWithSegments;
             return (
@@ -189,8 +189,14 @@ export const TestIntroDialog = ({
             );
           })()}
           <div className={styles.testDialogActions}>
-            <SecondaryButton onClick={onClose}>閉じる</SecondaryButton>
-            <PrimaryButton disabled={!selectedSegment || !selectedRange} onClick={handleStart}>
+            <SecondaryButton className={styles.testDialogActionsButton} onClick={onClose}>
+              閉じる
+            </SecondaryButton>
+            <PrimaryButton
+              className={styles.testDialogActionsButton}
+              disabled={!selectedSegment || !selectedRange}
+              onClick={handleStart}
+            >
               スタート
             </PrimaryButton>
           </div>
