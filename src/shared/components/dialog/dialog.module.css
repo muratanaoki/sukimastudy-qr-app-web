@@ -1,0 +1,87 @@
+/* --- Fullscreen Overlay --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  animation: fadeInOverlay 0.3s ease;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  padding-left: var(--space-150);
+  padding-right: var(--space-150);
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Dialog Card --- */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  background: var(--surface-1);
+  color: var(--color-neutral-900);
+  border-radius: var(--radius-3);
+  padding: var(--space-100) var(--space-150) var(--space-150) var(--space-150);
+  display: flex;
+  flex-direction: column;
+  border: var(--border-width-1) solid var(--border-color-default);
+}
+
+.iconWrap {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: #e7f1fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--main-color);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerRightRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-150);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: var(--space-075);
+  color: var(--main-color);
+  font-size: var(--fs-20);
+  font-family: var(--font-family-heading);
+  margin-bottom: var(--space-100);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-050);
+  justify-content: flex-end;
+}

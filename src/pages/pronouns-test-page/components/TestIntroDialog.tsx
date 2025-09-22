@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { PrimaryButton } from '../../../shared/components/primary-button/PrimaryButton';
 import { useInitialSelect } from '../hooks/useInitialSelect';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
-import { CloseButton } from '@/shared/components/close-button/CloseButton';
+import { DialogCard } from '@/shared/components/dialog/DialogCard';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
@@ -24,19 +24,7 @@ export type TestIntroDialogProps = {
   onOpenSettings?: () => void; // 設定ダイアログを開くトリガー
 };
 
-// ===== Small Presentational Components =====
-const GroupHeader = ({
-  title,
-}: {
-  groupNo: number;
-  title: string;
-  Icon?: React.ComponentType<any>;
-}) => (
-  <h2 id="test-intro-title" className={styles.testDialogHeader}>
-    {title}
-  </h2>
-);
-
+// ===== Presentational =====
 const RangeGrid = ({
   groupNo,
   segments,
@@ -141,58 +129,45 @@ export const TestIntroDialog = ({
   }, [onStart, selectedRange, selectedSegment]);
 
   return (
-    <div
-      className={styles.testOverlay}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="test-intro-title"
+    <DialogCard
+      onClose={onClose}
+      title={groupWithSegments.title}
+      titleId="test-intro-title"
+      Icon={FileCheck}
+      headerRight={
+        <button
+          type="button"
+          className={styles.testDialogSettingsButton}
+          aria-label="設定を変更"
+          title="設定を変更"
+          onClick={onOpenSettings}
+        >
+          <Settings
+            strokeWidth={2.2}
+            className={styles.testDialogSettingsIcon}
+            aria-hidden="true"
+          />
+          設定変更
+        </button>
+      }
+      actions={
+        <PrimaryButton
+          className={styles.testDialogActionsButton}
+          disabled={!selectedSegment || !selectedRange}
+          onClick={handleStart}
+        >
+          スタート
+        </PrimaryButton>
+      }
     >
-      <div className={styles.testDialog}>
-        <div className={styles.testDialogIconWrap}>
-          <FileCheck className={styles.testDialogIcon} />
-        </div>
-        <div className={styles.testDialogInner}>
-          <div className={styles.testDialogHeaderRightRow}>
-            <CloseButton onClose={onClose} />
-            <button
-              type="button"
-              className={styles.testDialogSettingsButton}
-              aria-label="設定を変更"
-              title="設定を変更"
-              onClick={onOpenSettings}
-            >
-              <Settings
-                strokeWidth={2.2}
-                className={styles.testDialogSettingsIcon}
-                aria-hidden="true"
-              />
-              設定変更
-            </button>
-          </div>
-          <div key={groupWithSegments.groupNo}>
-            <GroupHeader
-              groupNo={groupWithSegments.groupNo}
-              title={groupWithSegments.title}
-              Icon={groupWithSegments.icon}
-            />
-            <RangeGrid
-              groupNo={groupWithSegments.groupNo}
-              segments={groupWithSegments.segments}
-              selectedRange={selectedRange}
-              onSelectRange={handleSelectRange}
-            />
-          </div>
-          <div className={styles.testDialogActions}>
-            <PrimaryButton
-              className={styles.testDialogActionsButton}
-              disabled={!selectedSegment || !selectedRange}
-              onClick={handleStart}
-            >
-              スタート
-            </PrimaryButton>
-          </div>
-        </div>
+      <div key={groupWithSegments.groupNo}>
+        <RangeGrid
+          groupNo={groupWithSegments.groupNo}
+          segments={groupWithSegments.segments}
+          selectedRange={selectedRange}
+          onSelectRange={handleSelectRange}
+        />
       </div>
-    </div>
+    </DialogCard>
   );
 };
