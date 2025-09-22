@@ -8,21 +8,11 @@ export type PronounItem = {
   ipa: string;
   /** 日本語訳 */
   jp: string;
-  /** 例文（中1レベル、英語のみ） */
-  exJ1?: string;
-  /** 例文（中2レベル、英語のみ） */
-  exJ2?: string;
-  /** 例文（中3レベル、英語のみ） */
-  exJ3?: string;
-  /** 例文（中1レベル）の日本語訳 */
-  exJ1Jp?: string;
-  /** 例文（中2レベル）の日本語訳 */
-  exJ2Jp?: string;
-  /** 例文（中3レベル）の日本語訳 */
-  exJ3Jp?: string;
+  /** 例文配列 */
+  examples: ExampleEntry[];
 };
 
-export type ExampleEntry = { en?: string; jp?: string };
+export type ExampleEntry = { en?: string; jp?: string; level?: 1 | 2 | 3 };
 
 // 単一グループ
 export type PronounGroup = {
@@ -34,7 +24,13 @@ export type PronounGroup = {
   icon: LucideIcon; // 見出し用アイコン（未指定時は既定の User）
 };
 
-export type RawPronounItem = Omit<PronounItem, 'index'>;
+// 入力データ（完全移行後: examples を必須に）
+export type RawPronounItem = {
+  term: string;
+  ipa: string;
+  jp: string;
+  examples: ExampleEntry[];
+};
 
 export type Segment = { start: number; end: number; items: PronounItem[] };
 
