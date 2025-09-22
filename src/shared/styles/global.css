@@ -10,8 +10,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Zen+Maru+Gothic:wght@400&display=swap'); /* Zen Maru Gothic 重複インポート（ウェイト追加用）。統合検討余地あり */
 
 :root {
-  --base-color: #f2f8fd; /* メインカラー（青） */
-  --main-color: #2196f3; /* サブカラー */
+  --main-color-100: #f2f8fd; /* メインカラー（青） */
+  --main-color-200: #e7f1fc; /* メインカラー（青）淡 */
+  --main-color-300: #2196f3; /* サブカラー */
   --accent-color: #1976d2; /* アクセントカラー（濃い青） */
 
   /* ---------------------------------

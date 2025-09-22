@@ -38,9 +38,9 @@
 
 .testRangeButtonSelected {
   /* 選択状態が他モジュールの基本スタイルに上書きされないよう優先度を上げる */
-  color: var(--main-color) !important;
+  color: var(--main-color-300) !important;
   /* base側で border ショートハンドが指定されているため、color だけ上書きでもOKだが安全のため指定 */
-  border: 2px solid var(--main-color) !important;
+  border: 2px solid var(--main-color-300) !important;
   /* 視認性向上のための軽いハイライト */
-  background: var(--base-color) !important; /* 近似: アイコン背景 #e7f1fc と調和 */
+  background: var(--main-color-100) !important; /* 近似: アイコン背景 #e7f1fc と調和 */
 }

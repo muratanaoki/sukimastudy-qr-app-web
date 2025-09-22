@@ -1,6 +1,6 @@
 .container {
   margin: 0 auto;
-  background: var(--base-color);
+  background: var(--main-color-100);
   /* 画面下に白が見えないよう、ヘッダー分を差し引いたビューポート高を確保 */
   min-height: calc(100vh - var(--header-height, 0px));
   /* 動的ビューポート（モバイルのアドレスバー変動に追従） */
@@ -40,7 +40,7 @@
   margin: 0;
   font-family: var(--font-family-heading);
   font-weight: 700;
-  color: var(--main-color);
+  color: var(--main-color-300);
   margin-right: auto;
   min-width: 0;
   letter-spacing: 0.0125rem;
@@ -50,7 +50,7 @@
 
 .section {
   padding: var(--space-150);
-  background: var(--base-color);
+  background: var(--main-color-100);
 }
 
 /* Grid for cards on the page */

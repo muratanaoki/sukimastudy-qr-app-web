@@ -28,9 +28,9 @@
 
 /* 選択状態の装飾（SelectableButton の基本に上書き） */
 .selected {
-  color: var(--main-color) !important;
-  border: 2px solid var(--main-color) !important;
-  background: var(--base-color) !important;
+  color: var(--main-color-300) !important;
+  border: 2px solid var(--main-color-300) !important;
+  background: var(--main-color-100) !important;
 }
 
 .sections {
