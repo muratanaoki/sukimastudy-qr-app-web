@@ -6,6 +6,7 @@ import { useFabHideOnBottom } from './hooks/useFabHideOnBottom';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBodyScrollLock } from './hooks/useBodyScrollLock';
 import { TestIntroDialog } from './components/TestIntroDialog';
+import { SettingDialog } from './components/SettingDialog';
 import { GroupTabs } from './components/GroupTabs';
 import { TestFabButton } from './components/TestFabButton';
 import { useSwipeTabs } from './hooks/useSwipeTabs';
@@ -17,6 +18,7 @@ export type LearningEnglishPageProps = {
 export default function LearningEnglishPage({ data }: LearningEnglishPageProps) {
   const speech = useSpeech();
   const [showTest, setShowTest] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   // タブのアクティブ状態: 初期は最初のグループ
   const initialGroupNo = useMemo(() => (data && data.length > 0 ? data[0].groupNo : 0), [data]);
   const [activeGroupNo, setActiveGroupNo] = useState<number>(initialGroupNo);
@@ -45,8 +47,20 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
     setShowTest(false);
   }, []);
 
+  const openSettings = useCallback(() => {
+    // 設定ダイアログを開いたらテストダイアログは閉じる
+    setShowSettings(true);
+    setShowTest(false);
+  }, []);
+
+  const closeSettings = useCallback(() => {
+    setShowSettings(false);
+    // 設定を閉じたらテストダイアログに戻る
+    setShowTest(true);
+  }, []);
+
   // 背景スクロールロック
-  useBodyScrollLock(showTest);
+  useBodyScrollLock(showTest || showSettings);
 
   // 水平スワイプでタブ切替
   const groupNos = useMemo(() => data.map((g) => g.groupNo), [data]);
@@ -104,8 +118,10 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
             console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
             closeTest();
           }}
+          onOpenSettings={openSettings}
         />
       )}
+      {showSettings && <SettingDialog onClose={closeSettings} />}
     </div>
   );
 }

@@ -10,6 +10,10 @@ import { useInitialSelect } from '../hooks/useInitialSelect';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 
+// ===== Types =====
+type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
+type RangeSelectionPayload = { groupNo: number } & Segment;
+
 export type TestIntroDialogProps = {
   item: PronounGroup; // 単一グループに変更
   onClose: () => void;
@@ -17,11 +21,8 @@ export type TestIntroDialogProps = {
   onStart?: (payload: RangeSelectionPayload) => void;
   segmentSize?: number; // default 10
   selectedRange?: SelectedRange;
+  onOpenSettings?: () => void; // 設定ダイアログを開くトリガー
 };
-
-// ===== Types =====
-type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
-type RangeSelectionPayload = { groupNo: number } & Segment;
 
 // ===== Small Presentational Components =====
 const GroupHeader = ({
@@ -107,6 +108,7 @@ export const TestIntroDialog = ({
   onStart,
   segmentSize = 10,
   selectedRange,
+  onOpenSettings,
 }: TestIntroDialogProps) => {
   useEscapeKey(onClose, true);
 
@@ -157,6 +159,7 @@ export const TestIntroDialog = ({
               className={styles.testDialogSettingsButton}
               aria-label="設定を変更"
               title="設定を変更"
+              onClick={onOpenSettings}
             >
               <Settings
                 strokeWidth={2.2}
