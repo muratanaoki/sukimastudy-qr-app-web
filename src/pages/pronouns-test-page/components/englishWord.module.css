@@ -3,7 +3,7 @@
   border: var(--border-width-1) solid var(--border-color-default);
   border-radius: var(--radius-3);
   padding: var(--space-100);
-  background: var(--surface-1);
+  background: var(--base-color);
   gap: var(--space-100);
   transition:
     box-shadow 0.15s ease,
@@ -90,7 +90,7 @@
   margin-left: auto;
   flex: 0 0 auto;
   font-size: var(--fs-14);
-  background: var(--surface-1);
+  background: var(--base-color);
   border: var(--border-width-1) solid var(--border-color-default);
   border-radius: var(--radius-2);
   padding: var(--space-025) var(--space-050);
@@ -108,7 +108,7 @@
   align-items: center;
   border-radius: var(--radius-2);
   border: var(--border-width-1) solid var(--border-color-default);
-  background: var(--surface-1);
+  background: var(--base-color);
   color: var(--color-neutral-500);
   cursor: pointer;
   transition:

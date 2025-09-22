@@ -1,5 +1,5 @@
 .header {
-  background: var(--surface-1);
+  background: var(--base-color);
   border-bottom: var(--border-width-1) solid var(--border-color-soft);
   display: flex;
   align-items: center;
@@ -40,7 +40,7 @@
   right: 0;
   bottom: 0;
   z-index: var(--z-90); /* ヘッダーの下、コンテンツの上 */
-  background: var(--surface-1);
+  background: var(--base-color);
   border-bottom: var(--border-width-1) solid var(--border-color-soft);
   /* ヘッダー直下から “下にスライドして現れる” 表現 */
   top: var(--header-height, 0px);
