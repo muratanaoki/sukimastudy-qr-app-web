@@ -10,6 +10,12 @@ export type PronounItem = {
   jp: string;
   /** 例文配列 */
   examples: ExampleEntry[];
+  choices: QAChoices;
+};
+
+export type QAChoices = {
+  enToJp: [string, string, string];
+  jpToEn: [string, string, string];
 };
 
 export type ExampleEntry = { en?: string; jp?: string; level?: 1 | 2 | 3 };
@@ -30,6 +36,7 @@ export type RawPronounItem = {
   ipa: string;
   jp: string;
   examples: ExampleEntry[];
+  choices: QAChoices;
 };
 
 export type Segment = { start: number; end: number; items: PronounItem[] };
