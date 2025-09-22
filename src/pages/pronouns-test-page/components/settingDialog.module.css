@@ -1,0 +1,31 @@
+.settingDialogHeading {
+  font-size: var(--fs-18);
+  font-weight: 600;
+  margin-bottom: var(--space-050);
+  color: var(--color-neutral-600);
+}
+
+/* 設定ダイアログ内のボタン配置用グリッド */
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-050);
+}
+
+/* 2列が見やすいセクション用 */
+.buttonGrid.twoCols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* 選択状態の装飾（SelectableButton の基本に上書き） */
+.selected {
+  color: var(--main-color) !important;
+  border: 2px solid var(--main-color) !important;
+  background: var(--base-color) !important;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-100);
+}
