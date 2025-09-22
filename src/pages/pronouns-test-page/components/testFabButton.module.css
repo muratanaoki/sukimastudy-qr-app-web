@@ -53,8 +53,8 @@
   pointer-events: none; /* クリックの邪魔をしない */
 }
 
-.testFabIcon {
-  font-size: var(--fs-18);
+.testFabButton svg {
+  font-size: var(--fs-14);
 }
 
 .testFabText {
