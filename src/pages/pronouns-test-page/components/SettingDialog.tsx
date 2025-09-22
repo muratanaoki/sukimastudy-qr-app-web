@@ -1,9 +1,10 @@
-import { Settings } from 'lucide-react';
+import { Languages, List, Settings, Shuffle } from 'lucide-react';
 import { DialogCard } from '@/shared/components/dialog/DialogCard';
 import styles from './settingDialog.module.css';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
 import clsx from 'clsx';
 import { useState } from 'react';
+import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 
 export type SettingDialogProps = {
   onClose: () => void;
@@ -33,17 +34,26 @@ export const SettingDialog = ({ onClose }: SettingDialogProps) => {
   const [answerMode, setAnswerMode] = useState<AnswerMode>(AnswerMode.Normal);
 
   return (
-    <DialogCard onClose={onClose} title="設定" titleId="settings-title" Icon={Settings}>
+    <DialogCard
+      onClose={onClose}
+      title="設定"
+      titleId="settings-title"
+      Icon={Settings}
+      actions={<PrimaryButton className={styles.actionsButton}>決定する</PrimaryButton>}
+    >
       {/* 解答の選択肢表示 */}
       <div className={styles.sections}>
         <div className={styles.section}>
-          <h2 className={styles.settingDialogHeading}>解答の選択肢表示</h2>
+          <h2 className={styles.settingDialogHeading}>
+            <List className={styles.icon} />
+            <span>解答の選択肢表示</span>
+          </h2>
           <div className={clsx(styles.buttonGrid, styles.twoCols)}>
             <SelectableButton
               className={clsx(choiceView === ChoiceView.Bottom4 && styles.selected)}
               onClick={() => setChoiceView(ChoiceView.Bottom4)}
             >
-              ４択
+              あり
             </SelectableButton>
             <SelectableButton
               className={clsx(choiceView === ChoiceView.None && styles.selected)}
@@ -56,13 +66,16 @@ export const SettingDialog = ({ onClose }: SettingDialogProps) => {
 
         {/* 出題方法 */}
         <div className={styles.section}>
-          <h2 className={styles.settingDialogHeading}>出題方法</h2>
+          <h2 className={styles.settingDialogHeading}>
+            <Shuffle className={styles.icon} />
+            <span>出題方法</span>
+          </h2>
           <div className={clsx(styles.buttonGrid, styles.twoCols)}>
             <SelectableButton
               className={clsx(questionOrder === QuestionOrder.Standard && styles.selected)}
               onClick={() => setQuestionOrder(QuestionOrder.Standard)}
             >
-              標準
+              通常
             </SelectableButton>
             <SelectableButton
               className={clsx(questionOrder === QuestionOrder.Random && styles.selected)}
@@ -75,7 +88,10 @@ export const SettingDialog = ({ onClose }: SettingDialogProps) => {
 
         {/* 解答モード */}
         <div className={styles.section}>
-          <h2 className={styles.settingDialogHeading}>解答モード</h2>
+          <h2 className={styles.settingDialogHeading}>
+            <Languages className={styles.icon} />
+            <span>解答モード</span>
+          </h2>
           <div className={clsx(styles.buttonGrid, styles.twoCols)}>
             <SelectableButton
               className={clsx(answerMode === AnswerMode.Normal && styles.selected)}

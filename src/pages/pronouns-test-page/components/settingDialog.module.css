@@ -1,8 +1,17 @@
 .settingDialogHeading {
-  font-size: var(--fs-18);
+  font-size: var(--fs-16);
   font-weight: 600;
   margin-bottom: var(--space-050);
   color: var(--color-neutral-600);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.icon {
+  height: var(--fs-18);
+  width: var(--fs-18);
+  margin-right: var(--space-025);
 }
 
 /* 設定ダイアログ内のボタン配置用グリッド */
@@ -13,7 +22,7 @@
 }
 
 /* 2列が見やすいセクション用 */
-.buttonGrid.twoCols {
+.twoCols {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -28,4 +37,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-100);
+  margin-bottom: var(--space-150);
+}
+
+.actionsButton {
+  width: 100%;
 }
