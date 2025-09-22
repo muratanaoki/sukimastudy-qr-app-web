@@ -30,7 +30,7 @@ export const DialogCard: React.FC<DialogCardProps> = ({
     const Cmp = Icon as React.ComponentType<any>;
     return (
       <div className={styles.iconWrap}>
-        <Cmp className={styles.icon} />
+        <Cmp strokeWidth={2.2} className={styles.icon} />
       </div>
     );
   };

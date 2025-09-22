@@ -1,5 +1,5 @@
 import styles from './testIntroDialog.module.css';
-import { FileCheck, Settings } from 'lucide-react';
+import { Check, Settings } from 'lucide-react';
 import type { PronounGroup, Segment } from '../utils/type';
 import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
@@ -133,7 +133,7 @@ export const TestIntroDialog = ({
       onClose={onClose}
       title={groupWithSegments.title}
       titleId="test-intro-title"
-      Icon={FileCheck}
+      Icon={Check}
       headerRight={
         <button
           type="button"
