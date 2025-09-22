@@ -1,5 +1,5 @@
 import styles from './testFabButton.module.css';
-import { FileCheck } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 export type TestFabButtonProps = {
   hidden?: boolean;
@@ -16,7 +16,7 @@ export function TestFabButton({ hidden, onClick }: TestFabButtonProps) {
         aria-label="テスト開始"
         onClick={onClick}
       >
-        <FileCheck className={styles.testFabIcon} />
+        <Check strokeWidth={3} className={styles.testFabIcon} />
         <span className={styles.testFabText}>テスト</span>
       </button>
     </div>
