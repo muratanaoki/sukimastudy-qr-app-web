@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { AnswerMode, ChoiceView, QuestionOrder } from '../utils/type';
+import { useTestSettingsContext } from './TestSettingsContext';
 
 const STORAGE_KEY = 'testSettings';
 
 const isEnumValue = <T extends Record<string, string>>(enm: T, val: unknown): val is T[keyof T] =>
   typeof val === 'string' && Object.values(enm).includes(val as any);
 
-export const useTestSettings = () => {
+// Provider が無い場合のフォールバック実装
+const useLocalTestSettings = () => {
   const [choiceView, setChoiceView] = useState<ChoiceView>(ChoiceView.Bottom4);
   const [questionOrder, setQuestionOrder] = useState<QuestionOrder>(QuestionOrder.Standard);
   const [answerMode, setAnswerMode] = useState<AnswerMode>(AnswerMode.Normal);
@@ -50,4 +52,10 @@ export const useTestSettings = () => {
     setAnswerMode,
     save,
   } as const;
+};
+
+export const useTestSettings = () => {
+  const ctx = useTestSettingsContext();
+  const local = useLocalTestSettings();
+  return ctx ?? local;
 };

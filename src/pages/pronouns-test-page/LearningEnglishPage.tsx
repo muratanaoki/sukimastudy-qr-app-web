@@ -11,6 +11,7 @@ import { GroupTabs } from './components/GroupTabs';
 import { TestFabButton } from './components/TestFabButton';
 import { useSwipeTabs } from './hooks/useSwipeTabs';
 import { TestDialog } from './components/TestDialog';
+import { TestSettingsProvider } from './hooks/TestSettingsContext';
 
 export type LearningEnglishPageProps = {
   data: PronounGroup[]; // グループ一覧（ページ内表示は複数タブのまま）
@@ -78,64 +79,66 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   const swipeRef = useSwipeTabs<HTMLDivElement>(activeGroupNo, groupNos, setActiveGroupNo);
 
   return (
-    <div className={styles.container}>
-      {/* タブバー */}
-      {data.length > 0 && (
-        <GroupTabs
-          items={data}
-          activeGroupNo={activeGroupNo}
-          onChange={setActiveGroupNo}
-          ariaLabel="品詞グループ"
-        />
-      )}
-      <main ref={swipeRef}>
-        {data.map(({ groupNo, title, items, icon: IconComp }) => {
-          const isActive = groupNo === activeGroupNo;
-          return (
-            <section
-              key={groupNo}
-              id={`panel-${groupNo}`}
-              role="tabpanel"
-              aria-labelledby={`tab-${groupNo}`}
-              hidden={!isActive}
-              className={styles.section}
-            >
-              <div className={styles.sectionHeader}>
-                <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
-                <h1 className={styles.title}>{title}</h1>
-                <IconComp className={styles.headerIcon} />
-              </div>
-              <ul className={styles.cardGrid}>
-                {items.map((it) => (
-                  <EnglishWord key={it.index} item={it} speech={speech} />
-                ))}
-              </ul>
-            </section>
-          );
-        })}
-      </main>
+    <TestSettingsProvider>
+      <div className={styles.container}>
+        {/* タブバー */}
+        {data.length > 0 && (
+          <GroupTabs
+            items={data}
+            activeGroupNo={activeGroupNo}
+            onChange={setActiveGroupNo}
+            ariaLabel="品詞グループ"
+          />
+        )}
+        <main ref={swipeRef}>
+          {data.map(({ groupNo, title, items, icon: IconComp }) => {
+            const isActive = groupNo === activeGroupNo;
+            return (
+              <section
+                key={groupNo}
+                id={`panel-${groupNo}`}
+                role="tabpanel"
+                aria-labelledby={`tab-${groupNo}`}
+                hidden={!isActive}
+                className={styles.section}
+              >
+                <div className={styles.sectionHeader}>
+                  <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
+                  <h1 className={styles.title}>{title}</h1>
+                  <IconComp className={styles.headerIcon} />
+                </div>
+                <ul className={styles.cardGrid}>
+                  {items.map((it) => (
+                    <EnglishWord key={it.index} item={it} speech={speech} />
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </main>
 
-      <TestFabButton hidden={hideFab} onClick={openTest} />
-      {showTest && (
-        <TestIntroDialog
-          item={data.find((g) => g.groupNo === activeGroupNo) ?? data[0]}
-          onClose={closeTest}
-          selectedRange={selectedRange}
-          onSelectRange={(seg) => {
-            setSelectedRange({ groupNo: seg.groupNo, start: seg.start, end: seg.end });
-            console.log('Select range', seg.groupNo, seg.start, seg.end, seg.items.length);
-          }}
-          onStart={(seg) => {
-            console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
-            closeTest();
-            setTestItems(seg.items);
-            openFullTest();
-          }}
-          onOpenSettings={openSettings}
-        />
-      )}
-      <TestDialog open={showFullTest} onClose={closeFullTest} items={testItems} />
-      {showSettings && <SettingDialog onClose={closeSettings} />}
-    </div>
+        <TestFabButton hidden={hideFab} onClick={openTest} />
+        {showTest && (
+          <TestIntroDialog
+            item={data.find((g) => g.groupNo === activeGroupNo) ?? data[0]}
+            onClose={closeTest}
+            selectedRange={selectedRange}
+            onSelectRange={(seg) => {
+              setSelectedRange({ groupNo: seg.groupNo, start: seg.start, end: seg.end });
+              console.log('Select range', seg.groupNo, seg.start, seg.end, seg.items.length);
+            }}
+            onStart={(seg) => {
+              console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
+              closeTest();
+              setTestItems(seg.items);
+              openFullTest();
+            }}
+            onOpenSettings={openSettings}
+          />
+        )}
+        <TestDialog open={showFullTest} onClose={closeFullTest} items={testItems} />
+        {showSettings && <SettingDialog onClose={closeSettings} />}
+      </div>
+    </TestSettingsProvider>
   );
 }

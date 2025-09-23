@@ -90,6 +90,12 @@
   font-weight: 700;
 }
 
+.translation {
+  margin-top: var(--space-150);
+  color: var(--color-neutral-700);
+  font-size: 1.05rem;
+}
+
 .bottom {
   position: relative;
   display: grid;
@@ -97,6 +103,17 @@
   align-items: end;
   gap: var(--space-100);
   padding: var(--space-150);
+}
+
+/* 選択肢なしモード用の下部レイアウト */
+.bottomNone {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  justify-items: center;
+  gap: var(--space-125);
+  padding: var(--space-200) var(--space-150) var(--space-250);
 }
 
 .skipButton {
@@ -198,4 +215,39 @@
     opacity: 0;
     transform: translateY(-6px) scale(1);
   }
+}
+
+/* === 選択肢なしモードのボタン類 === */
+.revealButton {
+  width: min(560px, 100%);
+  padding: 0.9rem 1rem;
+  background: var(--color-neutral-100);
+  border: var(--border-width-1) solid var(--border-color-default);
+  color: var(--color-neutral-900);
+  border-radius: 0.6rem; /* 角にわずかな丸み */
+  font-weight: 700;
+}
+
+.actionsRow {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--space-200);
+  margin-top: var(--space-150);
+}
+
+.circleButton {
+  display: grid;
+  grid-template-rows: auto auto;
+  place-items: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: none;
+  background: #f2f2f2;
+  color: var(--color-neutral-800);
+}
+
+.circleLabel {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
 }
