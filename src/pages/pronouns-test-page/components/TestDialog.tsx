@@ -1,8 +1,8 @@
 import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PronounItem } from '../utils/type';
-import { ChoiceView } from '../utils/type';
+import { ChoiceView, QuestionOrder } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
 import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
 import { TestHeader } from './internal/TestHeader';
@@ -19,8 +19,21 @@ export type TestDialogProps = {
 export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   useEscapeKey(onClose, open);
 
-  const { choiceView } = useTestSettings();
-  const { state, goNext, hasItems, reset } = useTestRunner(open, items);
+  const { choiceView, questionOrder } = useTestSettings();
+
+  // 出題順序: ランダム設定時は Fisher-Yates でシャッフル（ダイアログ再オープンで再生成）
+  const orderedItems = useMemo(() => {
+    if (!items?.length) return items;
+    if (questionOrder !== QuestionOrder.Random) return items;
+    const arr = [...items];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [items, questionOrder]);
+
+  const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
   const { total, current, timeLeftPct, item } = state;
   const choices = useChoices(item);
   const correctIndex = item ? choices.findIndex((c) => c === item.jp) : -1;
