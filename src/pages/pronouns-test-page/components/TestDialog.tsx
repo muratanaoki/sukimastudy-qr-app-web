@@ -1,10 +1,11 @@
 import styles from './testDialog.module.css';
-import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useCallback } from 'react';
 import type { PronounItem } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
 import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
+import { TestHeader } from './internal/TestHeader';
+import { ChoiceList } from './internal/ChoiceList';
 
 export type TestDialogProps = {
   open: boolean;
@@ -18,12 +19,13 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   const { state, goNext, hasItems, reset } = useTestRunner(open, items);
   const { total, current, timeLeftPct, item } = state;
   const choices = useChoices(item);
+  const correctIndex = item ? choices.findIndex((c) => c === item.jp) : -1;
 
   const goNextOrClose = useCallback(() => goNext(onClose), [goNext, onClose]);
 
   const {
     disabled,
-    handleAnswer,
+    handleAnswerIndex,
     getIndexDisplay,
     isCorrectHighlight,
     isWrongSelected,
@@ -32,6 +34,9 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   } = useAnswerFeedback({
     isCorrect: (label) => !!item && label === item.jp,
     onNext: goNextOrClose,
+    choices,
+    correctIndex: correctIndex >= 0 ? correctIndex : undefined,
+    currentKey: item?.term ?? current, // 問題切替キー
   });
 
   const handleSkip = useCallback(() => {
@@ -48,14 +53,7 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   return (
     <div role="dialog" aria-modal="true" aria-label="テスト" className={styles.dialog}>
       {/* ヘッダー + 進捗バー */}
-      <div className={styles.topBar}>
-        <div className={styles.left}>
-          <CloseButton onClose={handleClose} />
-        </div>
-        <div className={styles.progressTrack} aria-label="制限時間">
-          <div className={styles.progressFill} style={{ width: `${timeLeftPct}%` }} />
-        </div>
-      </div>
+      <TestHeader timeLeftPct={timeLeftPct} onClose={handleClose} />
 
       {/* 中央の問題表示 */}
       <div className={styles.content}>
@@ -76,33 +74,21 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
           SKIP
         </button>
 
-        <div className={styles.choices}>
-          {choices.map((label, i) => {
-            const indexDisplay = getIndexDisplay(i);
-            return (
-              <button
-                key={i}
-                type="button"
-                className={`${styles.choiceButton} ${isCorrectHighlight(i) ? styles.choiceButtonCorrect : ''} ${isWrongSelected(i) ? styles.choiceButtonWrong : ''} ${isDim(i) ? styles.choiceButtonDim : ''}`}
-                onClick={() => handleAnswer(label, i, choices, item?.jp)}
-                disabled={disabled}
-              >
-                <span className={styles.choiceIndex}>{indexDisplay as any}</span>
-                <span className={styles.choiceLabel}>{label}</span>
-                {showGoodAt(i) && (
-                  <span className={styles.goodToast} aria-live="polite">
-                    Good!
-                  </span>
-                )}
-              </button>
-            );
-          })}
-          {!hasItems && (
-            <div className={styles.choiceLabel} aria-live="polite">
-              問題がありません
-            </div>
-          )}
-        </div>
+        <ChoiceList
+          choices={choices}
+          disabled={disabled}
+          getIndexDisplay={getIndexDisplay}
+          isCorrectHighlight={isCorrectHighlight}
+          isWrongSelected={isWrongSelected}
+          isDim={isDim}
+          showGoodAt={showGoodAt}
+          onAnswer={(_, i) => handleAnswerIndex(i)}
+        />
+        {!hasItems && (
+          <div className={styles.choiceLabel} aria-live="polite">
+            問題がありません
+          </div>
+        )}
       </div>
     </div>
   );

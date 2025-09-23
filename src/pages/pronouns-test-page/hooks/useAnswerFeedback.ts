@@ -5,6 +5,9 @@ export type AnswerFeedbackConfig = {
   onNext: () => void;
   goodDurationMs?: number; // default 650
   wrongDurationMs?: number; // default 900
+  choices?: string[]; // 現在の選択肢（index ベース評価用）
+  correctIndex?: number; // 正解のインデックス（index ベース評価用）
+  currentKey?: string | number; // 問題が切り替わった時のリセット用キー
 };
 
 export const useAnswerFeedback = ({
@@ -12,6 +15,9 @@ export const useAnswerFeedback = ({
   onNext,
   goodDurationMs = 650,
   wrongDurationMs = 900,
+  choices,
+  correctIndex,
+  currentKey,
 }: AnswerFeedbackConfig) => {
   const [good, setGood] = useState(false);
   const [wrong, setWrong] = useState(false);
@@ -25,6 +31,19 @@ export const useAnswerFeedback = ({
       if (timerRef.current) window.clearTimeout(timerRef.current);
     };
   }, []);
+
+  // 問題が切り替わったら演出用の状態をリセット
+  useEffect(() => {
+    setGood(false);
+    setWrong(false);
+    setSelectedIdx(null);
+    setWrongIdx(null);
+    setCorrectIdx(null);
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, [currentKey]);
 
   const handleAnswer = useCallback(
     (label: string, index: number, currentChoices: string[], correctLabel: string | undefined) => {
@@ -57,6 +76,40 @@ export const useAnswerFeedback = ({
     [goodDurationMs, wrongDurationMs, isCorrect, onNext]
   );
 
+  // index ベースの API（推奨）
+  const handleAnswerIndex = useCallback(
+    (index: number) => {
+      const ok = typeof correctIndex === 'number' && index === correctIndex;
+      if (ok) {
+        setSelectedIdx(index);
+        setGood(true);
+        if (timerRef.current) window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => {
+          setGood(false);
+          setSelectedIdx(null);
+          onNext();
+        }, goodDurationMs);
+      } else {
+        setWrong(true);
+        setWrongIdx(index);
+        if (typeof correctIndex === 'number') {
+          setCorrectIdx(correctIndex);
+        } else if (choices && choices.length > 0) {
+          // fallback: choices と label 比較で検出（非推奨）
+          setCorrectIdx(null);
+        }
+        if (timerRef.current) window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => {
+          setWrong(false);
+          setWrongIdx(null);
+          setCorrectIdx(null);
+          onNext();
+        }, wrongDurationMs);
+      }
+    },
+    [correctIndex, choices, goodDurationMs, wrongDurationMs, onNext]
+  );
+
   const disabled = good || wrong;
 
   const getIndexDisplay = useCallback(
@@ -87,6 +140,7 @@ export const useAnswerFeedback = ({
     // helpers
     disabled,
     handleAnswer,
+    handleAnswerIndex,
     getIndexDisplay,
     isCorrectHighlight,
     isWrongSelected,
