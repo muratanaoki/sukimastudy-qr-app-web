@@ -1,11 +1,10 @@
 import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { PronounItem } from '../utils/type';
+import type { PosGroup, PronounGroup } from '../utils/type';
 import { AnswerMode, ChoiceView } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
 import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
-import { TestHeader } from './internal/TestHeader';
 import { ChoiceList } from './internal/ChoiceList';
 import { useTestSettings } from '../hooks/useTestSettings';
 import JudgementControls from './internal/JudgementControls';
@@ -13,21 +12,23 @@ import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
 import { useListeningWordMask } from '../hooks/useListeningWordMask';
 import { useOrderedItems } from '../hooks/useOrderedItems';
+import TopBar from './internal/TopBar';
 
 export type TestDialogProps = {
   open: boolean;
   onClose: () => void;
-  items: PronounItem[];
+  pos: PosGroup; // 上位の品詞グループ（単数）
+  group: PronounGroup; // 現在テスト中の下位グループ
 };
 
-export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
+export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   useEscapeKey(onClose, open);
 
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const { speakWord, cancel } = useSpeech();
 
   // 出題順序の再構築（再オープン含む）
-  const orderedItems = useOrderedItems(open, items, questionOrder);
+  const orderedItems = useOrderedItems(open, group.items, questionOrder);
 
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
   const { total, current, timeLeftPct, item } = state;
@@ -100,7 +101,9 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
 
   return (
     <div role="dialog" aria-modal="true" aria-label="テスト" className={styles.dialog}>
-      <TestHeader
+      <TopBar
+        posTitle={pos.title}
+        groupTitle={group.title}
         timeLeftPct={timeLeftPct}
         onClose={handleClose}
         resetKey={item?.term ?? current}

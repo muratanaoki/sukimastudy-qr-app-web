@@ -136,7 +136,24 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
             onOpenSettings={openSettings}
           />
         )}
-        <TestDialog open={showFullTest} onClose={closeFullTest} items={testItems} />
+        {/* Full Test ダイアログ: pos は pronouns 固定、group はアクティブのグループ情報に testItems を差し替え */}
+        {showFullTest &&
+          (() => {
+            const activeGroup = data.find((g) => g.groupNo === activeGroupNo) ?? data[0];
+            const pos: { pos: 'pronouns'; url: string; title: string; groups: PronounGroup[] } = {
+              pos: 'pronouns',
+              url: '/pronouns',
+              title: '代名詞',
+              groups: [],
+            };
+            const group = {
+              ...activeGroup,
+              items: testItems,
+            };
+            return (
+              <TestDialog open={showFullTest} onClose={closeFullTest} pos={pos} group={group} />
+            );
+          })()}
         {showSettings && <SettingDialog onClose={closeSettings} />}
       </div>
     </TestSettingsProvider>
