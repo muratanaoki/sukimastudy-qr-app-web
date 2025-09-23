@@ -9,6 +9,8 @@ import { TestHeader } from './internal/TestHeader';
 import { ChoiceList } from './internal/ChoiceList';
 import { useTestSettings } from '../hooks/useTestSettings';
 import JudgementControls from './internal/JudgementControls';
+import { useSpeech } from '../hooks/useSpeech';
+import { useAutoPronounce } from '../hooks/useAutoPronounce';
 
 export type TestDialogProps = {
   open: boolean;
@@ -20,6 +22,7 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   useEscapeKey(onClose, open);
 
   const { choiceView, questionOrder } = useTestSettings();
+  const { speakWord, cancel } = useSpeech();
 
   // 出題順序: ランダム設定時は Fisher-Yates でシャッフル（ダイアログ再オープンで再生成）
   const orderedItems = useMemo(() => {
@@ -70,6 +73,9 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   useEffect(() => {
     setShowTranslation(false);
   }, [item?.term, current]);
+
+  // 自動発音の副作用を専用フックに集約
+  useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
   if (!open) return null;
 
