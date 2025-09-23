@@ -24,6 +24,9 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   const [good, setGood] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const goodTimerRef = useRef<number | null>(null);
+  const [wrong, setWrong] = useState(false);
+  const [wrongIdx, setWrongIdx] = useState<number | null>(null);
+  const [correctIdx, setCorrectIdx] = useState<number | null>(null);
   useEffect(() => {
     return () => {
       if (goodTimerRef.current) window.clearTimeout(goodTimerRef.current);
@@ -43,11 +46,23 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
           goNextOrClose();
         }, 650);
       } else {
-        // 間違い時はまだ演出なし（現仕様）
-        goNextOrClose();
+        // 間違い時: 選択肢の演出（× と ◯ を表示、他は薄く）
+        setWrong(true);
+        setWrongIdx(i);
+        if (item) {
+          const ci = choices.findIndex((c) => c === item.jp);
+          setCorrectIdx(ci >= 0 ? ci : null);
+        }
+        if (goodTimerRef.current) window.clearTimeout(goodTimerRef.current);
+        goodTimerRef.current = window.setTimeout(() => {
+          setWrong(false);
+          setWrongIdx(null);
+          setCorrectIdx(null);
+          goNextOrClose();
+        }, 900);
       }
     },
-    [goNextOrClose, item]
+    [goNextOrClose, item, choices]
   );
 
   const handleSkip = useCallback(() => {
@@ -88,22 +103,29 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
         </button>
 
         <div className={styles.choices}>
-          {choices.map((label, i) => (
-            <button
-              key={i}
-              type="button"
-              className={`${styles.choiceButton} ${good && selectedIdx === i ? styles.choiceButtonCorrect : ''}`}
-              onClick={() => handleAnswer(label, i)}
-            >
-              <span className={styles.choiceIndex}>{i + 1}</span>
-              <span className={styles.choiceLabel}>{label}</span>
-              {good && selectedIdx === i && (
-                <span className={styles.goodToast} aria-live="polite">
-                  Good!
-                </span>
-              )}
-            </button>
-          ))}
+          {choices.map((label, i) => {
+            const isCorrectHighlight = (good && selectedIdx === i) || (wrong && correctIdx === i);
+            const isWrongSelected = wrong && wrongIdx === i;
+            const isDim = wrong && !isCorrectHighlight && !isWrongSelected;
+            const indexDisplay = isWrongSelected ? '×' : i + 1;
+            return (
+              <button
+                key={i}
+                type="button"
+                className={`${styles.choiceButton} ${isCorrectHighlight ? styles.choiceButtonCorrect : ''} ${isWrongSelected ? styles.choiceButtonWrong : ''} ${isDim ? styles.choiceButtonDim : ''}`}
+                onClick={() => handleAnswer(label, i)}
+                disabled={good || wrong}
+              >
+                <span className={styles.choiceIndex}>{indexDisplay as any}</span>
+                <span className={styles.choiceLabel}>{label}</span>
+                {good && selectedIdx === i && (
+                  <span className={styles.goodToast} aria-live="polite">
+                    Good!
+                  </span>
+                )}
+              </button>
+            );
+          })}
           {!hasItems && (
             <div className={styles.choiceLabel} aria-live="polite">
               問題がありません
