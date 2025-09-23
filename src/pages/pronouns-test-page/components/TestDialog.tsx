@@ -62,12 +62,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     onClose();
   }, [reset, onClose]);
 
-  // ダイアログ再オープン時に念のため全体をリセット
-  useEffect(() => {
-    if (open) {
-      reset();
-    }
-  }, [open, reset]);
+  // 再オープン時のリセットは useTestRunner の初期化に任せる（ここで reset すると初回のタイマーを止めてしまう）
 
   // 「和訳表示」ボタンの状態（問題切替でリセット）
   const [showTranslation, setShowTranslation] = useState(false);

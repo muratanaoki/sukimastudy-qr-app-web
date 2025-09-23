@@ -20,6 +20,12 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
 
   // 10秒のカウントダウン（視覚のみ / アクション無し）
   const intervalRef = useRef<number | null>(null);
+  // 再オープン時は最初の問題から再スタート
+  useEffect(() => {
+    if (open) setIndex(0);
+  }, [open]);
+
+  // タイマーの初期化/再スタート（オープン時および問題切替時）
   useEffect(() => {
     if (!open) return;
     setTimeLeftPct(100);
