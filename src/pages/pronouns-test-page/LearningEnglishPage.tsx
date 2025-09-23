@@ -10,6 +10,7 @@ import { SettingDialog } from './components/SettingDialog';
 import { GroupTabs } from './components/GroupTabs';
 import { TestFabButton } from './components/TestFabButton';
 import { useSwipeTabs } from './hooks/useSwipeTabs';
+import { TestDialog } from './components/TestDialog';
 
 export type LearningEnglishPageProps = {
   data: PronounGroup[]; // グループ一覧（ページ内表示は複数タブのまま）
@@ -18,6 +19,7 @@ export type LearningEnglishPageProps = {
 export default function LearningEnglishPage({ data }: LearningEnglishPageProps) {
   const speech = useSpeech();
   const [showTest, setShowTest] = useState(false);
+  const [showFullTest, setShowFullTest] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   // タブのアクティブ状態: 初期は最初のグループ
   const initialGroupNo = useMemo(() => (data && data.length > 0 ? data[0].groupNo : 0), [data]);
@@ -47,6 +49,13 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
     setShowTest(false);
   }, []);
 
+  const openFullTest = useCallback(() => {
+    setShowFullTest(true);
+  }, []);
+  const closeFullTest = useCallback(() => {
+    setShowFullTest(false);
+  }, []);
+
   const openSettings = useCallback(() => {
     // 設定ダイアログを開いたらテストダイアログは閉じる
     setShowSettings(true);
@@ -60,7 +69,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   }, []);
 
   // 背景スクロールロック
-  useBodyScrollLock(showTest || showSettings);
+  useBodyScrollLock(showTest || showSettings || showFullTest);
 
   // 水平スワイプでタブ切替
   const groupNos = useMemo(() => data.map((g) => g.groupNo), [data]);
@@ -117,10 +126,12 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
           onStart={(seg) => {
             console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
             closeTest();
+            openFullTest();
           }}
           onOpenSettings={openSettings}
         />
       )}
+      <TestDialog open={showFullTest} onClose={closeFullTest} />
       {showSettings && <SettingDialog onClose={closeSettings} />}
     </div>
   );

@@ -1,0 +1,151 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.35);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1110;
+  background: var(--base-color);
+  color: var(--color-neutral-900);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* 上部バー（閉じる + 進捗 + ・・・） */
+.topBar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-100);
+  padding: var(--space-100) var(--space-150);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.moreButton {
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-500);
+  font-size: 1.25rem;
+  padding: var(--space-050);
+}
+
+.progressTrack {
+  height: 0.375rem;
+  background: #eee;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progressFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: #ff7a00; /* 画像のオレンジに近い */
+  width: 0%;
+  transition: width 200ms ease;
+}
+
+.content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-items: center;
+  align-content: start;
+  padding-top: min(12vh, var(--space-350));
+}
+
+.counter {
+  color: var(--color-neutral-500);
+  letter-spacing: 0.02em;
+}
+
+.word {
+  margin-top: var(--space-200);
+  font-family: 'Nunito', var(--font-family-heading);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+}
+
+.bottom {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: var(--space-100);
+  padding: var(--space-150);
+}
+
+.skipButton {
+  justify-self: start;
+  border: none;
+  background: #f2f2f2;
+  color: var(--color-neutral-600);
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.bookmarkButton {
+  justify-self: end;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: none;
+  background: #f2f2f2;
+  color: var(--color-neutral-600);
+  font-size: 1.25rem;
+}
+
+.choices {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-100);
+  margin-top: var(--space-100);
+}
+
+.choiceButton {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-100);
+  width: 100%;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  border: var(--border-width-1) solid var(--border-color-default);
+  background: var(--base-color);
+  text-align: left;
+}
+
+.choiceIndex {
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--color-neutral-500);
+  background: var(--color-neutral-100);
+  font-weight: 700;
+}
+
+.choiceLabel {
+  font-size: 1rem;
+}
