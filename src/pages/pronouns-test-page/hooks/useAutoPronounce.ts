@@ -19,6 +19,11 @@ export const useAutoPronounce = ({ open, term, speakWord, cancel }: Params) => {
     cancelRef.current = cancel;
   }, [cancel]);
 
+  // ダイアログ再オープン時は抑制キーをリセット
+  useEffect(() => {
+    if (open) lastSpokenKeyRef.current = null;
+  }, [open]);
+
   // 出題時に即時発音（重複ガード）
   useEffect(() => {
     if (!open || !term) return;

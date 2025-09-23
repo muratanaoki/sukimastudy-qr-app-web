@@ -6,6 +6,7 @@ type Params = {
   choiceView: ChoiceView;
   term?: string | null;
   currentIndexOrKey: number | string; // 問題切替のリセットトリガー
+  open?: boolean; // ダイアログ再オープンでのリセット用
 };
 
 /**
@@ -18,6 +19,7 @@ export const useListeningWordMask = ({
   choiceView,
   term,
   currentIndexOrKey,
+  open,
 }: Params) => {
   const [revealed, setRevealed] = useState(false);
 
@@ -25,6 +27,11 @@ export const useListeningWordMask = ({
   useEffect(() => {
     setRevealed(false);
   }, [currentIndexOrKey]);
+
+  // ダイアログ再オープン時もリセット
+  useEffect(() => {
+    if (open) setRevealed(false);
+  }, [open]);
 
   const displayTerm = useMemo(() => {
     const t = term ?? '-';

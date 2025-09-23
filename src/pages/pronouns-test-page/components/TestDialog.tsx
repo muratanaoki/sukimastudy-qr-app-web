@@ -2,7 +2,7 @@ import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PronounItem } from '../utils/type';
-import { AnswerMode, ChoiceView, QuestionOrder } from '../utils/type';
+import { AnswerMode, ChoiceView } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
 import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
 import { TestHeader } from './internal/TestHeader';
@@ -12,6 +12,7 @@ import JudgementControls from './internal/JudgementControls';
 import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
 import { useListeningWordMask } from '../hooks/useListeningWordMask';
+import { useOrderedItems } from '../hooks/useOrderedItems';
 
 export type TestDialogProps = {
   open: boolean;
@@ -25,17 +26,8 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const { speakWord, cancel } = useSpeech();
 
-  // 出題順序: ランダム設定時は Fisher-Yates でシャッフル（ダイアログ再オープンで再生成）
-  const orderedItems = useMemo(() => {
-    if (!items?.length) return items;
-    if (questionOrder !== QuestionOrder.Random) return items;
-    const arr = [...items];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }, [items, questionOrder]);
+  // 出題順序の再構築（再オープン含む）
+  const orderedItems = useOrderedItems(open, items, questionOrder);
 
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
   const { total, current, timeLeftPct, item } = state;
@@ -69,11 +61,19 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
     onClose();
   }, [reset, onClose]);
 
+  // ダイアログ再オープン時に念のため全体をリセット
+  useEffect(() => {
+    if (open) {
+      reset();
+    }
+  }, [open, reset]);
+
   // 「和訳表示」ボタンの状態（問題切替でリセット）
   const [showTranslation, setShowTranslation] = useState(false);
   useEffect(() => {
+    // 問題切替と再オープンの両方でリセット
     setShowTranslation(false);
-  }, [item?.term, current]);
+  }, [item?.term, current, open]);
 
   // 表示用の英単語: Listening モードでは中央の英単語を「?」に置換
   const {
@@ -85,6 +85,7 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
     choiceView,
     term: item?.term ?? null,
     currentIndexOrKey: item?.term ?? current,
+    open,
   });
   const displayTerm = useMemo(() => {
     if (answerMode !== AnswerMode.Listening) return item?.term ?? '-';
@@ -150,7 +151,13 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
               isWrongSelected={isWrongSelected}
               isDim={isDim}
               showGoodAt={showGoodAt}
-              onAnswer={(_, i) => handleAnswerIndex(i)}
+              onAnswer={(_, i) => {
+                if (answerMode === AnswerMode.Listening) {
+                  // 解答直後に単語を一瞬表示させる
+                  reveal();
+                }
+                handleAnswerIndex(i);
+              }}
             />
           </>
         )}
