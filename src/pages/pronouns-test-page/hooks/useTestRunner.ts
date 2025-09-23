@@ -5,7 +5,7 @@ export type TestRunnerState = {
   index: number; // 0-based
   total: number;
   current: number; // 1-based
-  progress: number; // 0-100
+  timeLeftPct: number; // 0-100 (10秒カウントダウンの残量)
   item: PronounItem | undefined;
 };
 
@@ -14,19 +14,32 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   const total = hasItems ? items.length : 1;
   const [index, setIndex] = useState(0);
   const current = index + 1;
-  const progress = (current / total) * 100;
+  // 残り時間のパーセンテージ（各問題 10 秒で 100 -> 0）
+  const [timeLeftPct, setTimeLeftPct] = useState(100);
   const item = hasItems ? items[index] : undefined;
 
-  // 10秒タイマー（要件: 経過時のアクション無し）
-  const timerRef = useRef<number | null>(null);
+  // 10秒のカウントダウン（視覚のみ / アクション無し）
+  const intervalRef = useRef<number | null>(null);
   useEffect(() => {
     if (!open) return;
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => {
-      // no-op
-    }, 10_000);
+    setTimeLeftPct(100);
+    if (intervalRef.current) window.clearInterval(intervalRef.current);
+    const start = Date.now();
+    const DURATION = 10_000; // 10s
+    intervalRef.current = window.setInterval(() => {
+      const elapsed = Date.now() - start;
+      const pct = Math.max(0, 100 - (elapsed / DURATION) * 100);
+      setTimeLeftPct(pct);
+      if (elapsed >= DURATION && intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }, 50);
     return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current);
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
   }, [open, index]);
 
@@ -42,11 +55,20 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   );
 
   const state: TestRunnerState = useMemo(
-    () => ({ index, total, current, progress, item }),
-    [index, total, current, progress, item]
+    () => ({ index, total, current, timeLeftPct, item }),
+    [index, total, current, timeLeftPct, item]
   );
 
-  return { state, goNext, hasItems } as const;
+  const reset = useCallback(() => {
+    setIndex(0);
+    setTimeLeftPct(100);
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  return { state, goNext, hasItems, reset } as const;
 };
 
 export const useChoices = (item: PronounItem | undefined) => {

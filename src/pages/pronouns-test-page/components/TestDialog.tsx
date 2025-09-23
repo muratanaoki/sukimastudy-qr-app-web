@@ -1,73 +1,47 @@
 import styles from './testDialog.module.css';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import { useEscapeKey } from '../hooks/useEscapeKey';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import type { PronounItem } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
+import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
 
 export type TestDialogProps = {
   open: boolean;
   onClose: () => void;
-  items: PronounItem[]; // テスト対象（TestIntroDialogで選択された範囲）
+  items: PronounItem[];
 };
 
 export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   useEscapeKey(onClose, open);
 
-  const { state, goNext, hasItems } = useTestRunner(open, items);
-  const { total, current, progress, item } = state;
+  const { state, goNext, hasItems, reset } = useTestRunner(open, items);
+  const { total, current, timeLeftPct, item } = state;
   const choices = useChoices(item);
 
   const goNextOrClose = useCallback(() => goNext(onClose), [goNext, onClose]);
 
-  // 正解時の一時的なフィードバック
-  const [good, setGood] = useState(false);
-  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  const goodTimerRef = useRef<number | null>(null);
-  const [wrong, setWrong] = useState(false);
-  const [wrongIdx, setWrongIdx] = useState<number | null>(null);
-  const [correctIdx, setCorrectIdx] = useState<number | null>(null);
-  useEffect(() => {
-    return () => {
-      if (goodTimerRef.current) window.clearTimeout(goodTimerRef.current);
-    };
-  }, []);
-
-  const handleAnswer = useCallback(
-    (label: string, i: number) => {
-      const isCorrect = item && label === item.jp;
-      if (isCorrect) {
-        setSelectedIdx(i);
-        setGood(true);
-        if (goodTimerRef.current) window.clearTimeout(goodTimerRef.current);
-        goodTimerRef.current = window.setTimeout(() => {
-          setGood(false);
-          setSelectedIdx(null);
-          goNextOrClose();
-        }, 650);
-      } else {
-        // 間違い時: 選択肢の演出（× と ◯ を表示、他は薄く）
-        setWrong(true);
-        setWrongIdx(i);
-        if (item) {
-          const ci = choices.findIndex((c) => c === item.jp);
-          setCorrectIdx(ci >= 0 ? ci : null);
-        }
-        if (goodTimerRef.current) window.clearTimeout(goodTimerRef.current);
-        goodTimerRef.current = window.setTimeout(() => {
-          setWrong(false);
-          setWrongIdx(null);
-          setCorrectIdx(null);
-          goNextOrClose();
-        }, 900);
-      }
-    },
-    [goNextOrClose, item, choices]
-  );
+  const {
+    disabled,
+    handleAnswer,
+    getIndexDisplay,
+    isCorrectHighlight,
+    isWrongSelected,
+    isDim,
+    showGoodAt,
+  } = useAnswerFeedback({
+    isCorrect: (label) => !!item && label === item.jp,
+    onNext: goNextOrClose,
+  });
 
   const handleSkip = useCallback(() => {
     goNextOrClose();
   }, [goNextOrClose]);
+
+  const handleClose = useCallback(() => {
+    reset();
+    onClose();
+  }, [reset, onClose]);
 
   if (!open) return null;
 
@@ -76,10 +50,10 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
       {/* ヘッダー + 進捗バー */}
       <div className={styles.topBar}>
         <div className={styles.left}>
-          <CloseButton onClose={onClose} />
+          <CloseButton onClose={handleClose} />
         </div>
-        <div className={styles.progressTrack} aria-label="進捗">
-          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+        <div className={styles.progressTrack} aria-label="制限時間">
+          <div className={styles.progressFill} style={{ width: `${timeLeftPct}%` }} />
         </div>
       </div>
 
@@ -104,21 +78,18 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
 
         <div className={styles.choices}>
           {choices.map((label, i) => {
-            const isCorrectHighlight = (good && selectedIdx === i) || (wrong && correctIdx === i);
-            const isWrongSelected = wrong && wrongIdx === i;
-            const isDim = wrong && !isCorrectHighlight && !isWrongSelected;
-            const indexDisplay = isWrongSelected ? '×' : i + 1;
+            const indexDisplay = getIndexDisplay(i);
             return (
               <button
                 key={i}
                 type="button"
-                className={`${styles.choiceButton} ${isCorrectHighlight ? styles.choiceButtonCorrect : ''} ${isWrongSelected ? styles.choiceButtonWrong : ''} ${isDim ? styles.choiceButtonDim : ''}`}
-                onClick={() => handleAnswer(label, i)}
-                disabled={good || wrong}
+                className={`${styles.choiceButton} ${isCorrectHighlight(i) ? styles.choiceButtonCorrect : ''} ${isWrongSelected(i) ? styles.choiceButtonWrong : ''} ${isDim(i) ? styles.choiceButtonDim : ''}`}
+                onClick={() => handleAnswer(label, i, choices, item?.jp)}
+                disabled={disabled}
               >
                 <span className={styles.choiceIndex}>{indexDisplay as any}</span>
                 <span className={styles.choiceLabel}>{label}</span>
-                {good && selectedIdx === i && (
+                {showGoodAt(i) && (
                   <span className={styles.goodToast} aria-live="polite">
                     Good!
                   </span>
