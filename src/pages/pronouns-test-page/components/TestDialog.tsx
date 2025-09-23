@@ -2,7 +2,7 @@ import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PronounItem } from '../utils/type';
-import { ChoiceView, QuestionOrder } from '../utils/type';
+import { AnswerMode, ChoiceView, QuestionOrder } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
 import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
 import { TestHeader } from './internal/TestHeader';
@@ -11,6 +11,7 @@ import { useTestSettings } from '../hooks/useTestSettings';
 import JudgementControls from './internal/JudgementControls';
 import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
+import { useListeningWordMask } from '../hooks/useListeningWordMask';
 
 export type TestDialogProps = {
   open: boolean;
@@ -21,7 +22,7 @@ export type TestDialogProps = {
 export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
   useEscapeKey(onClose, open);
 
-  const { choiceView, questionOrder } = useTestSettings();
+  const { choiceView, questionOrder, answerMode } = useTestSettings();
   const { speakWord, cancel } = useSpeech();
 
   // 出題順序: ランダム設定時は Fisher-Yates でシャッフル（ダイアログ再オープンで再生成）
@@ -74,6 +75,23 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
     setShowTranslation(false);
   }, [item?.term, current]);
 
+  // 表示用の英単語: Listening モードでは中央の英単語を「?」に置換
+  const {
+    displayTerm: maskedTerm,
+    shouldShowRevealButton,
+    reveal,
+  } = useListeningWordMask({
+    answerMode,
+    choiceView,
+    term: item?.term ?? null,
+    currentIndexOrKey: item?.term ?? current,
+  });
+  const displayTerm = useMemo(() => {
+    if (answerMode !== AnswerMode.Listening) return item?.term ?? '-';
+    if (choiceView === ChoiceView.None) return showTranslation ? (item?.term ?? '-') : '?';
+    return maskedTerm;
+  }, [answerMode, choiceView, showTranslation, item?.term, maskedTerm]);
+
   // 自動発音の副作用を専用フックに集約
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
@@ -92,7 +110,7 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
         <p className={styles.counter}>
           {current} / {total}
         </p>
-        <h1 className={styles.word}>{item?.term ?? '-'}</h1>
+        <h1 className={styles.word}>{displayTerm}</h1>
         {showTranslation && !!item?.jp && (
           <p className={styles.translation} aria-live="polite">
             {item.jp}
@@ -112,6 +130,17 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
             >
               SKIP
             </button>
+
+            {shouldShowRevealButton && (
+              <button
+                type="button"
+                className={styles.revealWordButton}
+                onClick={reveal}
+                aria-label="単語を表示"
+              >
+                単語を表示
+              </button>
+            )}
 
             <ChoiceList
               choices={choices}
