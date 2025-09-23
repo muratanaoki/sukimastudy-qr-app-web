@@ -72,7 +72,6 @@
 
 .content {
   display: grid;
-  grid-template-rows: auto 1fr;
   justify-items: center;
   align-content: start;
   padding-top: min(12vh, var(--space-350));
@@ -219,7 +218,6 @@
 
 /* === 選択肢なしモードのボタン類 === */
 .revealButton {
-  width: min(560px, 100%);
   padding: 0.9rem 1rem;
   background: var(--color-neutral-100);
   border: var(--border-width-1) solid var(--border-color-default);

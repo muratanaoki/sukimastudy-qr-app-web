@@ -16,15 +16,17 @@ export const JudgementControls = ({
 }: JudgementControlsProps) => {
   return (
     <>
-      <button
-        type="button"
-        className={styles.revealButton}
-        onClick={onReveal}
-        aria-pressed={showTranslation}
-        aria-label="和訳表示"
-      >
-        和訳表示
-      </button>
+      {!showTranslation && (
+        <button
+          type="button"
+          className={styles.revealButton}
+          onClick={onReveal}
+          aria-pressed={showTranslation}
+          aria-label="和訳表示"
+        >
+          和訳表示
+        </button>
+      )}
 
       <div className={styles.actionsRow}>
         <button
