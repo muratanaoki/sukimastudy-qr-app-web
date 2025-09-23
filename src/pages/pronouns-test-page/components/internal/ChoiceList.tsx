@@ -1,4 +1,5 @@
 import styles from '../testDialog.module.css';
+import { X } from 'lucide-react';
 
 export type ChoiceListProps = {
   choices: string[];
@@ -31,7 +32,13 @@ export const ChoiceList = ({
           onClick={() => onAnswer(label, i)}
           disabled={disabled}
         >
-          <span className={styles.choiceIndex}>{getIndexDisplay(i) as any}</span>
+          <span className={styles.choiceIndex}>
+            {isWrongSelected(i) ? (
+              <X aria-label="wrong" width={16} height={16} strokeWidth={3} />
+            ) : (
+              (getIndexDisplay(i) as any)
+            )}
+          </span>
           <span className={styles.choiceLabel}>{label}</span>
           {showGoodAt(i) && (
             <span className={styles.goodToast} aria-live="polite">

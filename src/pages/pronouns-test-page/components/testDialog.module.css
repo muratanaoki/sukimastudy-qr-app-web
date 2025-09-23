@@ -65,6 +65,11 @@
   transition: width 200ms ease;
 }
 
+/* リセット時に一瞬だけトランジションを無効化 */
+.progressNoAnim {
+  transition: none !important;
+}
+
 .content {
   display: grid;
   grid-template-rows: auto 1fr;

@@ -112,10 +112,7 @@ export const useAnswerFeedback = ({
 
   const disabled = good || wrong;
 
-  const getIndexDisplay = useCallback(
-    (i: number) => (wrong && wrongIdx === i ? '×' : i + 1),
-    [wrong, wrongIdx]
-  );
+  const getIndexDisplay = useCallback((i: number) => i + 1, []);
 
   const isCorrectHighlight = useCallback(
     (i: number) => (good && selectedIdx === i) || (wrong && correctIdx === i),

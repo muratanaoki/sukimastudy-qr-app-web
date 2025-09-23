@@ -52,8 +52,11 @@ export const TestDialog = ({ open, onClose, items }: TestDialogProps) => {
 
   return (
     <div role="dialog" aria-modal="true" aria-label="テスト" className={styles.dialog}>
-      {/* ヘッダー + 進捗バー */}
-      <TestHeader timeLeftPct={timeLeftPct} onClose={handleClose} />
+      <TestHeader
+        timeLeftPct={timeLeftPct}
+        onClose={handleClose}
+        resetKey={item?.term ?? current}
+      />
 
       {/* 中央の問題表示 */}
       <div className={styles.content}>
