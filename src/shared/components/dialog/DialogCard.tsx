@@ -8,8 +8,8 @@ export type DialogCardProps = {
   titleId?: string; // aria-labelledby に使う id
   // Lucide などのアイコンコンポーネント or 任意ノード
   Icon?: React.ComponentType<any> | React.ReactNode;
-  // 右上のアクション（設定ボタンなど）
-  headerRight?: React.ReactNode;
+  // 左上のアクション（設定ボタンなど）
+  headerLeft?: React.ReactNode;
   // 下部のアクション行（PrimaryButton など）
   actions?: React.ReactNode;
   children?: React.ReactNode;
@@ -20,7 +20,7 @@ export const DialogCard: React.FC<DialogCardProps> = ({
   title,
   titleId = 'dialog-title',
   Icon,
-  headerRight,
+  headerLeft,
   actions,
   children,
 }) => {
@@ -41,8 +41,10 @@ export const DialogCard: React.FC<DialogCardProps> = ({
         {renderIcon()}
         <div className={styles.inner}>
           <div className={styles.headerRightRow}>
-            <CloseButton onClose={onClose} />
-            {headerRight}
+            {headerLeft}
+            <div className={styles.closeWrap}>
+              <CloseButton onClose={onClose} />
+            </div>
           </div>
           <h2 id={titleId} className={styles.header}>
             {title}

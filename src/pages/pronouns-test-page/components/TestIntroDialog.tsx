@@ -134,7 +134,7 @@ export const TestIntroDialog = ({
       title={groupWithSegments.title}
       titleId="test-intro-title"
       Icon={Check}
-      headerRight={
+      headerLeft={
         <button
           type="button"
           className={styles.testDialogSettingsButton}

@@ -4,6 +4,8 @@
   z-index: 1100;
   background: rgba(0, 0, 0, 0.35);
   animation: fadeIn 0.2s ease-out;
+  max-width: var(--container-max);
+  margin: auto;
 }
 
 @keyframes fadeIn {
@@ -23,6 +25,8 @@
   color: var(--color-neutral-900);
   display: grid;
   grid-template-rows: auto 1fr auto;
+  max-width: var(--container-max);
+  margin: auto;
 }
 
 /* 上部バー（閉じる + 進捗 + ・・・） */
