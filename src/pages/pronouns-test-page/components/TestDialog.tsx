@@ -1,18 +1,18 @@
 import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import type { PosGroup, PronounGroup } from '../utils/type';
 import { AnswerMode, ChoiceView } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
 import { useAnswerFeedback } from '../hooks/useAnswerFeedback';
-import { ChoiceList } from './internal/ChoiceList';
 import { useTestSettings } from '../hooks/useTestSettings';
-import JudgementControls from './internal/JudgementControls';
 import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
-import { useListeningWordMask } from '../hooks/useListeningWordMask';
 import { useOrderedItems } from '../hooks/useOrderedItems';
 import TopBar from './internal/TopBar';
+import { useTestDisplay } from '../hooks/useTestDisplay';
+import ChoiceArea from './internal/ChoiceArea';
+import JudgementArea from './internal/JudgementArea';
 
 export type TestDialogProps = {
   open: boolean;
@@ -37,15 +37,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
   const goNextOrClose = useCallback(() => goNext(onClose), [goNext, onClose]);
 
-  const {
-    disabled,
-    handleAnswerIndex,
-    getIndexDisplay,
-    isCorrectHighlight,
-    isWrongSelected,
-    isDim,
-    showGoodAt,
-  } = useAnswerFeedback({
+  const feedback = useAnswerFeedback({
     isCorrect: (label) => !!item && label === item.jp,
     onNext: goNextOrClose,
     choices,
@@ -62,32 +54,14 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     onClose();
   }, [reset, onClose]);
 
-  // 再オープン時のリセットは useTestRunner の初期化に任せる（ここで reset すると初回のタイマーを止めてしまう）
-
-  // 「和訳表示」ボタンの状態（問題切替でリセット）
-  const [showTranslation, setShowTranslation] = useState(false);
-  useEffect(() => {
-    // 問題切替と再オープンの両方でリセット
-    setShowTranslation(false);
-  }, [item?.term, current, open]);
-
-  // 表示用の英単語: Listening モードでは中央の英単語を「?」に置換
-  const {
-    displayTerm: maskedTerm,
-    shouldShowRevealButton,
-    reveal,
-  } = useListeningWordMask({
-    answerMode,
-    choiceView,
-    term: item?.term ?? null,
-    currentIndexOrKey: item?.term ?? current,
-    open,
-  });
-  const displayTerm = useMemo(() => {
-    if (answerMode !== AnswerMode.Listening) return item?.term ?? '-';
-    if (choiceView === ChoiceView.None) return showTranslation ? (item?.term ?? '-') : '?';
-    return maskedTerm;
-  }, [answerMode, choiceView, showTranslation, item?.term, maskedTerm]);
+  const { displayTerm, showTranslation, setShowTranslation, shouldShowRevealButton, reveal } =
+    useTestDisplay({
+      open,
+      answerMode,
+      choiceView,
+      itemTerm: item?.term ?? null,
+      currentKey: item?.term ?? current,
+    });
 
   // 自動発音の副作用を専用フックに集約
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
@@ -120,48 +94,26 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       {/* 下部の操作/選択肢 */}
       <div className={choiceView === ChoiceView.None ? styles.bottomNone : styles.bottom}>
         {choiceView === ChoiceView.Bottom4 && (
-          <>
-            <button
-              type="button"
-              className={styles.skipButton}
-              aria-label="スキップ"
-              onClick={handleSkip}
-            >
-              SKIP
-            </button>
-
-            {shouldShowRevealButton && (
-              <button
-                type="button"
-                className={styles.revealWordButton}
-                onClick={reveal}
-                aria-label="単語を表示"
-              >
-                単語を表示
-              </button>
-            )}
-
-            <ChoiceList
-              choices={choices}
-              disabled={disabled}
-              getIndexDisplay={getIndexDisplay}
-              isCorrectHighlight={isCorrectHighlight}
-              isWrongSelected={isWrongSelected}
-              isDim={isDim}
-              showGoodAt={showGoodAt}
-              onAnswer={(_, i) => {
-                if (answerMode === AnswerMode.Listening) {
-                  // 解答直後に単語を一瞬表示させる
-                  reveal();
-                }
-                handleAnswerIndex(i);
-              }}
-            />
-          </>
+          <ChoiceArea
+            showReveal={shouldShowRevealButton}
+            onReveal={reveal}
+            onSkip={handleSkip}
+            choices={choices}
+            disabled={feedback.disabled}
+            getIndexDisplay={feedback.getIndexDisplay}
+            isCorrectHighlight={feedback.isCorrectHighlight}
+            isWrongSelected={feedback.isWrongSelected}
+            isDim={feedback.isDim}
+            showGoodAt={feedback.showGoodAt}
+            onAnswer={(_, i) => {
+              if (answerMode === AnswerMode.Listening) reveal();
+              feedback.handleAnswerIndex(i);
+            }}
+          />
         )}
 
         {choiceView === ChoiceView.None && hasItems && (
-          <JudgementControls
+          <JudgementArea
             showTranslation={showTranslation}
             onReveal={() => setShowTranslation(true)}
             onDontKnow={() => goNextOrClose()}
