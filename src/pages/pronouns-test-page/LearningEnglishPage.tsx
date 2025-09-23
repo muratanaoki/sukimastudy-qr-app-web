@@ -21,6 +21,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   const [showTest, setShowTest] = useState(false);
   const [showFullTest, setShowFullTest] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [testItems, setTestItems] = useState([] as PronounGroup['items']);
   // タブのアクティブ状態: 初期は最初のグループ
   const initialGroupNo = useMemo(() => (data && data.length > 0 ? data[0].groupNo : 0), [data]);
   const [activeGroupNo, setActiveGroupNo] = useState<number>(initialGroupNo);
@@ -54,6 +55,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
   }, []);
   const closeFullTest = useCallback(() => {
     setShowFullTest(false);
+    setTestItems([]);
   }, []);
 
   const openSettings = useCallback(() => {
@@ -126,12 +128,13 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
           onStart={(seg) => {
             console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
             closeTest();
+            setTestItems(seg.items);
             openFullTest();
           }}
           onOpenSettings={openSettings}
         />
       )}
-      <TestDialog open={showFullTest} onClose={closeFullTest} />
+      <TestDialog open={showFullTest} onClose={closeFullTest} items={testItems} />
       {showSettings && <SettingDialog onClose={closeSettings} />}
     </div>
   );

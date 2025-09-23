@@ -133,6 +133,13 @@
   border: var(--border-width-1) solid var(--border-color-default);
   background: var(--base-color);
   text-align: left;
+  position: relative; /* 内側トーストの位置決め用 */
+}
+
+.choiceButtonCorrect {
+  border-color: #2e7d32;
+  background: #e8f5e9;
+  box-shadow: 0 0 0 2px #e8f5e9; /* うっすら枠 */
 }
 
 .choiceIndex {
@@ -148,4 +155,33 @@
 
 .choiceLabel {
   font-size: 1rem;
+}
+
+.goodToast {
+  position: absolute;
+  right: var(--space-150); /* 右寄せ */
+  bottom: calc(100% + 0.25rem); /* ボタンより少し上 */
+  font-weight: 900;
+  font-size: 2rem;
+  color: #76d120; /* 明るいグリーン */
+  animation: goodPop 650ms ease forwards;
+}
+
+@keyframes goodPop {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.9);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px) scale(1);
+  }
 }
