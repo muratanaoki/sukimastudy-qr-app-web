@@ -1,5 +1,6 @@
 import styles from './choiceList.module.css';
 import { X, Circle } from 'lucide-react';
+import clsx from 'clsx';
 
 export type ChoiceListProps = {
   choices: string[];
@@ -28,15 +29,19 @@ export const ChoiceList = ({
         <button
           key={i}
           type="button"
-          className={`${styles.choiceButton} ${isCorrectHighlight(i) ? styles.choiceButtonCorrect : ''} ${isWrongSelected(i) ? styles.choiceButtonWrong : ''} ${isDim(i) ? styles.choiceButtonDim : ''}`}
+          className={clsx(styles.choiceButton, {
+            [styles.choiceButtonCorrect]: isCorrectHighlight(i),
+            [styles.choiceButtonWrong]: isWrongSelected(i),
+            [styles.choiceButtonDim]: isDim(i),
+          })}
           onClick={() => onAnswer(label, i)}
           disabled={disabled}
         >
           <span className={styles.choiceIndex}>
             {isWrongSelected(i) ? (
-              <X aria-label="wrong" className={styles.batu} />
+              <X aria-label="wrong" className={styles.batu} strokeWidth={2} />
             ) : isCorrectHighlight(i) ? (
-              <Circle aria-label="correct" className={styles.maru} />
+              <Circle aria-label="correct" className={styles.maru} strokeWidth={2} />
             ) : (
               (getIndexDisplay(i) as any)
             )}
