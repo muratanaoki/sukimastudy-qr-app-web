@@ -72,7 +72,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   );
 
   // 自動発音の副作用を専用フックに集約
-  useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
+  useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel, skipFirstOnOpen: true });
 
   if (!open) return null;
 
