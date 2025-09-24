@@ -31,7 +31,13 @@ export const ChoiceArea: React.FC<ChoiceAreaProps> = ({
 }) => {
   return (
     <>
-      <button type="button" className={styles.skipButton} aria-label="スキップ" onClick={onSkip}>
+      <button
+        type="button"
+        className={styles.skipButton}
+        aria-label="スキップ"
+        onClick={onSkip}
+        disabled={disabled}
+      >
         SKIP
       </button>
 

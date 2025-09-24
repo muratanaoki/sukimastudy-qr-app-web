@@ -9,6 +9,11 @@
   margin-bottom: var(--space-100);
 }
 
+.skipButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .revealWordButton {
   padding: 0.9rem 1rem;
   background: var(--color-neutral-100);

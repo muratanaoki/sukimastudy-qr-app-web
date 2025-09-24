@@ -16,6 +16,10 @@
   position: relative;
 }
 
+.choiceButton:disabled {
+  cursor: not-allowed;
+}
+
 .choiceButtonCorrect {
   border-radius: var(--radius-3);
   border: var(--border-width-2) solid var(--accent-green-color-300);
