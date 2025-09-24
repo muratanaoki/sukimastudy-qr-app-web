@@ -1,4 +1,4 @@
-import styles from '../testDialog.module.css';
+import styles from './topBar.module.css';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import clsx from 'clsx';
 import { useProgressNoAnim } from '../../hooks/useProgressNoAnim';

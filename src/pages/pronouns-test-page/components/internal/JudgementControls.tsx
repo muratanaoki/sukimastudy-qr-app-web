@@ -1,5 +1,5 @@
 import { HelpCircle, ThumbsUp } from 'lucide-react';
-import styles from '../testDialog.module.css';
+import styles from './judgementControls.module.css';
 
 export type JudgementControlsProps = {
   showTranslation: boolean;
