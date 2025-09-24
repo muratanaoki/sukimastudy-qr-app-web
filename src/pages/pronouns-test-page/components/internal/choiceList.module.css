@@ -1,0 +1,79 @@
+.choices {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-100);
+  margin-top: var(--space-100);
+}
+
+.choiceButton {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-100);
+  width: 100%;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  border: var(--border-width-1) solid var(--border-color-default);
+  background: var(--base-color);
+  text-align: left;
+  position: relative; /* 内側トーストの位置決め用 */
+}
+
+.choiceButtonCorrect {
+  border-color: #2e7d32;
+  background: #e8f5e9;
+  box-shadow: 0 0 0 2px #e8f5e9; /* うっすら枠 */
+}
+
+.choiceButtonWrong {
+  border-color: #9e9e9e;
+  background: #f1f1f1;
+}
+
+.choiceButtonDim {
+  opacity: 0.2;
+}
+
+.choiceIndex {
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--color-neutral-500);
+  background: var(--color-neutral-100);
+  font-weight: 700;
+}
+
+.choiceLabel {
+  font-size: 1rem;
+}
+
+.goodToast {
+  position: absolute;
+  right: var(--space-150); /* 右寄せ */
+  bottom: calc(100% + 0.25rem); /* ボタンより少し上 */
+  font-weight: 900;
+  font-size: 2rem;
+  color: #76d120; /* 明るいグリーン */
+  animation: goodPop 650ms ease forwards;
+}
+
+@keyframes goodPop {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.9);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px) scale(1);
+  }
+}

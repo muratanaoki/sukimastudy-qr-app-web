@@ -1,4 +1,4 @@
-import styles from '../testDialog.module.css';
+import styles from './choiceList.module.css';
 import { X } from 'lucide-react';
 
 export type ChoiceListProps = {

@@ -124,7 +124,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         )}
 
         {!hasItems && (
-          <div className={styles.choiceLabel} aria-live="polite">
+          <div className={styles.noItemsLabel} aria-live="polite">
             問題がありません
           </div>
         )}
