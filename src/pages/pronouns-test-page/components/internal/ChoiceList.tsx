@@ -1,5 +1,5 @@
 import styles from './choiceList.module.css';
-import { X } from 'lucide-react';
+import { X, Circle } from 'lucide-react';
 
 export type ChoiceListProps = {
   choices: string[];
@@ -34,7 +34,9 @@ export const ChoiceList = ({
         >
           <span className={styles.choiceIndex}>
             {isWrongSelected(i) ? (
-              <X aria-label="wrong" width={16} height={16} strokeWidth={3} />
+              <X aria-label="wrong" className={styles.batu} />
+            ) : showGoodAt(i) ? (
+              <Circle aria-label="correct" className={styles.maru} />
             ) : (
               (getIndexDisplay(i) as any)
             )}

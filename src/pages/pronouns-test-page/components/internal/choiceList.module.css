@@ -5,28 +5,28 @@
 }
 
 .choiceButton {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--space-100);
   width: 100%;
-  padding: 1rem;
-  border-radius: 1.25rem;
-  border: var(--border-width-1) solid var(--border-color-default);
+  padding: var(--space-100) var(--space-150);
+  border-radius: var(--radius-3);
+  border: var(--border-width-2) solid var(--border-color-default);
   background: var(--base-color);
-  text-align: left;
-  position: relative; /* 内側トーストの位置決め用 */
+  position: relative;
 }
 
 .choiceButtonCorrect {
-  border-color: #2e7d32;
-  background: #e8f5e9;
-  box-shadow: 0 0 0 2px #e8f5e9; /* うっすら枠 */
+  border-radius: var(--radius-3);
+  border: var(--border-width-2) solid var(--accent-green-color-300);
+  background: var(--accent-green-color-100);
 }
 
 .choiceButtonWrong {
-  border-color: #9e9e9e;
-  background: #f1f1f1;
+  border-color: var(--color-neutral-400);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-400);
 }
 
 .choiceButtonDim {
@@ -34,18 +34,28 @@
 }
 
 .choiceIndex {
-  inline-size: 2.25rem;
-  block-size: 2.25rem;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 999px;
-  color: var(--color-neutral-500);
-  background: var(--color-neutral-100);
+  color: var(--color-neutral-200);
   font-weight: 700;
+  font-size: var(--fs-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .choiceLabel {
-  font-size: 1rem;
+  font-size: var(--fs-125);
+}
+
+.batu {
+  height: 2rem;
+  width: 2rem;
+  color: var(--color-neutral-400);
+}
+
+.maru {
+  height: 2rem;
+  width: 2rem;
+  color: var(--accent-green-color-300);
 }
 
 .goodToast {
@@ -54,7 +64,7 @@
   bottom: calc(100% + 0.25rem); /* ボタンより少し上 */
   font-weight: 900;
   font-size: 2rem;
-  color: #76d120; /* 明るいグリーン */
+  color: var(--accent-green-color-200); /* 明るいグリーン */
   animation: goodPop 650ms ease forwards;
 }
 

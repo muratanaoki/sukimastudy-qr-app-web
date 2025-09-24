@@ -11,11 +11,14 @@
 
 :root {
   --base-color: var(--color-neutral-000); /* アプリ全体の基本背景色 */
-  --main-color-100: #f2f8fd; /* メインカラー（青） */
-  --main-color-200: #e7f1fc; /* メインカラー（青）淡 */
-  --main-color-300: #2196f3; /* メインカラー（青）中 */
-  --main-color-400: #1976d2; /* メインカラー（青）濃 */
-  --accent-color: #f85659; /* アクセントカラー（赤） */
+  --main-color-100: #f2f8fd;
+  --main-color-200: #e7f1fc;
+  --main-color-300: #2196f3;
+  --main-color-400: #1976d2;
+  --accent-red-color: #f85659;
+  --accent-green-color-100: #ecffed;
+  --accent-green-color-200: rgb(76, 175, 80);
+  --accent-green-color-300: rgb(102, 187, 106);
 
   /* ---------------------------------
     Token 命名規則（抜粋 / 要約）
@@ -134,11 +137,10 @@
   --radius-4: 1rem; /* 16px相当 */
 
   /* Border scale (3階層) */
-  --border-color-subtle: #eaeaea; /* hairline / 軽い区切り */
-  --border-color-default: #dadada; /* 汎用カード枠 / ボタン枠 */
-  --border-color-strong: #cccccc; /* 見出し下線 / セクション分割 */
-  /* Legacy alias (段階的移行) */
-  --border-width-1: 0.0625rem; /* 1px 相当 */
+  --border-color-default: var(--color-neutral-100);
+
+  --border-width-1: 1px;
+  --border-width-2: 2px;
 
   /* 線/バー厚み */
   --thickness-1: 0.125rem; /* 細いバー/ライン（ハンバーガー等） */

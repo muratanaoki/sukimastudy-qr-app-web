@@ -47,7 +47,7 @@
   width: 1.1rem;
   height: 1.1rem;
   border-radius: 50%;
-  background: var(--accent-color); /* アクセント用の赤 */
+  background: var(--accent-red-color); /* アクセント用の赤 */
   top: 0.2rem; /* ほんの少し外側に出す */
   right: -0.1rem;
   pointer-events: none; /* クリックの邪魔をしない */
