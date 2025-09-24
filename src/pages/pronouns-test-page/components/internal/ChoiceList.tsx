@@ -35,7 +35,7 @@ export const ChoiceList = ({
           <span className={styles.choiceIndex}>
             {isWrongSelected(i) ? (
               <X aria-label="wrong" className={styles.batu} />
-            ) : showGoodAt(i) ? (
+            ) : isCorrectHighlight(i) ? (
               <Circle aria-label="correct" className={styles.maru} />
             ) : (
               (getIndexDisplay(i) as any)
