@@ -80,15 +80,17 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
       {/* 中央の問題表示 */}
       <div className={styles.content}>
-        <p className={styles.counter}>
-          {current} / {total}
-        </p>
-        <h1 className={styles.word}>{displayTerm}</h1>
-        {showTranslation && !!item?.jp && (
-          <p className={styles.translation} aria-live="polite">
-            {item.jp}
+        <div>
+          <p className={styles.counter}>
+            {current} / {total}
           </p>
-        )}
+          <h1 className={styles.word}>{displayTerm}</h1>
+          {showTranslation && !!item?.jp && (
+            <p className={styles.translation} aria-live="polite">
+              {item.jp}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* 下部の操作/選択肢 */}

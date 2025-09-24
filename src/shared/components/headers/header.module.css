@@ -39,7 +39,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--z-90); /* ヘッダーの下、コンテンツの上 */
+  z-index: var(--z-header); /* ヘッダーの下、コンテンツの上 */
   background: var(--base-color);
   border-bottom: var(--border-width-1) solid var(--border-color-soft);
   /* ヘッダー直下から “下にスライドして現れる” 表現 */

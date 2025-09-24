@@ -2,7 +2,6 @@
 .tabBar {
   position: sticky;
   top: 0;
-  z-index: 5;
   display: grid;
   gap: var(--space-050);
   padding: var(--space-075) var(--space-150) var(--space-075) var(--space-150);

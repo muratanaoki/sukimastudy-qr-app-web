@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from '../testDialog.module.css';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import clsx from 'clsx';
@@ -12,13 +11,7 @@ export type TopBarProps = {
   resetKey: string | number;
 };
 
-export const TopBar: React.FC<TopBarProps> = ({
-  posTitle,
-  groupTitle,
-  timeLeftPct,
-  onClose,
-  resetKey,
-}) => {
+export const TopBar = ({ posTitle, groupTitle, timeLeftPct, onClose, resetKey }: TopBarProps) => {
   const noAnim = useProgressNoAnim(resetKey, timeLeftPct);
 
   return (
@@ -30,7 +23,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         <div className={styles.topCenter} aria-label="グループ">
           {groupTitle}
         </div>
-        <div className={styles.topRight}>
+        <div>
           <CloseButton onClose={onClose} />
         </div>
       </div>
