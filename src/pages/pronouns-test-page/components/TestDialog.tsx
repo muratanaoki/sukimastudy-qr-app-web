@@ -1,6 +1,6 @@
 import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { PosGroup, PronounGroup } from '../utils/type';
 import { AnswerMode, ChoiceView } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
@@ -33,7 +33,11 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
   const { total, current, timeLeftPct, item } = state;
   const choices = useChoices(item);
-  const correctIndex = item ? choices.findIndex((c) => c === item.jp) : -1;
+  const correctIndex = useMemo(
+    () => (item ? choices.findIndex((c) => c === item.jp) : -1),
+    [item, choices]
+  );
+  const questionKey = item?.term ?? current;
 
   const goNextOrClose = useCallback(() => goNext(onClose), [goNext, onClose]);
 
@@ -42,17 +46,8 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     onNext: goNextOrClose,
     choices,
     correctIndex: correctIndex >= 0 ? correctIndex : undefined,
-    currentKey: item?.term ?? current, // 問題切替キー
+    currentKey: questionKey, // 問題切替キー
   });
-
-  const handleSkip = useCallback(() => {
-    goNextOrClose();
-  }, [goNextOrClose]);
-
-  const handleClose = useCallback(() => {
-    reset();
-    onClose();
-  }, [reset, onClose]);
 
   const { displayTerm, showTranslation, setShowTranslation, shouldShowRevealButton, reveal } =
     useTestDisplay({
@@ -60,8 +55,21 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       answerMode,
       choiceView,
       itemTerm: item?.term ?? null,
-      currentKey: item?.term ?? current,
+      currentKey: questionKey,
     });
+
+  const handleClose = useCallback(() => {
+    reset();
+    onClose();
+  }, [reset, onClose]);
+
+  const handleAnswer = useCallback(
+    (_: string, i: number) => {
+      if (answerMode === AnswerMode.Listening) reveal();
+      feedback.handleAnswerIndex(i);
+    },
+    [answerMode, reveal, feedback]
+  );
 
   // 自動発音の副作用を専用フックに集約
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
@@ -75,7 +83,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         groupTitle={group.title}
         timeLeftPct={timeLeftPct}
         onClose={handleClose}
-        resetKey={item?.term ?? current}
+        resetKey={questionKey}
       />
 
       {/* 中央の問題表示 */}
@@ -97,7 +105,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           <ChoiceArea
             showReveal={shouldShowRevealButton}
             onReveal={reveal}
-            onSkip={handleSkip}
+            onSkip={feedback.handleSkipAsCorrect}
             choices={choices}
             disabled={feedback.disabled}
             getIndexDisplay={feedback.getIndexDisplay}
@@ -105,10 +113,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
             isWrongSelected={feedback.isWrongSelected}
             isDim={feedback.isDim}
             showGoodAt={feedback.showGoodAt}
-            onAnswer={(_, i) => {
-              if (answerMode === AnswerMode.Listening) reveal();
-              feedback.handleAnswerIndex(i);
-            }}
+            onAnswer={handleAnswer}
           />
         )}
 
