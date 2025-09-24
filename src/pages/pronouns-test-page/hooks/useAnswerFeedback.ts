@@ -120,9 +120,14 @@ export const useAnswerFeedback = ({
   );
 
   const isWrongSelected = useCallback((i: number) => wrong && wrongIdx === i, [wrong, wrongIdx]);
+  // “その他のボタン”の薄さを統一
+  // - 正解時(good): 選択した正解以外を薄く
+  // - 不正解時(wrong): 正解と誤選択以外を薄く
   const isDim = useCallback(
-    (i: number) => wrong && !isCorrectHighlight(i) && !isWrongSelected(i),
-    [wrong, isCorrectHighlight, isWrongSelected]
+    (i: number) =>
+      (good && selectedIdx !== null ? i !== selectedIdx : false) ||
+      (wrong && correctIdx !== null ? i !== correctIdx && i !== wrongIdx : false),
+    [good, wrong, selectedIdx, correctIdx, wrongIdx]
   );
 
   const showGoodAt = useCallback((i: number) => good && selectedIdx === i, [good, selectedIdx]);
