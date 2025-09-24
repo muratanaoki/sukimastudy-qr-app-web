@@ -4,7 +4,7 @@
   justify-content: center;
   font-size: var(--fs-100);
   font-weight: 600;
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-025);
   cursor: pointer;
   transition:
     background 0.2s ease,

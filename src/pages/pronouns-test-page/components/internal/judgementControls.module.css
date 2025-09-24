@@ -1,32 +1,54 @@
 .revealButton {
-  padding: 0.9rem 1rem;
-  background: var(--color-neutral-100);
-  border: var(--border-width-1) solid var(--border-color-default);
-  color: var(--color-neutral-900);
-  border-radius: 0.6rem; /* 角にわずかな丸み */
+  color: var(--color-neutral-500);
+  border: none;
   font-weight: 700;
+  background: var(--color-neutral-000);
+  margin-bottom: var(--space-150);
 }
 
 .actionsRow {
-  display: grid;
-  grid-auto-flow: column;
-  gap: var(--space-200);
-  margin-top: var(--space-150);
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.green {
+  background-color: var(--main-color-300);
+}
+
+.gray {
+  background-color: var(--color-neutral-300);
 }
 
 .circleButton {
-  display: grid;
-  grid-template-rows: auto auto;
-  place-items: center;
-  width: 5rem;
-  height: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 5.6rem;
+  height: 5.6rem;
   border-radius: 50%;
   border: none;
-  background: #f2f2f2;
-  color: var(--color-neutral-800);
+}
+
+.question {
+  font-size: var(--fs-200);
+  font-weight: 600;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: var(--space-050);
+  color: var(--color-neutral-000);
+}
+
+.know {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: var(--space-050);
+  color: var(--color-neutral-000);
 }
 
 .circleLabel {
-  font-size: 0.8rem;
-  margin-top: 0.25rem;
+  font-size: var(--fs-100);
+  color: var(--color-neutral-000);
 }

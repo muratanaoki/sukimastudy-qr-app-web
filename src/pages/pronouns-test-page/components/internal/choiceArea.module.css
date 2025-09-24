@@ -19,6 +19,6 @@
   background: var(--color-neutral-100);
   border: var(--border-width-1) solid var(--border-color-default);
   color: var(--color-neutral-900);
-  border-radius: 0.6rem; /* 角にわずかな丸み */
+  border-radius: 0.6rem;
   font-weight: 700;
 }

@@ -30,22 +30,6 @@
   margin: auto;
 }
 
-.progressFill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background: #ff7a00; /* 画像のオレンジに近い */
-  width: 0%;
-  transition: width 200ms ease;
-  border-radius: var(--radius-2);
-}
-
-/* リセット時に一瞬だけトランジションを無効化 */
-.progressNoAnim {
-  transition: none !important;
-}
-
 .content {
   display: flex;
   flex-direction: column;
@@ -66,7 +50,6 @@
 .translation {
   margin-top: var(--space-150);
   color: var(--color-neutral-700);
-  font-size: 1.05rem;
 }
 
 .bottom {

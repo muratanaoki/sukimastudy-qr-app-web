@@ -31,7 +31,6 @@
   line-height: 1;
   letter-spacing: 0.0125rem;
   padding-right: var(--space-050);
-  position: relative;
   top: 0.04em;
   font-variant-numeric: tabular-nums lining-nums; /* 数字の高さを安定させる */
 }

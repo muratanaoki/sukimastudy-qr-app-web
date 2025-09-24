@@ -10,7 +10,7 @@
   align-items: center;
   width: 100%;
   padding: var(--space-100) var(--space-100) var(--space-100) var(--space-100);
-  border-radius: var(--radius-3);
+  border-radius: var(--radius-050);
   border: var(--border-width-2) solid var(--border-color-default);
   background: var(--base-color);
   position: relative;
@@ -21,7 +21,7 @@
 }
 
 .choiceButtonCorrect {
-  border-radius: var(--radius-3);
+  border-radius: var(--radius-050);
   border: var(--border-width-2) solid var(--accent-green-color-300);
   background: var(--accent-green-color-100);
   color: var(--accent-green-color-300);
@@ -71,7 +71,7 @@
   bottom: calc(100% + var(--space-100)); /* ボタンより少し上 */
   font-weight: 900;
   font-size: 2rem;
-  color: var(--accent-green-color-200); /* 明るいグリーン */
+  color: var(--accent-green-color-300); /* 明るいグリーン */
   animation: goodPop 650ms ease forwards;
 }
 

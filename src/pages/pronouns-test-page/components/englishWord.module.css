@@ -1,7 +1,7 @@
 /* --- EnglishWord card --- */
 .card {
   border: var(--border-width-1) solid var(--border-color-default);
-  border-radius: var(--radius-3);
+  border-radius: var(--radius-050);
   padding: var(--space-100);
   background: var(--base-color);
   gap: var(--space-100);
@@ -51,7 +51,7 @@
   background: var(--color-neutral-100);
   padding-left: var(--space-025);
   padding-right: var(--space-025);
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-025);
 }
 
 .term {
@@ -92,7 +92,7 @@
   font-size: var(--fs-075);
   background: var(--base-color);
   border: var(--border-width-1) solid var(--border-color-default);
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-025);
   padding: var(--space-025) var(--space-050);
   cursor: pointer;
   transition:
@@ -106,7 +106,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-025);
   border: var(--border-width-1) solid var(--border-color-default);
   background: var(--base-color);
   color: var(--color-neutral-500);

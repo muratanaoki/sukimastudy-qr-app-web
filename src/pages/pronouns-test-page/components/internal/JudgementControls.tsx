@@ -1,4 +1,4 @@
-import { HelpCircle, ThumbsUp } from 'lucide-react';
+import { ThumbsUp } from 'lucide-react';
 import styles from './judgementControls.module.css';
 
 export type JudgementControlsProps = {
@@ -31,21 +31,21 @@ export const JudgementControls = ({
       <div className={styles.actionsRow}>
         <button
           type="button"
-          className={styles.circleButton}
+          className={`${styles.circleButton} ${styles.gray}`}
           onClick={onDontKnow}
           aria-label="知らない"
         >
-          <HelpCircle aria-hidden size={28} />
+          <span className={styles.question}>？</span>
           <span className={styles.circleLabel}>知らない</span>
         </button>
 
         <button
           type="button"
-          className={styles.circleButton}
+          className={`${styles.circleButton} ${styles.green}`}
           onClick={onKnow}
           aria-label="知ってる"
         >
-          <ThumbsUp aria-hidden size={28} />
+          <ThumbsUp aria-hidden className={styles.know} />
           <span className={styles.circleLabel}>知ってる</span>
         </button>
       </div>

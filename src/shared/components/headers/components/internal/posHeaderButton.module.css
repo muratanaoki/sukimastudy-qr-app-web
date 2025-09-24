@@ -33,7 +33,7 @@
   width: var(--space-100); /* 横方向の長さ */
   height: var(--thickness-1); /* 太さ */
   background: var(--color-neutral-900);
-  border-radius: var(--radius-1);
+  border-radius: var(--radius-0125);
   transform-origin: center;
   transition:
     transform 150ms ease,
