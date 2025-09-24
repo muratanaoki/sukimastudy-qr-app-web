@@ -14,7 +14,7 @@
   color: var(--color-neutral-000);
   background-color: var(--color-neutral-200);
   font-weight: 700;
-  font-size: var(--fs-16);
+  font-size: var(--fs-100);
   padding: 0 var(--space-050);
   border-radius: var(--radius-1);
 }
@@ -22,7 +22,7 @@
 .topCenter {
   justify-self: center;
   font-weight: 900;
-  font-size: var(--fs-16);
+  font-size: var(--fs-100);
   color: var(--color-neutral-500);
 }
 

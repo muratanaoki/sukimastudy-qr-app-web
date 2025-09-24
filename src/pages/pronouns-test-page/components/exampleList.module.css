@@ -29,14 +29,14 @@
 }
 
 .exampleEn {
-  font-size: var(--fs-16);
+  font-size: var(--fs-100);
   min-width: 0;
   flex: 0 1 auto; /* 本文領域内で省略可 */
   line-height: 1;
 }
 
 .exampleJp {
-  font-size: var(--fs-14);
+  font-size: var(--fs-075);
   color: var(--color-neutral-500);
   line-height: 1;
 }
@@ -63,6 +63,6 @@
 }
 
 .iconSize {
-  width: var(--fs-18);
-  height: var(--fs-18);
+  width: var(--fs-125);
+  height: var(--fs-125);
 }

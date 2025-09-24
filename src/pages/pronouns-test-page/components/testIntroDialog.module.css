@@ -9,13 +9,13 @@
   cursor: pointer;
   font: inherit;
   justify-content: center;
-  font-size: var(--fs-16);
+  font-size: var(--fs-100);
   font-weight: 600;
 }
 
 .testDialogSettingsIcon {
-  width: var(--fs-18);
-  height: var(--fs-18);
+  width: var(--fs-125);
+  height: var(--fs-125);
 }
 
 /* --- Range selection grid --- */

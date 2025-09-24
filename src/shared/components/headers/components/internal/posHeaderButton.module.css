@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: var(--space-350);
-  font-size: var(--fs-18);
+  font-size: var(--fs-125);
 }
 
 /* 右側の＋/−アイコン（要素版） */

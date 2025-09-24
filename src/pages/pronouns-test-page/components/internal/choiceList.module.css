@@ -1,8 +1,7 @@
 .choices {
-  grid-column: 1 / -1;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-100);
-  margin-top: var(--space-100);
 }
 
 .choiceButton {

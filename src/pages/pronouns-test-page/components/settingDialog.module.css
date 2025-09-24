@@ -1,5 +1,5 @@
 .settingDialogHeading {
-  font-size: var(--fs-16);
+  font-size: var(--fs-100);
   font-weight: 600;
   margin-bottom: var(--space-050);
   color: var(--color-neutral-600);
@@ -9,8 +9,8 @@
 }
 
 .icon {
-  height: var(--fs-18);
-  width: var(--fs-18);
+  height: var(--fs-125);
+  width: var(--fs-125);
   margin-right: var(--space-025);
 }
 

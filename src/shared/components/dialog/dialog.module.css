@@ -81,7 +81,7 @@
   width: 100%;
   gap: var(--space-075);
   color: var(--main-color-300);
-  font-size: var(--fs-20);
+  font-size: var(--fs-150);
   font-family: var(--font-family-heading);
   margin-bottom: var(--space-100);
 }

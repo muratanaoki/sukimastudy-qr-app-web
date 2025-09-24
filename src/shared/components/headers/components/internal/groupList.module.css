@@ -30,7 +30,7 @@
 }
 
 .subListItemNo {
-  font-size: var(--fs-18);
+  font-size: var(--fs-125);
   line-height: 1;
   padding-right: var(--space-100);
   top: 0.04em;
@@ -38,8 +38,8 @@
 }
 
 .subListItemText {
-  font-size: var(--fs-16);
-  line-height: var(--fs-16);
+  font-size: var(--fs-100);
+  line-height: var(--fs-100);
 }
 
 .subListItemLeftBox {

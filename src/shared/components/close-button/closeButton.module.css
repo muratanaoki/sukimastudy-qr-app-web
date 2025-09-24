@@ -9,11 +9,11 @@
   cursor: pointer;
   font: inherit;
   justify-content: center;
-  font-size: var(--fs-16);
+  font-size: var(--fs-100);
   font-weight: 600;
 }
 
 .icon {
-  width: var(--fs-20);
-  height: var(--fs-20);
+  width: var(--fs-150);
+  height: var(--fs-150);
 }
