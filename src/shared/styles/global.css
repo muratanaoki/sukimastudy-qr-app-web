@@ -10,7 +10,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&family=Zen+Maru+Gothic:wght@400&display=swap'); /* Zen Maru Gothic 重複インポート（ウェイト追加用）。統合検討余地あり */
 
 :root {
-  --base-color: #fff;
+  --base-color: var(--color-neutral-000); /* アプリ全体の基本背景色 */
   --main-color-100: #f2f8fd; /* メインカラー（青） */
   --main-color-200: #e7f1fc; /* メインカラー（青）淡 */
   --main-color-300: #2196f3; /* メインカラー（青）中 */
@@ -50,6 +50,7 @@
   --color-neutral-200: #c2c9ce; /* borders (subtle) / subtle surface */
   --color-neutral-100: #e6eaec; /* elevated bg */
   --color-neutral-050: #f8f9fa; /* app base light */
+  --color-neutral-000: #fff;
 
   /* グラデーションプリセット（必要に応じて拡張） */
   --gradient-neutral-vertical: linear-gradient(
@@ -157,13 +158,13 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: var(--fs-16);
   height: 100%;
+  font-family: var(--font-family);
+  color: var(--font-color);
 }
 
 body {
-  font-family: var(--font-family);
-  color: var(--font-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;

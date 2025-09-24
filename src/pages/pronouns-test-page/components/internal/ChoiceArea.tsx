@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../testDialog.module.css';
+import styles from './choiceArea.module.css';
 import { ChoiceList } from './ChoiceList';
 
 export type ChoiceAreaProps = {

@@ -1,0 +1,18 @@
+.skipButton {
+  color: var(--color-neutral-400);
+  border-radius: 100%;
+  font-weight: 700;
+  background: var(--color-neutral-000);
+  border: 2px solid var(--color-neutral-100);
+  height: 3.2rem;
+  width: 3.2rem;
+}
+
+.revealWordButton {
+  padding: 0.9rem 1rem;
+  background: var(--color-neutral-100);
+  border: var(--border-width-1) solid var(--border-color-default);
+  color: var(--color-neutral-900);
+  border-radius: 0.6rem; /* 角にわずかな丸み */
+  font-weight: 700;
+}

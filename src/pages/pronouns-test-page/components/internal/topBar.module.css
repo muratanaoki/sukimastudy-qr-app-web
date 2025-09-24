@@ -11,20 +11,24 @@
 }
 
 .topLeft {
-  justify-self: start;
-  color: #fff;
+  color: var(--color-neutral-000);
   background-color: var(--color-neutral-200);
   font-weight: 700;
   font-size: var(--fs-16);
-  padding: var(--space-025) var(--space-050);
-  border-radius: var(--radius-3);
+  padding: 0 var(--space-050);
+  border-radius: var(--radius-1);
 }
 
 .topCenter {
   justify-self: center;
   font-weight: 900;
-  font-size: var(--fs-18);
+  font-size: var(--fs-16);
   color: var(--color-neutral-500);
+}
+
+.topRight {
+  padding-left: var(--space-250);
+  display: flex;
 }
 
 .progressTrack {
@@ -39,7 +43,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: #ff7a00;
+  background: var(--main-color-300);
   width: 0%;
   transition: width 200ms ease;
   border-radius: var(--radius-2);

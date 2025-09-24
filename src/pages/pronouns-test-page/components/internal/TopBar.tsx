@@ -23,7 +23,7 @@ export const TopBar = ({ posTitle, groupTitle, timeLeftPct, onClose, resetKey }:
         <div className={styles.topCenter} aria-label="グループ">
           {groupTitle}
         </div>
-        <div>
+        <div className={styles.topRight}>
           <CloseButton onClose={onClose} />
         </div>
       </div>
