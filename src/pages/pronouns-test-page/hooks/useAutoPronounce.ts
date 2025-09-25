@@ -12,15 +12,10 @@ type Params = {
  * - 同一語の二重発音を回避（lastKey ガード）
  * - 閉時/アンマウントで cancel 実行
  */
-export const useAutoPronounce = ({
-  open,
-  term,
-  speakWord,
-  cancel,
-}: Params) => {
+export const useAutoPronounce = ({ open, term, speakWord, cancel }: Params) => {
   const lastSpokenKeyRef = useRef<string | null>(null);
   const cancelRef = useRef(cancel);
-  
+
   useEffect(() => {
     cancelRef.current = cancel;
   }, [cancel]);
@@ -36,8 +31,14 @@ export const useAutoPronounce = ({
   useEffect(() => {
     if (!open || !term) return;
     if (lastSpokenKeyRef.current !== term) {
-      speakWord(term);
+      // 最初の発音のみ少し遅らせる
+      const delay = lastSpokenKeyRef.current === null ? 300 : 0;
+      const timeoutId = setTimeout(() => {
+        speakWord(term);
+      }, delay);
       lastSpokenKeyRef.current = term;
+
+      return () => clearTimeout(timeoutId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, term]); // speakWordを意図的に依存配列から除外（無限ループ回避）

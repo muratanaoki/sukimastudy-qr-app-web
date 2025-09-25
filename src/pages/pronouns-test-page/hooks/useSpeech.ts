@@ -3,22 +3,30 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // =====================================================================================
 // Speech (Web Speech Synthesis) Hook
 // 目的:
-//  - ブラウザ差異 (Safari / Chrome) を意識しつつ最小限 API で単語/文読み上げを提供
+//  - ブラウザ差異 (Safari / Chrome / モバイル) を意識しつつ最小限 API で単語/文読み上げを提供
+//  - モバイルデバイスでの音声再生安定性を向上
 //  - 可読性向上のためロジックを小さな純関数へ分解
 // =====================================================================================
 
-// --- Browser / Voice detection helpers -------------------------------------------------
-// ---- Browser / Voice detection helpers ----------------------------------------------
+// --- Browser / Device detection helpers ----------------------------------------------
 const detectSafari = (): boolean => {
   if (typeof navigator === 'undefined') return false;
   const ua = navigator.userAgent;
-  const vendor = navigator.vendor || '';
+
+  // Safari判定: UserAgentベースでより確実な方法
   if (!/Safari/i.test(ua)) return false;
-  if (!/Apple/i.test(vendor)) return false;
+
   // 除外ブラウザ (iOS Chrome/Edge/Firefox/Opera, 各種 Chromium 派生など)
   if (/(Chrome|CriOS|Chromium|Edg|EdgiOS|OPR|OPiOS|FxiOS|Brave|SamsungBrowser)/i.test(ua))
     return false;
-  return true;
+
+  // WebKitベースでApple製品かチェック
+  return /AppleWebKit/i.test(ua) && !/Chrome/i.test(ua);
+};
+
+const detectMobile = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 };
 
 const SAFARI_VOICE_CANDIDATES = [
@@ -84,10 +92,11 @@ export function useSpeech(options?: UseSpeechOptions) {
     loadVoices();
     synth.addEventListener?.('voiceschanged', loadVoices);
 
-    // speaking状態の簡易ポーリング
+    // speaking状態の定期チェック（モバイルでは頻度を下げる）
+    const pollInterval = detectMobile() ? 1000 : 500;
     const id = window.setInterval(() => {
       setSpeaking(synth.speaking);
-    }, 500);
+    }, pollInterval);
 
     return () => {
       synth.removeEventListener?.('voiceschanged', loadVoices);
@@ -142,10 +151,12 @@ export function useSpeech(options?: UseSpeechOptions) {
   const speak = useCallback(
     (text: string, local?: { rate?: number; pitch?: number; lang?: string }) => {
       if (!text) return;
-      // supportedフラグに関係なく、speechSynthesisが利用可能なら実行
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
       const synth = window.speechSynthesis;
-      // 再生中の場合のみキューを明示 flush（短い単語連続読みで遅延を避ける）
+      const isMobile = detectMobile();
+
+      // 既存音声をキャンセルして新しい音声を再生（PC・モバイル共通）
       if (synth.speaking) {
         try {
           synth.cancel();
@@ -153,12 +164,20 @@ export function useSpeech(options?: UseSpeechOptions) {
           /* ignore */
         }
       }
+
       const u = createUtterance(text, local);
+      const finishCallback = () => setSpeaking(false);
+
       u.onstart = () => setSpeaking(true);
-      const finish = () => setSpeaking(false);
-      u.onend = finish;
-      u.onerror = finish;
-      synth.speak(u);
+      u.onend = finishCallback;
+      u.onerror = finishCallback;
+
+      // モバイルでは少し遅延を入れて安定性を向上
+      if (isMobile) {
+        setTimeout(() => synth.speak(u), 50);
+      } else {
+        synth.speak(u);
+      }
     },
     [createUtterance]
   );
