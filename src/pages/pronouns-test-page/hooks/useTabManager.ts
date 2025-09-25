@@ -10,7 +10,7 @@ export const useTabManager = (data: PronounGroup[]) => {
     const tabParam = searchParams.get('tab');
     if (tabParam && data) {
       const tabNumber = parseInt(tabParam, 10);
-      const foundGroup = data.find(group => group.groupNo === tabNumber);
+      const foundGroup = data.find((group) => group.groupNo === tabNumber);
       if (foundGroup) {
         return tabNumber;
       }
@@ -25,31 +25,36 @@ export const useTabManager = (data: PronounGroup[]) => {
     const tabParam = searchParams.get('tab');
     if (tabParam && data) {
       const tabNumber = parseInt(tabParam, 10);
-      const foundGroup = data.find(group => group.groupNo === tabNumber);
+      const foundGroup = data.find((group) => group.groupNo === tabNumber);
       if (foundGroup && foundGroup.groupNo !== activeGroupNo) {
         setActiveGroupNo(foundGroup.groupNo);
         return;
       }
     }
+  }, [searchParams, data]);
 
-    // データが変わってアクティブタブが存在しなくなった場合のフォールバック
+  // データが変わった時のフォールバック処理を別のuseEffectに分離
+  useEffect(() => {
     if (data && data.length > 0) {
-      const exists = data.some(group => group.groupNo === activeGroupNo);
+      const exists = data.some((group) => group.groupNo === activeGroupNo);
       if (!exists) {
         setActiveGroupNo(data[0].groupNo);
       }
     }
-  }, [searchParams, data, activeGroupNo]);
+  }, [data, activeGroupNo]);
 
   // タブ変更とURL更新を同時に行うハンドラー
-  const changeTab = useCallback((newGroupNo: number) => {
-    setActiveGroupNo(newGroupNo);
-    setSearchParams(prev => {
-      const newParams = new URLSearchParams(prev);
-      newParams.set('tab', newGroupNo.toString());
-      return newParams;
-    });
-  }, [setSearchParams]);
+  const changeTab = useCallback(
+    (newGroupNo: number) => {
+      setActiveGroupNo(newGroupNo);
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
+        newParams.set('tab', newGroupNo.toString());
+        return newParams;
+      });
+    },
+    [setSearchParams]
+  );
 
   return {
     activeGroupNo,
