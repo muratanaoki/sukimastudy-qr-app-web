@@ -1,121 +1,149 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+type AudioRef = React.MutableRefObject<HTMLAudioElement | null>;
+
+// 音声ファイルのプリロード処理
+const createPreloadedAudio = async (src: string): Promise<HTMLAudioElement> => {
+  const audio = new Audio();
+  audio.volume = 0.5;
+  audio.preload = 'auto';
+  audio.src = src;
+  audio.load();
+
+  return new Promise<HTMLAudioElement>((resolve) => {
+    const cleanup = () => {
+      audio.removeEventListener('canplaythrough', handleReady);
+      audio.removeEventListener('error', handleError);
+    };
+
+    const handleReady = () => {
+      cleanup();
+      resolve(audio);
+    };
+
+    const handleError = (e: Event) => {
+      cleanup();
+      console.warn(`音声読み込みエラー: ${src}`, e);
+      resolve(audio);
+    };
+
+    audio.addEventListener('canplaythrough', handleReady);
+    audio.addEventListener('error', handleError);
+  });
+};
+
+// 音声の安全な再生処理
+const playAudioSafely = async (audioRef: AudioRef, onError: () => void) => {
+  const audio = audioRef.current;
+  if (!audio || audio.readyState < 2) {
+    console.warn('音声が準備完了していません');
+    return;
+  }
+
+  try {
+    if (!audio.paused) audio.pause();
+    audio.currentTime = 0;
+    await audio.play();
+  } catch (error) {
+    console.warn('音声再生エラー:', error);
+    onError();
+  }
+};
+
+// 音声リソースのクリーンアップ
+const cleanupAudio = (audio: HTMLAudioElement | null) => {
+  if (audio) {
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+  }
+};
+
+// ブラウザの音声制限を解除する処理
+const unlockAudioContext = async (): Promise<boolean> => {
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const audioContext = new AudioContextClass();
+    await audioContext.resume();
+    return true;
+  } catch (error) {
+    console.warn('AudioContext初期化失敗:', error);
+    return false;
+  }
+};
+
 export const useSoundEffects = () => {
   const correctAudioRef = useRef<HTMLAudioElement | null>(null);
   const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
-  // 音声ファイルを事前に読み込み
+  // 音声ファイルの初期化
   useEffect(() => {
-    const preloadAudio = (src: string) => {
-      const audio = new Audio();
-      audio.volume = 0.5;
-      audio.preload = 'auto';
-      audio.src = src;
+    let isMounted = true;
 
-      // スマホ対応: loadを追加
-      audio.load();
+    const initializeAudio = async () => {
+      const [correctAudio, incorrectAudio] = await Promise.all([
+        createPreloadedAudio('/sounds/maru.wav'),
+        createPreloadedAudio('/sounds/batu.wav'),
+      ]);
 
-      // エラーハンドリング
-      audio.addEventListener('error', (e) => {
-        console.warn(`音声ファイルの読み込みエラー: ${src}`, e);
-      });
-
-      return audio;
+      if (isMounted) {
+        correctAudioRef.current = correctAudio;
+        incorrectAudioRef.current = incorrectAudio;
+      }
     };
 
-    correctAudioRef.current = preloadAudio('/sounds/maru.wav');
-    incorrectAudioRef.current = preloadAudio('/sounds/batu.wav');
+    initializeAudio();
 
     return () => {
-      // 適切なクリーンアップ
-      if (correctAudioRef.current) {
-        correctAudioRef.current.pause();
-        correctAudioRef.current.removeAttribute('src');
-        correctAudioRef.current.load();
-      }
-      if (incorrectAudioRef.current) {
-        incorrectAudioRef.current.pause();
-        incorrectAudioRef.current.removeAttribute('src');
-        incorrectAudioRef.current.load();
-      }
+      isMounted = false;
+      cleanupAudio(correctAudioRef.current);
+      cleanupAudio(incorrectAudioRef.current);
     };
   }, []);
 
-  // ユーザー操作で音声を有効化（スマホ対応）
+  // 音声有効化（スマホ対応）
   const enableAudio = useCallback(() => {
-    if (!isAudioEnabled) {
-      // 無音の音声を再生してブラウザの制限を解除
-      const silentAudio = correctAudioRef.current;
-      if (silentAudio) {
-        silentAudio.volume = 0;
-        silentAudio.play().then(() => {
-          silentAudio.volume = 0.5;
-          setIsAudioEnabled(true);
-        }).catch(() => {
-          // フォールバック: Web Audio API使用
-          try {
-            const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-            audioContext.resume().then(() => {
-              setIsAudioEnabled(true);
-            });
-          } catch (error) {
-            console.warn('音声の初期化に失敗:', error);
-          }
-        });
+    if (isAudioEnabled) return;
+
+    const attemptEnable = async () => {
+      const audio = correctAudioRef.current;
+      if (!audio) return;
+
+      try {
+        audio.volume = 0;
+        await audio.play();
+        audio.volume = 0.5;
+        setIsAudioEnabled(true);
+      } catch {
+        const success = await unlockAudioContext();
+        if (success) setIsAudioEnabled(true);
       }
-    }
+    };
+
+    attemptEnable();
   }, [isAudioEnabled]);
+
+  // 再生関数
+  const playCorrectSound = useCallback(() => {
+    playAudioSafely(correctAudioRef, enableAudio);
+  }, [enableAudio]);
+
+  const playIncorrectSound = useCallback(() => {
+    playAudioSafely(incorrectAudioRef, enableAudio);
+  }, [enableAudio]);
 
   const playSound = useCallback((soundFile: string) => {
     try {
       const audio = new Audio(soundFile);
       audio.volume = 0.5;
       audio.play().catch((error) => {
-        console.warn('音声の再生に失敗しました:', error);
+        console.warn('音声再生失敗:', error);
       });
     } catch (error) {
-      console.warn('音声ファイルの読み込みに失敗しました:', error);
+      console.warn('音声読み込み失敗:', error);
     }
   }, []);
-
-  const playCorrectSound = useCallback(() => {
-    if (correctAudioRef.current) {
-      try {
-        correctAudioRef.current.currentTime = 0;
-        const playPromise = correctAudioRef.current.play();
-
-        if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-            console.warn('正解音の再生に失敗しました:', error);
-            // 自動再生が失敗した場合は音声を有効化
-            enableAudio();
-          });
-        }
-      } catch (error) {
-        console.warn('正解音の再生エラー:', error);
-      }
-    }
-  }, [enableAudio]);
-
-  const playIncorrectSound = useCallback(() => {
-    if (incorrectAudioRef.current) {
-      try {
-        incorrectAudioRef.current.currentTime = 0;
-        const playPromise = incorrectAudioRef.current.play();
-
-        if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-            console.warn('不正解音の再生に失敗しました:', error);
-            // 自動再生が失敗した場合は音声を有効化
-            enableAudio();
-          });
-        }
-      } catch (error) {
-        console.warn('不正解音の再生エラー:', error);
-      }
-    }
-  }, [enableAudio]);
 
   return {
     playCorrectSound,
