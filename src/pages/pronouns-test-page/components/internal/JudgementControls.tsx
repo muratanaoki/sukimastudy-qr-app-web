@@ -1,6 +1,8 @@
 import { ThumbsUp } from 'lucide-react';
 import clsx from 'clsx';
 import styles from './judgementControls.module.css';
+import { BUTTON_LABELS, JUDGEMENT_BUTTON_TYPE } from '../../utils/const';
+import type { JudgementButtonType } from '../../utils/type';
 
 export type JudgementControlsProps = {
   showTranslation: boolean;
@@ -10,7 +12,7 @@ export type JudgementControlsProps = {
   onDontKnow: () => void; // 不正解として次へ
   revealButtonText?: string; // リスニングモード用にテキスト変更可能
   disabled?: boolean;
-  selectedButton?: 'know' | 'dontKnow' | null;
+  selectedButton?: JudgementButtonType | null;
 };
 
 export const JudgementControls = ({
@@ -19,7 +21,7 @@ export const JudgementControls = ({
   onReveal,
   onKnow,
   onDontKnow,
-  revealButtonText = '和訳表示',
+  revealButtonText = BUTTON_LABELS.REVEAL_TRANSLATION,
   disabled = false,
   selectedButton = null,
 }: JudgementControlsProps) => {
@@ -45,27 +47,27 @@ export const JudgementControls = ({
         <button
           type="button"
           className={clsx(styles.circleButton, styles.gray, {
-            [styles.circleButtonDim]: disabled && selectedButton === 'know',
+            [styles.circleButtonDim]: disabled && selectedButton === JUDGEMENT_BUTTON_TYPE.KNOW,
           })}
           onClick={onDontKnow}
-          aria-label="知らない"
+          aria-label={BUTTON_LABELS.DONT_KNOW}
           disabled={false}
         >
           <span className={styles.question}>？</span>
-          <span className={styles.circleLabel}>知らない</span>
+          <span className={styles.circleLabel}>{BUTTON_LABELS.DONT_KNOW}</span>
         </button>
 
         <button
           type="button"
           className={clsx(styles.circleButton, styles.green, {
-            [styles.circleButtonDim]: disabled && selectedButton === 'dontKnow',
+            [styles.circleButtonDim]: disabled && selectedButton === JUDGEMENT_BUTTON_TYPE.DONT_KNOW,
           })}
           onClick={onKnow}
-          aria-label="知ってる"
+          aria-label={BUTTON_LABELS.KNOW}
           disabled={false}
         >
           <ThumbsUp aria-hidden className={styles.know} />
-          <span className={styles.circleLabel}>知ってる</span>
+          <span className={styles.circleLabel}>{BUTTON_LABELS.KNOW}</span>
         </button>
       </div>
     </>

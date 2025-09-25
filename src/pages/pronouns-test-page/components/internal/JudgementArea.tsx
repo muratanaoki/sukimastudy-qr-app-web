@@ -1,5 +1,6 @@
 import React from 'react';
 import JudgementControls from './JudgementControls';
+import type { JudgementButtonType } from '../../utils/type';
 
 export type JudgementAreaProps = {
   showTranslation: boolean;
@@ -9,7 +10,7 @@ export type JudgementAreaProps = {
   onKnow: () => void;
   revealButtonText?: string;
   disabled?: boolean;
-  selectedButton?: 'know' | 'dontKnow' | null;
+  selectedButton?: JudgementButtonType | null;
 };
 
 export const JudgementArea: React.FC<JudgementAreaProps> = ({
