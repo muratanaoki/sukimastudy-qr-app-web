@@ -101,3 +101,13 @@
 .topRight {
   display: flex;
 }
+
+.actionsButton {
+  width: 100%;
+}
+
+.confirmText {
+  margin-bottom: var(--space-150);
+  text-align: center;
+  color: var(--color-neutral-700);
+}

@@ -12,6 +12,10 @@ import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
 import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
+import { DialogCard } from '@/shared/components/dialog/DialogCard';
+import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
+import { AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
 
 export type TestDialogProps = {
   open: boolean;
@@ -21,6 +25,8 @@ export type TestDialogProps = {
 };
 
 export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+
   useEscapeKey(onClose, open);
 
   const { speakWord, cancel } = useSpeech();
@@ -60,6 +66,23 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       cancelFlash,
     });
 
+  const handleCloseClick = () => {
+    if (isCompleted) {
+      onClose();
+    } else {
+      setShowConfirm(true);
+    }
+  };
+
+  const handleConfirmClose = () => {
+    setShowConfirm(false);
+    onClose();
+  };
+
+  const handleCancelClose = () => {
+    setShowConfirm(false);
+  };
+
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
   const displayWord = getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm);
@@ -77,7 +100,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       {isCompleted ? (
         <div className={styles.resultHeader}>
           <div className={styles.topRight}>
-            <CloseButton onClose={handleDialogClose} />
+            <CloseButton onClose={handleCloseClick} />
           </div>
         </div>
       ) : (
@@ -85,7 +108,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           posTitle={pos.title}
           groupTitle={group.title}
           timeLeftPct={timeLeftPct}
-          onClose={handleDialogClose}
+          onClose={handleCloseClick}
           resetKey={questionKey}
         />
       )}
@@ -134,6 +157,23 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           judgementDisabled={selectedJudgement !== null}
           selectedButton={selectedJudgement}
         />
+      )}
+
+      {/* 確認ダイアログ */}
+      {showConfirm && (
+        <DialogCard
+          onClose={handleCancelClose}
+          title="テストを終了しますか？"
+          titleId="confirm-dialog-title"
+          Icon={AlertTriangle}
+          actions={
+            <PrimaryButton className={styles.actionsButton} onClick={handleConfirmClose}>
+              終了する
+            </PrimaryButton>
+          }
+        >
+          <p className={styles.confirmText}>現在の進行状況は保存されません。</p>
+        </DialogCard>
       )}
     </div>
   );
