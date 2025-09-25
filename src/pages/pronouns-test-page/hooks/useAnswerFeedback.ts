@@ -73,8 +73,10 @@ export const useAnswerFeedback = ({
       setSelectedIdx(isSkipped ? null : index);
       if (isSkipped && typeof correctIndex === 'number') setCorrectIdx(correctIndex);
 
-      // 正解音を再生
-      playCorrectSound();
+      // 正解音を再生（スキップ時は音を出さない）
+      if (!isSkipped) {
+        playCorrectSound();
+      }
 
       schedule(() => {
         setGood(false);

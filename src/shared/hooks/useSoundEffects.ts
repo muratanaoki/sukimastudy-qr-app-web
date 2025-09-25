@@ -1,6 +1,29 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export const useSoundEffects = () => {
+  const correctAudioRef = useRef<HTMLAudioElement | null>(null);
+  const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // 音声ファイルを事前に読み込み
+  useEffect(() => {
+    const preloadAudio = (src: string) => {
+      const audio = new Audio();
+      audio.volume = 0.5;
+      audio.preload = 'auto';
+      audio.src = src;
+      return audio;
+    };
+
+    correctAudioRef.current = preloadAudio('/sounds/maru.wav');
+    incorrectAudioRef.current = preloadAudio('/sounds/batu.wav');
+
+    return () => {
+      // クリーンアップ
+      correctAudioRef.current = null;
+      incorrectAudioRef.current = null;
+    };
+  }, []);
+
   const playSound = useCallback((soundFile: string) => {
     try {
       const audio = new Audio(soundFile);
@@ -14,12 +37,22 @@ export const useSoundEffects = () => {
   }, []);
 
   const playCorrectSound = useCallback(() => {
-    playSound('/sounds/maru.wav');
-  }, [playSound]);
+    if (correctAudioRef.current) {
+      correctAudioRef.current.currentTime = 0; // 再生位置をリセット
+      correctAudioRef.current.play().catch((error) => {
+        console.warn('正解音の再生に失敗しました:', error);
+      });
+    }
+  }, []);
 
   const playIncorrectSound = useCallback(() => {
-    playSound('/sounds/batu.wav');
-  }, [playSound]);
+    if (incorrectAudioRef.current) {
+      incorrectAudioRef.current.currentTime = 0; // 再生位置をリセット
+      incorrectAudioRef.current.play().catch((error) => {
+        console.warn('不正解音の再生に失敗しました:', error);
+      });
+    }
+  }, []);
 
   return {
     playCorrectSound,
