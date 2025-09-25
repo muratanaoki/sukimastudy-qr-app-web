@@ -218,7 +218,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたの', 'あなたを、あなたに', '彼は'],
+      enToJp: ['あなたの', '彼女に', '彼は'],
       jpToEn: ['your', 'you', 'he'],
     },
   },
@@ -313,7 +313,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちの', 'あなたたちを、あなたたちに', '彼らは'],
+      enToJp: ['あなたたちの', 'あなたの', '彼らは'],
       jpToEn: ['your', 'you', 'they'],
     },
   },
@@ -353,7 +353,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちの', 'あなたたちのもの', 'あなたたちは'],
+      enToJp: ['あなたたちの', 'あなたたちのもの', 'あなたたち自身'],
       jpToEn: ['your', 'yours', 'you'],
     },
   },
@@ -393,7 +393,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちの', '私たち自身', '彼ら自身'],
+      enToJp: ['あなたたちの', 'あなたたちを、あなたたちに', '彼ら自身'],
       jpToEn: ['your', 'ourselves', 'themselves'],
     },
   },
@@ -426,7 +426,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'His advice has been helpful.', jp: '彼の助言は役に立ってきました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼のもの', '彼は', '彼自身'],
+      enToJp: ['彼を、彼に', '彼は', '彼自身'],
       jpToEn: ['his', 'he', 'himself'],
     },
   },
@@ -454,7 +454,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'The final decision is his.', jp: '最終的な決定は彼のものです。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼の', '彼を、彼に', '彼女のもの'],
+      enToJp: ['彼は', '彼を、彼に', '彼女のもの'],
       jpToEn: ['his', 'him', 'hers'],
     },
   },
@@ -515,7 +515,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'We chose her as the leader.', jp: '私たちは彼女をリーダーに選びました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼女の', '彼女のもの', '彼女自身'],
+      enToJp: ['彼女は', '彼女のもの', '彼女自身'],
       jpToEn: ['her', 'hers', 'herself'],
     },
   },
@@ -566,7 +566,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'It has become colder recently.', jp: '最近、寒くなってきました。', level: 3 },
     ],
     choices: {
-      enToJp: ['それを、それに', 'それの', 'それ自身'],
+      enToJp: ['あれの', 'それの', 'それ自身'],
       jpToEn: ['it', 'its', 'itself'],
     },
   },
@@ -594,7 +594,7 @@ const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'I considered it carefully.', jp: '私はそれを慎重に考えました。', level: 3 },
     ],
     choices: {
-      enToJp: ['それは', 'それの', 'それ自身'],
+      enToJp: ['あれは', 'それの', 'それ自身'],
       jpToEn: ['it', 'its', 'itself'],
     },
   },
@@ -1570,7 +1570,7 @@ export const DATA: PronounGroup[] = [
   {
     groupNo: 3,
     title: '不定代名詞（数量・部分など）',
-    abbr: '数量',
+    abbr: '不定',
     icon: ChartColumn,
     url: '/pronouns?tab=3',
     items: withIndex(DATA_RAW3),
