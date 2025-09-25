@@ -8,7 +8,7 @@ export const useSoundEffects = () => {
   useEffect(() => {
     const preloadAudio = (src: string) => {
       const audio = new Audio();
-      audio.volume = 0.5;
+      audio.volume = 1;
       audio.preload = 'auto';
       audio.src = src;
       return audio;

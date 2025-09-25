@@ -14,6 +14,7 @@
   border: var(--border-width-2) solid var(--border-color-default);
   background: var(--base-color);
   position: relative;
+  color: var(--color-neutral-800);
 }
 
 .choiceButton:disabled {
