@@ -19,7 +19,7 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Navigate to="/pronouns-test-page" replace />} />
-          <Route path="/pronouns-test-page" element={<LearningEnglishPage data={DATA} />} />
+          <Route path="/pronouns" element={<LearningEnglishPage data={DATA} />} />
           <Route path="*" element={<Navigate to="/pronouns-test-page" replace />} />
         </Routes>
       </BrowserRouter>

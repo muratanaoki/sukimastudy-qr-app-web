@@ -1556,7 +1556,7 @@ export const DATA: PronounGroup[] = [
     title: '人称・所有・再帰代名詞',
     abbr: '人称',
     icon: User,
-    url: '/pronouns/1',
+    url: '/pronouns?tab=1',
     items: withIndex(DATA_RAW1),
   },
   {
@@ -1564,7 +1564,7 @@ export const DATA: PronounGroup[] = [
     title: '不定代名詞（人・物・事）',
     abbr: '不定',
     icon: Users,
-    url: '/pronouns/2',
+    url: '/pronouns?tab=2',
     items: withIndex(DATA_RAW2),
   },
   {
@@ -1572,7 +1572,7 @@ export const DATA: PronounGroup[] = [
     title: '不定代名詞（数量・部分など）',
     abbr: '数量',
     icon: ChartColumn,
-    url: '/pronouns/3',
+    url: '/pronouns?tab=3',
     items: withIndex(DATA_RAW3),
   },
   {
@@ -1580,7 +1580,7 @@ export const DATA: PronounGroup[] = [
     title: '指示代名詞・その他',
     abbr: '指示',
     icon: MousePointer,
-    url: '/pronouns/4',
+    url: '/pronouns?tab=4',
     items: withIndex(DATA_RAW4),
   },
 ];
