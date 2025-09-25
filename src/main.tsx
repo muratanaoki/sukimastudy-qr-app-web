@@ -18,9 +18,9 @@ const App = () => {
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/" element={<Navigate to="/pronouns-test-page" replace />} />
+          <Route path="/" element={<Navigate to="/pronouns" replace />} />
           <Route path="/pronouns" element={<LearningEnglishPage data={DATA} />} />
-          <Route path="*" element={<Navigate to="/pronouns-test-page" replace />} />
+          <Route path="*" element={<Navigate to="/pronouns" replace />} />
         </Routes>
       </BrowserRouter>
     </>
