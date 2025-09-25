@@ -145,11 +145,13 @@ export function useSpeech(options?: UseSpeechOptions) {
       // supportedフラグに関係なく、speechSynthesisが利用可能なら実行
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
       const synth = window.speechSynthesis;
-      // 直前のキューを明示 flush（短い単語連続読みで遅延を避ける）
-      try {
-        synth.cancel();
-      } catch {
-        /* ignore */
+      // 再生中の場合のみキューを明示 flush（短い単語連続読みで遅延を避ける）
+      if (synth.speaking) {
+        try {
+          synth.cancel();
+        } catch {
+          /* ignore */
+        }
       }
       const u = createUtterance(text, local);
       u.onstart = () => setSpeaking(true);
