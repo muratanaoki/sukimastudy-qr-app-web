@@ -91,3 +91,13 @@
   color: var(--color-neutral-600);
   font-size: 1.25rem;
 }
+
+.resultHeader {
+  padding: var(--space-100) var(--space-150);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.topRight {
+  display: flex;
+}

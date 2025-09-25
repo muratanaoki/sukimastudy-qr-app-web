@@ -69,12 +69,6 @@ const TestControls = ({ choiceView, isCompleted, hasItems, ...props }: TestContr
         />
       )}
 
-      {/* テスト完了または問題なしの場合 */}
-      {(isCompleted || !hasItems) && (
-        <div className={styles.noItemsLabel} aria-live="polite">
-          テスト結果画面開発中
-        </div>
-      )}
     </div>
   );
 };
