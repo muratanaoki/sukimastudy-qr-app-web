@@ -22,7 +22,7 @@ import {
 import TopBar from './internal/TopBar';
 import { useTestDisplay } from '../hooks/useTestDisplay';
 import ChoiceArea from './internal/ChoiceArea';
-import JudgementArea from './internal/JudgementArea';
+import JudgementControls from './internal/JudgementControls';
 
 export type TestDialogProps = {
   open: boolean;
@@ -182,7 +182,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
         {/* 知ってる/知らないモード */}
         {isJudgementMode(choiceView) && hasItems && (
-          <JudgementArea
+          <JudgementControls
             showTranslation={showTranslation}
             onReveal={handleRevealWord}
             onDontKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW)}
