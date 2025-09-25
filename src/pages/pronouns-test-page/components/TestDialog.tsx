@@ -27,8 +27,6 @@ export type TestDialogProps = {
 export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
-  useEscapeKey(onClose, open);
-
   const { speakWord, cancel } = useSpeech();
 
   const {
@@ -54,7 +52,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     questionKey
   );
 
-  const { handleDialogClose, handleChoiceAnswer, handleSkip, handleRevealWord } =
+  const { handleChoiceAnswer, handleSkip, handleRevealWord } =
     useTestDialogHandlers({
       answerMode,
       revealed: display.revealed,
@@ -83,15 +81,17 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     setShowConfirm(false);
   };
 
+  useEscapeKey(handleCloseClick, open);
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
-  const displayWord = getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm);
-  const revealButtonText = getRevealButtonText(answerMode);
-  const showTranslationComputed = shouldShowTranslation(
+  // これらの計算はテスト実行中のみ必要
+  const displayWord = !isCompleted ? getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm) : '';
+  const revealButtonText = !isCompleted ? getRevealButtonText(answerMode) : '';
+  const showTranslationComputed = !isCompleted ? shouldShowTranslation(
     display.showTranslation,
     isFlashing,
     !!item?.jp
-  );
+  ) : false;
 
   if (!open) return null;
 
@@ -133,7 +133,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       {!isCompleted && (
         <TestControls
           choiceView={choiceView}
-          isCompleted={isCompleted}
+          isCompleted={false}
           hasItems={hasItems}
           // Choice mode props
           choices={choices}
