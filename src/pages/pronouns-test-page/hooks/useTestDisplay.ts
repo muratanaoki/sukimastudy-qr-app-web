@@ -28,6 +28,7 @@ export const useTestDisplay = ({
     displayTerm: maskedTerm,
     shouldShowRevealButton,
     reveal,
+    revealed,
   } = useListeningWordMask({
     answerMode,
     choiceView,
@@ -48,5 +49,6 @@ export const useTestDisplay = ({
     setShowTranslation,
     shouldShowRevealButton,
     reveal,
+    revealed,
   } as const;
 };

@@ -68,14 +68,20 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   });
 
   // 表示制御（問題文、翻訳など）
-  const { displayTerm, showTranslation, setShowTranslation, shouldShowRevealButton, reveal } =
-    useTestDisplay({
-      open,
-      answerMode,
-      choiceView,
-      itemTerm: item?.term ?? null,
-      currentKey: questionKey,
-    });
+  const {
+    displayTerm,
+    showTranslation,
+    setShowTranslation,
+    shouldShowRevealButton,
+    reveal,
+    revealed,
+  } = useTestDisplay({
+    open,
+    answerMode,
+    choiceView,
+    itemTerm: item?.term ?? null,
+    currentKey: questionKey,
+  });
 
   // イベントハンドラー群
   const handleDialogClose = useCallback(() => {
@@ -161,6 +167,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           <ChoiceArea
             showReveal={shouldShowRevealButton}
             onReveal={reveal}
+            isRevealed={revealed}
             onSkip={feedback.handleSkipAsCorrect}
             choices={choices}
             disabled={feedback.disabled}

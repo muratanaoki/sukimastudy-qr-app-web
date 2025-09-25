@@ -1,10 +1,12 @@
 import React from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import styles from './choiceArea.module.css';
 import { ChoiceList } from './ChoiceList';
 
 export type ChoiceAreaProps = {
   showReveal: boolean;
   onReveal: () => void;
+  isRevealed?: boolean;
   onSkip: () => void;
   choices: string[];
   disabled: boolean;
@@ -20,6 +22,7 @@ export const ChoiceArea: React.FC<ChoiceAreaProps> = ({
   showReveal,
   onReveal,
   onSkip,
+  isRevealed = false,
   choices,
   disabled,
   getIndexDisplay,
@@ -31,26 +34,30 @@ export const ChoiceArea: React.FC<ChoiceAreaProps> = ({
 }) => {
   return (
     <>
-      <button
-        type="button"
-        className={styles.skipButton}
-        aria-label="スキップ"
-        onClick={onSkip}
-        disabled={disabled}
-      >
-        SKIP
-      </button>
-
-      {showReveal && (
+      <div className={styles.flex}>
         <button
           type="button"
-          className={styles.revealWordButton}
-          onClick={onReveal}
-          aria-label="単語を表示"
+          className={styles.skipButton}
+          aria-label="スキップ"
+          onClick={onSkip}
+          disabled={disabled}
         >
-          単語を表示
+          SKIP
         </button>
-      )}
+
+        {showReveal && (
+          <button
+            type="button"
+            className={styles.revealWordButton}
+            onClick={onReveal}
+            aria-label={isRevealed ? '単語を隠す' : '単語を表示'}
+            disabled={disabled}
+          >
+            {/* disabled のときは薄くして操作不可にするだけで、EyeOff にしない */}
+            {disabled ? <Eye size={20} /> : isRevealed ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        )}
+      </div>
 
       <ChoiceList
         choices={choices}

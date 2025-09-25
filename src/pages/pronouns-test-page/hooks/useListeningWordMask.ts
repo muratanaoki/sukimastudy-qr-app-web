@@ -41,12 +41,15 @@ export const useListeningWordMask = ({
   }, [term, answerMode, choiceView, revealed]);
 
   const shouldShowRevealButton = useMemo(() => {
-    return answerMode === AnswerMode.Listening && choiceView === ChoiceView.Bottom4 && !revealed;
-  }, [answerMode, choiceView, revealed]);
+    // ボタンは Listening モードかつ Bottom4 のときに常に表示。
+    // 表示/非表示は revealed ではなくアイコンで切り替える（Eye / EyeOff）。
+    return answerMode === AnswerMode.Listening && choiceView === ChoiceView.Bottom4;
+  }, [answerMode, choiceView]);
 
-  const reveal = useCallback(() => setRevealed(true), []);
+  // クリックで表示・非表示をトグルするようにする
+  const reveal = useCallback(() => setRevealed((r) => !r), []);
 
-  return { displayTerm, shouldShowRevealButton, reveal } as const;
+  return { displayTerm, shouldShowRevealButton, reveal, revealed } as const;
 };
 
 export default useListeningWordMask;
