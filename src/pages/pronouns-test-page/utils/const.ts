@@ -1597,12 +1597,12 @@ export const POS_GROUPS: PosGroup[] = [
     title: '代名詞',
     groups: DATA,
   },
-  {
-    pos: 'others',
-    url: '/others',
-    title: 'その他',
-    groups: DATA,
-  },
+  // {
+  //   pos: 'others',
+  //   url: '/others',
+  //   title: 'その他',
+  //   groups: DATA,
+  // },
 ];
 
 export const FLASH_DURATION_MS = 500;

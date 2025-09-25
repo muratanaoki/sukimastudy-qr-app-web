@@ -64,3 +64,8 @@
 .circleButtonDim {
   opacity: 0.3;
 }
+
+.icon {
+  height: 2rem;
+  width: 2rem;
+}

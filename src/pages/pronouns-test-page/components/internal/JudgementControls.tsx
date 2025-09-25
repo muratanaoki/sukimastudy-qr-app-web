@@ -1,4 +1,4 @@
-import { ThumbsUp } from 'lucide-react';
+import { ThumbsUp, Eye, EyeOff } from 'lucide-react';
 import clsx from 'clsx';
 import styles from './judgementControls.module.css';
 import { BUTTON_LABELS, JUDGEMENT_BUTTON_TYPE } from '../../utils/const';
@@ -28,17 +28,21 @@ export const JudgementControls = ({
       <button
         type="button"
         className={clsx(styles.revealButton, {
-          [styles.revealButtonHidden]: showTranslation,
           [styles.revealButtonDim]: disabled && selectedButton !== null,
         })}
         onClick={onReveal}
         aria-pressed={showTranslation}
-        aria-label={revealButtonText}
-        disabled={showTranslation}
-        aria-hidden={showTranslation || undefined}
-        tabIndex={showTranslation ? -1 : 0}
+        aria-label={showTranslation ? '和訳を隠す' : revealButtonText}
+        disabled={disabled}
       >
-        {revealButtonText}
+        {/* disabled のときは薄くして操作不可にするだけで、EyeOff にしない */}
+        {disabled ? (
+          <Eye className={styles.icon} />
+        ) : showTranslation ? (
+          <EyeOff className={styles.icon} />
+        ) : (
+          <Eye className={styles.icon} />
+        )}
       </button>
 
       <div className={styles.actionsRow}>

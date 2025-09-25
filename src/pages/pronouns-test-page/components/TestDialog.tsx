@@ -117,7 +117,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   );
 
   const handleRevealWord = useCallback(() => {
-    setShowTranslation(true);
+    setShowTranslation((prev) => !prev);
   }, [setShowTranslation]);
 
   // 副作用：自動発音

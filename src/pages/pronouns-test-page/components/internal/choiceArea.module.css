@@ -27,6 +27,11 @@
   justify-content: center;
 }
 
+.icon {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
 .revealWordButton:disabled {
   cursor: not-allowed;
 }

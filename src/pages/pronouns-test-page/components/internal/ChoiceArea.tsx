@@ -53,8 +53,13 @@ export const ChoiceArea: React.FC<ChoiceAreaProps> = ({
             aria-label={isRevealed ? '単語を隠す' : '単語を表示'}
             disabled={disabled}
           >
-            {/* disabled のときは薄くして操作不可にするだけで、EyeOff にしない */}
-            {disabled ? <Eye size={20} /> : isRevealed ? <EyeOff size={20} /> : <Eye size={20} />}
+            {disabled ? (
+              <Eye className={styles.icon} />
+            ) : isRevealed ? (
+              <EyeOff className={styles.icon} />
+            ) : (
+              <Eye className={styles.icon} />
+            )}
           </button>
         )}
       </div>
