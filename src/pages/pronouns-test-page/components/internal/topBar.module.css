@@ -45,7 +45,7 @@
   bottom: 0;
   background: var(--main-color-300);
   width: 0%;
-  transition: width 200ms ease;
+  transition: none;
   border-radius: var(--radius-025);
 }
 

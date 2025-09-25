@@ -29,6 +29,7 @@ export const TopBar = ({ posTitle, groupTitle, timeLeftPct, onClose, resetKey }:
       </div>
       <div className={clsx(styles.progressTrack)} aria-label="制限時間">
         <div
+          key={String(resetKey)}
           className={clsx(styles.progressFill, noAnim && styles.progressNoAnim)}
           style={{ width: `${timeLeftPct}%` }}
         />
