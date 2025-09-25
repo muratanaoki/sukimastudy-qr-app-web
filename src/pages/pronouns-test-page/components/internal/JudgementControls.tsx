@@ -7,6 +7,7 @@ export type JudgementControlsProps = {
   onReveal: () => void;
   onKnow: () => void; // 正解として次へ
   onDontKnow: () => void; // 不正解として次へ
+  revealButtonText?: string; // リスニングモード用にテキスト変更可能
 };
 
 export const JudgementControls = ({
@@ -14,6 +15,7 @@ export const JudgementControls = ({
   onReveal,
   onKnow,
   onDontKnow,
+  revealButtonText = '和訳表示',
 }: JudgementControlsProps) => {
   return (
     <>
@@ -24,12 +26,12 @@ export const JudgementControls = ({
         })}
         onClick={onReveal}
         aria-pressed={showTranslation}
-        aria-label="和訳表示"
+        aria-label={revealButtonText}
         disabled={showTranslation}
         aria-hidden={showTranslation || undefined}
         tabIndex={showTranslation ? -1 : 0}
       >
-        和訳表示
+        {revealButtonText}
       </button>
 
       <div className={styles.actionsRow}>

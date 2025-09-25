@@ -6,6 +6,7 @@ export type JudgementAreaProps = {
   onReveal: () => void;
   onDontKnow: () => void;
   onKnow: () => void;
+  revealButtonText?: string;
 };
 
 export const JudgementArea: React.FC<JudgementAreaProps> = ({
@@ -13,6 +14,7 @@ export const JudgementArea: React.FC<JudgementAreaProps> = ({
   onReveal,
   onDontKnow,
   onKnow,
+  revealButtonText,
 }) => {
   return (
     <JudgementControls
@@ -20,6 +22,7 @@ export const JudgementArea: React.FC<JudgementAreaProps> = ({
       onReveal={onReveal}
       onDontKnow={onDontKnow}
       onKnow={onKnow}
+      revealButtonText={revealButtonText}
     />
   );
 };

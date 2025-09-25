@@ -10,6 +10,7 @@ import { useTestSettings } from '../hooks/useTestSettings';
 import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
 import { useOrderedItems } from '../hooks/useOrderedItems';
+import { useFlashDisplay } from '../hooks/useFlashDisplay';
 import TopBar from './internal/TopBar';
 import { useTestDisplay } from '../hooks/useTestDisplay';
 import ChoiceArea from './internal/ChoiceArea';
@@ -25,14 +26,17 @@ export type TestDialogProps = {
 export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   useEscapeKey(onClose, open);
 
+  // 設定とメインフック群
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const { speakWord, cancel } = useSpeech();
+  const { isFlashing, startFlash, cancelFlash } = useFlashDisplay();
 
-  // 出題順序の再構築（再オープン含む）
+  // テスト実行状態
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
-
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
   const { total, current, timeLeftPct, item } = state;
+
+  // 選択肢とUI表示関連
   const choices = useChoices(item);
   const correctIndex = useMemo(
     () => (item ? choices.findIndex((c) => c === item.jp) : -1),
@@ -40,16 +44,19 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   );
   const questionKey = item?.term ?? current;
 
+  // テスト進行の基本ロジック
   const goNextOrClose = useCallback(() => goNext(onClose), [goNext, onClose]);
 
+  // 回答フィードバック処理
   const feedback = useAnswerFeedback({
     isCorrect: (label) => !!item && label === item.jp,
     onNext: goNextOrClose,
     choices,
     correctIndex: correctIndex >= 0 ? correctIndex : undefined,
-    currentKey: questionKey, // 問題切替キー
+    currentKey: questionKey,
   });
 
+  // 表示制御（問題文、翻訳など）
   const { displayTerm, showTranslation, setShowTranslation, shouldShowRevealButton, reveal } =
     useTestDisplay({
       open,
@@ -59,12 +66,14 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       currentKey: questionKey,
     });
 
-  const handleClose = useCallback(() => {
+  // イベントハンドラー群
+  const handleDialogClose = useCallback(() => {
+    cancelFlash();
     reset();
     onClose();
-  }, [reset, onClose]);
+  }, [cancelFlash, reset, onClose]);
 
-  const handleAnswer = useCallback(
+  const handleChoiceAnswer = useCallback(
     (_: string, i: number) => {
       if (answerMode === AnswerMode.Listening) reveal();
       feedback.handleAnswerIndex(i);
@@ -72,9 +81,24 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     [answerMode, reveal, feedback]
   );
 
-  // 自動発音の副作用を専用フックに集約
+  const handleJudgementAnswer = useCallback((isKnown: boolean) => {
+    const isListeningMode = answerMode === AnswerMode.Listening && choiceView === ChoiceView.None;
+
+    if (isListeningMode) {
+      startFlash(() => goNextOrClose());
+    } else {
+      goNextOrClose();
+    }
+  }, [answerMode, choiceView, startFlash, goNextOrClose]);
+
+  const handleRevealWord = useCallback(() => {
+    setShowTranslation(true);
+  }, [setShowTranslation]);
+
+  // 副作用：自動発音
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
+  // レンダリング
   if (!open) return null;
 
   return (
@@ -83,20 +107,20 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         posTitle={pos.title}
         groupTitle={group.title}
         timeLeftPct={timeLeftPct}
-        onClose={handleClose}
+        onClose={handleDialogClose}
         resetKey={questionKey}
       />
 
-      {/* 中央の問題表示 */}
+      {/* 問題表示エリア */}
       <div className={styles.content}>
         <p className={styles.counter}>
           {current} / {total}
         </p>
-        <h1 className={styles.word}>{displayTerm}</h1>
+        <h1 className={styles.word}>{isFlashing ? item?.term : displayTerm}</h1>
         <p
           className={clsx(
             styles.translation,
-            (!showTranslation || !item?.jp) && styles.translationHidden
+            (!showTranslation || !item?.jp) && !isFlashing && styles.translationHidden
           )}
           aria-live={showTranslation && item?.jp ? 'polite' : undefined}
         >
@@ -104,8 +128,9 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         </p>
       </div>
 
-      {/* 下部の操作/選択肢 */}
+      {/* 操作エリア */}
       <div className={choiceView === ChoiceView.None ? styles.bottomNone : styles.bottom}>
+        {/* 4択選択肢モード */}
         {choiceView === ChoiceView.Bottom4 && (
           <ChoiceArea
             showReveal={shouldShowRevealButton}
@@ -118,19 +143,22 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
             isWrongSelected={feedback.isWrongSelected}
             isDim={feedback.isDim}
             showGoodAt={feedback.showGoodAt}
-            onAnswer={handleAnswer}
+            onAnswer={handleChoiceAnswer}
           />
         )}
 
+        {/* 知ってる/知らないモード */}
         {choiceView === ChoiceView.None && hasItems && (
           <JudgementArea
-            showTranslation={showTranslation}
-            onReveal={() => setShowTranslation(true)}
-            onDontKnow={() => goNextOrClose()}
-            onKnow={() => goNextOrClose()}
+            showTranslation={showTranslation || isFlashing}
+            onReveal={handleRevealWord}
+            onDontKnow={() => handleJudgementAnswer(false)}
+            onKnow={() => handleJudgementAnswer(true)}
+            revealButtonText={answerMode === AnswerMode.Listening ? '単語表示' : '和訳表示'}
           />
         )}
 
+        {/* 問題なしの場合 */}
         {!hasItems && (
           <div className={styles.noItemsLabel} aria-live="polite">
             問題がありません
