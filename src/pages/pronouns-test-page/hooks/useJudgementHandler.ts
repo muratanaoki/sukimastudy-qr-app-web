@@ -3,6 +3,8 @@ import type { JudgementButtonType } from '../utils/type';
 import { ChoiceView } from '../utils/type';
 import { shouldFlash } from '../utils/function';
 import { useFlashDisplay } from './useFlashDisplay';
+import { JUDGEMENT_BUTTON_TYPE } from '../utils/const';
+import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 
 export const useJudgementHandler = (
   choiceView: ChoiceView,
@@ -11,10 +13,18 @@ export const useJudgementHandler = (
 ) => {
   const [selectedJudgement, setSelectedJudgement] = useState<JudgementButtonType | null>(null);
   const { isFlashing, startFlash, cancelFlash } = useFlashDisplay();
+  const { playCorrectSound, playIncorrectSound } = useSoundEffects();
 
   const handleJudgementAnswer = useCallback(
     (buttonType: JudgementButtonType) => {
       setSelectedJudgement(buttonType);
+
+      // 知ってる = 正解音、知らない = 不正解音
+      if (buttonType === JUDGEMENT_BUTTON_TYPE.KNOW) {
+        playCorrectSound();
+      } else if (buttonType === JUDGEMENT_BUTTON_TYPE.DONT_KNOW) {
+        playIncorrectSound();
+      }
 
       if (shouldFlash(choiceView)) {
         startFlash(() => {
@@ -26,7 +36,7 @@ export const useJudgementHandler = (
         goNextOrClose();
       }
     },
-    [choiceView, startFlash, goNextOrClose]
+    [choiceView, startFlash, goNextOrClose, playCorrectSound, playIncorrectSound]
   );
 
   useEffect(() => {

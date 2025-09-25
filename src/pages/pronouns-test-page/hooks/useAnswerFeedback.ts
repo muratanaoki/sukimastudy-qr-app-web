@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 
 export type AnswerFeedbackConfig = {
   isCorrect: (label: string) => boolean;
@@ -18,6 +19,7 @@ export const useAnswerFeedback = ({
   correctIndex,
   currentKey,
 }: AnswerFeedbackConfig) => {
+  const { playCorrectSound, playIncorrectSound } = useSoundEffects();
   const [good, setGood] = useState(false);
   const [wrong, setWrong] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
@@ -71,6 +73,9 @@ export const useAnswerFeedback = ({
       setSelectedIdx(isSkipped ? null : index);
       if (isSkipped && typeof correctIndex === 'number') setCorrectIdx(correctIndex);
 
+      // 正解音を再生
+      playCorrectSound();
+
       schedule(() => {
         setGood(false);
         setSkipped(false);
@@ -79,7 +84,7 @@ export const useAnswerFeedback = ({
         onNext();
       }, goodDurationMs);
     },
-    [correctIndex, goodDurationMs, onNext, schedule]
+    [correctIndex, goodDurationMs, onNext, schedule, playCorrectSound]
   );
 
   const startWrong = useCallback(
@@ -88,6 +93,9 @@ export const useAnswerFeedback = ({
       setWrongIdx(index);
       setCorrectIdx(resolvedCorrectIdx);
 
+      // 不正解音を再生
+      playIncorrectSound();
+
       schedule(() => {
         setWrong(false);
         setWrongIdx(null);
@@ -95,7 +103,7 @@ export const useAnswerFeedback = ({
         onNext();
       }, wrongDurationMs);
     },
-    [onNext, schedule, wrongDurationMs]
+    [onNext, schedule, wrongDurationMs, playIncorrectSound]
   );
 
   const handleAnswer = useCallback(
