@@ -1,4 +1,4 @@
-import { PronounGroup, PronounItem, RawPronounItem, PosGroup } from './type';
+import { PronounGroup, PronounItem, RawPronounItem, PosGroup, JudgementButtonType } from './type';
 import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
 
 const DATA_RAW_SOURCE1: RawPronounItem[] = [
@@ -1604,3 +1604,20 @@ export const POS_GROUPS: PosGroup[] = [
     groups: DATA,
   },
 ];
+
+export const FLASH_DURATION_MS = 500;
+
+export const BUTTON_LABELS = {
+  REVEAL_TRANSLATION: '和訳表示',
+  REVEAL_WORD: '単語表示',
+  SKIP: 'SKIP',
+  SHOW_WORD: '単語を表示',
+  DONT_KNOW: '知らない',
+  KNOW: '知ってる',
+  NO_ITEMS: '問題がありません',
+} as const;
+
+export const JUDGEMENT_BUTTON_TYPE = {
+  KNOW: 'know',
+  DONT_KNOW: 'dontKnow',
+} as const satisfies Record<string, JudgementButtonType>;

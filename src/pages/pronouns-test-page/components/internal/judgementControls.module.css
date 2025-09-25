@@ -10,6 +10,10 @@
   visibility: hidden; /* 高さとレイアウトは維持 */
 }
 
+.revealButtonDim {
+  opacity: 0.3;
+}
+
 .actionsRow {
   display: flex;
   width: 100%;
@@ -55,4 +59,8 @@
 .circleLabel {
   font-size: var(--fs-100);
   color: var(--color-neutral-000);
+}
+
+.circleButtonDim {
+  opacity: 0.3;
 }

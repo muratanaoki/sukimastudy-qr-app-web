@@ -67,3 +67,5 @@ export enum AnswerMode {
   Normal = 'normal',
   Listening = 'listening',
 }
+
+export type JudgementButtonType = 'know' | 'dontKnow';

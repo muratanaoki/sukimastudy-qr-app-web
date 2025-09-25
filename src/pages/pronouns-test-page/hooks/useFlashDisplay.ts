@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { FLASH_DURATION_MS } from '../utils/const';
 
 /**
  * 一瞬表示機能を管理するフック
@@ -16,11 +17,11 @@ export const useFlashDisplay = () => {
       clearTimeout(timeoutRef.current);
     }
 
-    // 1秒後に表示を消して完了コールバックを実行
+    // 指定時間後に表示を消して完了コールバックを実行
     timeoutRef.current = setTimeout(() => {
       setIsFlashing(false);
       onComplete();
-    }, 500);
+    }, FLASH_DURATION_MS);
   }, []);
 
   const cancelFlash = useCallback(() => {
