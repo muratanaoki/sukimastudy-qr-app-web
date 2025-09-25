@@ -11,7 +11,7 @@ export type TestRunnerState = {
   isCompleted: boolean; // テスト完了状態
 };
 
-export const useTestRunner = (open: boolean, items: PronounItem[]) => {
+export const useTestRunner = (open: boolean, items: PronounItem[], paused = false) => {
   const hasItems = items && items.length > 0;
   const total = hasItems ? items.length : 1;
   const [index, setIndex] = useState(0);
@@ -21,7 +21,7 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   const item = hasItems ? items[index] : undefined;
 
   // countdown は useCountdown に委譲
-  const { timeLeftPct: countdownPct, reset: resetCountdown } = useCountdown(open, index, 10_000);
+  const { timeLeftPct: countdownPct, reset: resetCountdown } = useCountdown(open, index, 10_000, paused);
   // 再オープン時は最初の問題から再スタート
   useEffect(() => {
     if (open) {

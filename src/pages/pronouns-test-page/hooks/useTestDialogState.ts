@@ -10,11 +10,12 @@ import type { PronounGroup } from '../utils/type';
 export const useTestDialogState = (
   open: boolean,
   group: PronounGroup,
-  onClose: () => void
+  onClose: () => void,
+  paused = false
 ) => {
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
-  const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
+  const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems, paused);
   const { total, current, timeLeftPct, item, isCompleted } = state;
 
   const choices = useChoices(item);

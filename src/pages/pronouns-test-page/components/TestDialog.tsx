@@ -44,7 +44,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     reset,
     feedback,
     display,
-  } = useTestDialogState(open, group, onClose);
+  } = useTestDialogState(open, group, onClose, showConfirm);
 
   const { selectedJudgement, handleJudgementAnswer, isFlashing, cancelFlash } = useJudgementHandler(
     choiceView,
@@ -52,17 +52,16 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     questionKey
   );
 
-  const { handleChoiceAnswer, handleSkip, handleRevealWord } =
-    useTestDialogHandlers({
-      answerMode,
-      revealed: display.revealed,
-      reveal: display.reveal,
-      feedback,
-      setShowTranslation: display.setShowTranslation,
-      reset,
-      onClose,
-      cancelFlash,
-    });
+  const { handleChoiceAnswer, handleSkip, handleRevealWord } = useTestDialogHandlers({
+    answerMode,
+    revealed: display.revealed,
+    reveal: display.reveal,
+    feedback,
+    setShowTranslation: display.setShowTranslation,
+    reset,
+    onClose,
+    cancelFlash,
+  });
 
   const handleCloseClick = () => {
     if (isCompleted) {
@@ -85,13 +84,13 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
   // これらの計算はテスト実行中のみ必要
-  const displayWord = !isCompleted ? getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm) : '';
+  const displayWord = !isCompleted
+    ? getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm)
+    : '';
   const revealButtonText = !isCompleted ? getRevealButtonText(answerMode) : '';
-  const showTranslationComputed = !isCompleted ? shouldShowTranslation(
-    display.showTranslation,
-    isFlashing,
-    !!item?.jp
-  ) : false;
+  const showTranslationComputed = !isCompleted
+    ? shouldShowTranslation(display.showTranslation, isFlashing, !!item?.jp)
+    : false;
 
   if (!open) return null;
 
