@@ -13,11 +13,14 @@ export const useJudgementHandler = (
 ) => {
   const [selectedJudgement, setSelectedJudgement] = useState<JudgementButtonType | null>(null);
   const { isFlashing, startFlash, cancelFlash } = useFlashDisplay();
-  const { playCorrectSound, playIncorrectSound } = useSoundEffects();
+  const { playCorrectSound, playIncorrectSound, enableAudio } = useSoundEffects();
 
   const handleJudgementAnswer = useCallback(
     (buttonType: JudgementButtonType) => {
       setSelectedJudgement(buttonType);
+
+      // 最初のクリックで音声を有効化
+      enableAudio();
 
       // 知ってる = 正解音、知らない = 不正解音
       if (buttonType === JUDGEMENT_BUTTON_TYPE.KNOW) {
@@ -36,7 +39,7 @@ export const useJudgementHandler = (
         goNextOrClose();
       }
     },
-    [choiceView, startFlash, goNextOrClose, playCorrectSound, playIncorrectSound]
+    [choiceView, startFlash, goNextOrClose, playCorrectSound, playIncorrectSound, enableAudio]
   );
 
   useEffect(() => {
