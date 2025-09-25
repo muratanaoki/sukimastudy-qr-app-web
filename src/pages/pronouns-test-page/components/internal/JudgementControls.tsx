@@ -6,7 +6,6 @@ import type { JudgementButtonType } from '../../utils/type';
 
 export type JudgementControlsProps = {
   showTranslation: boolean;
-  isFlashing?: boolean;
   onReveal: () => void;
   onKnow: () => void; // 正解として次へ
   onDontKnow: () => void; // 不正解として次へ
@@ -17,7 +16,6 @@ export type JudgementControlsProps = {
 
 export const JudgementControls = ({
   showTranslation,
-  isFlashing = false,
   onReveal,
   onKnow,
   onDontKnow,
@@ -60,7 +58,8 @@ export const JudgementControls = ({
         <button
           type="button"
           className={clsx(styles.circleButton, styles.green, {
-            [styles.circleButtonDim]: disabled && selectedButton === JUDGEMENT_BUTTON_TYPE.DONT_KNOW,
+            [styles.circleButtonDim]:
+              disabled && selectedButton === JUDGEMENT_BUTTON_TYPE.DONT_KNOW,
           })}
           onClick={onKnow}
           aria-label={BUTTON_LABELS.KNOW}

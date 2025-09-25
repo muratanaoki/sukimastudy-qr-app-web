@@ -4,7 +4,6 @@ import type { JudgementButtonType } from '../../utils/type';
 
 export type JudgementAreaProps = {
   showTranslation: boolean;
-  isFlashing?: boolean;
   onReveal: () => void;
   onDontKnow: () => void;
   onKnow: () => void;
@@ -15,7 +14,6 @@ export type JudgementAreaProps = {
 
 export const JudgementArea: React.FC<JudgementAreaProps> = ({
   showTranslation,
-  isFlashing = false,
   onReveal,
   onDontKnow,
   onKnow,
@@ -26,7 +24,6 @@ export const JudgementArea: React.FC<JudgementAreaProps> = ({
   return (
     <JudgementControls
       showTranslation={showTranslation}
-      isFlashing={isFlashing}
       onReveal={onReveal}
       onDontKnow={onDontKnow}
       onKnow={onKnow}

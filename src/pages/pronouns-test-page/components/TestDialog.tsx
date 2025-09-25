@@ -177,7 +177,6 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         {isJudgementMode(choiceView) && hasItems && (
           <JudgementArea
             showTranslation={showTranslation}
-            isFlashing={isFlashing}
             onReveal={handleRevealWord}
             onDontKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW)}
             onKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW)}
