@@ -6,6 +6,10 @@
   margin-bottom: var(--space-150);
 }
 
+.revealButtonHidden {
+  visibility: hidden; /* 高さとレイアウトは維持 */
+}
+
 .actionsRow {
   display: flex;
   width: 100%;

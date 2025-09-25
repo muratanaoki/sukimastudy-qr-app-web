@@ -1,4 +1,5 @@
 import { ThumbsUp } from 'lucide-react';
+import clsx from 'clsx';
 import styles from './judgementControls.module.css';
 
 export type JudgementControlsProps = {
@@ -16,22 +17,25 @@ export const JudgementControls = ({
 }: JudgementControlsProps) => {
   return (
     <>
-      {!showTranslation && (
-        <button
-          type="button"
-          className={styles.revealButton}
-          onClick={onReveal}
-          aria-pressed={showTranslation}
-          aria-label="和訳表示"
-        >
-          和訳表示
-        </button>
-      )}
+      <button
+        type="button"
+        className={clsx(styles.revealButton, {
+          [styles.revealButtonHidden]: showTranslation,
+        })}
+        onClick={onReveal}
+        aria-pressed={showTranslation}
+        aria-label="和訳表示"
+        disabled={showTranslation}
+        aria-hidden={showTranslation || undefined}
+        tabIndex={showTranslation ? -1 : 0}
+      >
+        和訳表示
+      </button>
 
       <div className={styles.actionsRow}>
         <button
           type="button"
-          className={`${styles.circleButton} ${styles.gray}`}
+          className={clsx(styles.circleButton, styles.gray)}
           onClick={onDontKnow}
           aria-label="知らない"
         >
@@ -41,7 +45,7 @@ export const JudgementControls = ({
 
         <button
           type="button"
-          className={`${styles.circleButton} ${styles.green}`}
+          className={clsx(styles.circleButton, styles.green)}
           onClick={onKnow}
           aria-label="知ってる"
         >
