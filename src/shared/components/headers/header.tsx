@@ -54,7 +54,7 @@ export const Header = () => {
         className={`${styles.nav} ${open ? styles.open : ''}`}
         aria-hidden={!open}
       >
-        <SectionList posGroups={POS_GROUPS} />
+        <SectionList posGroups={POS_GROUPS} onLinkClick={() => setOpen(false)} />
       </nav>
     </div>
   );

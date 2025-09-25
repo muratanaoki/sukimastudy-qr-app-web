@@ -5,9 +5,9 @@ import { usePosOpenMap } from '../hooks/usePosOpenMap';
 import { PosHeaderButton } from './internal/PosHeaderButton';
 import { GroupList } from './internal/GroupList';
 
-export type SectionListProps = { posGroups: PosGroup[] };
+export type SectionListProps = { posGroups: PosGroup[]; onLinkClick: () => void };
 
-export const SectionList = memo(function SectionList({ posGroups }: SectionListProps) {
+export const SectionList = memo(function SectionList({ posGroups, onLinkClick }: SectionListProps) {
   const { isOpen, toggle } = usePosOpenMap(posGroups);
 
   return (
@@ -23,7 +23,7 @@ export const SectionList = memo(function SectionList({ posGroups }: SectionListP
               controlsId={controlsId}
               onClick={() => toggle(pos.pos)}
             />
-            {open && <GroupList posKey={pos.pos} groups={pos.groups} />}
+            {open && <GroupList posKey={pos.pos} groups={pos.groups} onLinkClick={onLinkClick} />}
           </li>
         );
       })}
