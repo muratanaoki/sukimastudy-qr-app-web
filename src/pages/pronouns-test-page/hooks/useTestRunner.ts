@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PronounItem } from '../utils/type';
+import { useCountdown } from './useCountdown';
 
 export type TestRunnerState = {
   index: number; // 0-based
@@ -14,40 +15,17 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   const total = hasItems ? items.length : 1;
   const [index, setIndex] = useState(0);
   const current = index + 1;
-  // 残り時間のパーセンテージ（各問題 10 秒で 100 -> 0）
-  const [timeLeftPct, setTimeLeftPct] = useState(100);
+  // timeLeftPct は useCountdown に委譲
   const item = hasItems ? items[index] : undefined;
 
-  // 10秒のカウントダウン（視覚のみ / アクション無し）
-  const intervalRef = useRef<number | null>(null);
+  // countdown は useCountdown に委譲
+  const { timeLeftPct: countdownPct, reset: resetCountdown } = useCountdown(open, index, 10_000);
   // 再オープン時は最初の問題から再スタート
   useEffect(() => {
     if (open) setIndex(0);
   }, [open]);
 
-  // タイマーの初期化/再スタート（オープン時および問題切替時）
-  useEffect(() => {
-    if (!open) return;
-    setTimeLeftPct(100);
-    if (intervalRef.current) window.clearInterval(intervalRef.current);
-    const start = Date.now();
-    const DURATION = 10_000; // 10s
-    intervalRef.current = window.setInterval(() => {
-      const elapsed = Date.now() - start;
-      const pct = Math.max(0, 100 - (elapsed / DURATION) * 100);
-      setTimeLeftPct(pct);
-      if (elapsed >= DURATION && intervalRef.current) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    }, 50);
-    return () => {
-      if (intervalRef.current) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [open, index]);
+  // countdownPct を内部 state として扱う（直接使用）
 
   const goNext = useCallback(
     (onFinish?: () => void) => {
@@ -61,18 +39,14 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   );
 
   const state: TestRunnerState = useMemo(
-    () => ({ index, total, current, timeLeftPct, item }),
-    [index, total, current, timeLeftPct, item]
+    () => ({ index, total, current, timeLeftPct: countdownPct, item }),
+    [index, total, current, countdownPct, item]
   );
 
   const reset = useCallback(() => {
     setIndex(0);
-    setTimeLeftPct(100);
-    if (intervalRef.current) {
-      window.clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }, []);
+    resetCountdown();
+  }, [resetCountdown]);
 
   return { state, goNext, hasItems, reset } as const;
 };
