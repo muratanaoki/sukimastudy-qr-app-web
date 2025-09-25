@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // =====================================================================================
 // Speech (Web Speech Synthesis) Hook
@@ -95,73 +95,90 @@ export function useSpeech(options?: UseSpeechOptions) {
     };
   }, []);
 
-  const pickVoice = (targetLang = 'en') => {
-    const list = voicesRef.current || [];
-    if (!list.length) return undefined;
-    const norm = (s?: string) => s?.toLowerCase() ?? '';
-    // 0) 明示選択
-    if (selectedVoiceName) {
-      const chosen = list.find((v) => norm(v.name) === norm(selectedVoiceName));
-      if (chosen) return chosen;
-    }
-    // 1) 名前優先 (部分一致)
-    const loweredPrefs = opts.preferredVoiceNames.map((n) => n.toLowerCase());
-    for (const pref of loweredPrefs) {
-      const hit = list.find((v) => norm(v.name).includes(pref));
-      if (hit) return hit;
-    }
-    // 2) 言語優先
-    const lang = targetLang.toLowerCase();
-    return (
-      list.find((v) => norm(v.lang).startsWith(`${lang}-us`)) ||
-      list.find((v) => norm(v.lang).startsWith(`${lang}-gb`)) ||
-      list.find((v) => norm(v.lang).startsWith(lang)) ||
-      undefined
-    );
-  };
+  const pickVoice = useCallback(
+    (targetLang = 'en') => {
+      const list = voicesRef.current || [];
+      if (!list.length) return undefined;
+      const norm = (s?: string) => s?.toLowerCase() ?? '';
+      // 0) 明示選択
+      if (selectedVoiceName) {
+        const chosen = list.find((v) => norm(v.name) === norm(selectedVoiceName));
+        if (chosen) return chosen;
+      }
+      // 1) 名前優先 (部分一致)
+      const loweredPrefs = opts.preferredVoiceNames.map((n) => n.toLowerCase());
+      for (const pref of loweredPrefs) {
+        const hit = list.find((v) => norm(v.name).includes(pref));
+        if (hit) return hit;
+      }
+      // 2) 言語優先
+      const lang = targetLang.toLowerCase();
+      return (
+        list.find((v) => norm(v.lang).startsWith(`${lang}-us`)) ||
+        list.find((v) => norm(v.lang).startsWith(`${lang}-gb`)) ||
+        list.find((v) => norm(v.lang).startsWith(lang)) ||
+        undefined
+      );
+    },
+    [selectedVoiceName, opts.preferredVoiceNames]
+  );
 
-  const createUtterance = (
-    text: string,
-    local?: { rate?: number; pitch?: number; lang?: string }
-  ): SpeechSynthesisUtterance => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = local?.lang ?? opts.defaultLang;
-    u.rate = local?.rate ?? opts.sentenceRate;
-    u.pitch = local?.pitch ?? opts.pitch;
-    const voice = pickVoice(u.lang.slice(0, 2));
-    if (voice) u.voice = voice;
-    return u;
-  };
+  const createUtterance = useCallback(
+    (
+      text: string,
+      local?: { rate?: number; pitch?: number; lang?: string }
+    ): SpeechSynthesisUtterance => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = local?.lang ?? opts.defaultLang;
+      u.rate = local?.rate ?? opts.sentenceRate;
+      u.pitch = local?.pitch ?? opts.pitch;
+      const voice = pickVoice(u.lang.slice(0, 2));
+      if (voice) u.voice = voice;
+      return u;
+    },
+    [opts.defaultLang, opts.sentenceRate, opts.pitch, pickVoice]
+  );
 
-  const speak = (text: string, local?: { rate?: number; pitch?: number; lang?: string }) => {
-    if (!supported || !text) return;
-    const synth = window.speechSynthesis;
-    // 直前のキューを明示 flush（短い単語連続読みで遅延を避ける）
-    try {
-      synth.cancel();
-    } catch {
-      /* ignore */
-    }
-    const u = createUtterance(text, local);
-    u.onstart = () => setSpeaking(true);
-    const finish = () => setSpeaking(false);
-    u.onend = finish;
-    u.onerror = finish;
-    synth.speak(u);
-  };
+  const speak = useCallback(
+    (text: string, local?: { rate?: number; pitch?: number; lang?: string }) => {
+      if (!text) return;
+      // supportedフラグに関係なく、speechSynthesisが利用可能なら実行
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+      const synth = window.speechSynthesis;
+      // 直前のキューを明示 flush（短い単語連続読みで遅延を避ける）
+      try {
+        synth.cancel();
+      } catch {
+        /* ignore */
+      }
+      const u = createUtterance(text, local);
+      u.onstart = () => setSpeaking(true);
+      const finish = () => setSpeaking(false);
+      u.onend = finish;
+      u.onerror = finish;
+      synth.speak(u);
+    },
+    [createUtterance]
+  );
 
   // 単語/例文で読み上げパラメータを分けるヘルパー
-  const speakWord = (text: string) => speak(text, { rate: opts.wordRate });
-  const speakSentence = (text: string) => speak(text, { rate: opts.sentenceRate });
+  const speakWord = useCallback(
+    (text: string) => speak(text, { rate: opts.wordRate }),
+    [speak, opts.wordRate]
+  );
+  const speakSentence = useCallback(
+    (text: string) => speak(text, { rate: opts.sentenceRate }),
+    [speak, opts.sentenceRate]
+  );
 
-  const cancel = () => {
-    if (!supported) return;
+  const cancel = useCallback(() => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
     } finally {
       setSpeaking(false);
     }
-  };
+  }, []);
 
   return {
     supported,
