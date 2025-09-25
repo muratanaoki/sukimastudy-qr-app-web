@@ -81,15 +81,15 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     [answerMode, reveal, feedback]
   );
 
-  const handleJudgementAnswer = useCallback((isKnown: boolean) => {
-    const isListeningMode = answerMode === AnswerMode.Listening && choiceView === ChoiceView.None;
+  const handleJudgementAnswer = useCallback(() => {
+    const isJudgementMode = choiceView === ChoiceView.None;
 
-    if (isListeningMode) {
+    if (isJudgementMode) {
       startFlash(() => goNextOrClose());
     } else {
       goNextOrClose();
     }
-  }, [answerMode, choiceView, startFlash, goNextOrClose]);
+  }, [choiceView, startFlash, goNextOrClose]);
 
   const handleRevealWord = useCallback(() => {
     setShowTranslation(true);
@@ -116,7 +116,9 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         <p className={styles.counter}>
           {current} / {total}
         </p>
-        <h1 className={styles.word}>{isFlashing ? item?.term : displayTerm}</h1>
+        <h1 className={styles.word}>
+          {isFlashing && choiceView === ChoiceView.None ? item?.term : displayTerm}
+        </h1>
         <p
           className={clsx(
             styles.translation,
@@ -152,8 +154,8 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           <JudgementArea
             showTranslation={showTranslation || isFlashing}
             onReveal={handleRevealWord}
-            onDontKnow={() => handleJudgementAnswer(false)}
-            onKnow={() => handleJudgementAnswer(true)}
+            onDontKnow={handleJudgementAnswer}
+            onKnow={handleJudgementAnswer}
             revealButtonText={answerMode === AnswerMode.Listening ? '単語表示' : '和訳表示'}
           />
         )}
