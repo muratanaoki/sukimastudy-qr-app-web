@@ -119,6 +119,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           displayWord={displayWord}
           translation={item?.jp ?? ''}
           showTranslation={showTranslationComputed}
+          onWordClick={item?.term ? () => speakWord(item.term) : undefined}
         />
       )}
 
