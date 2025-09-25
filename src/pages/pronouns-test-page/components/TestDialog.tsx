@@ -1,6 +1,7 @@
 import styles from './testDialog.module.css';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useCallback, useMemo } from 'react';
+import clsx from 'clsx';
 import type { PosGroup, PronounGroup } from '../utils/type';
 import { AnswerMode, ChoiceView } from '../utils/type';
 import { useChoices, useTestRunner } from '../hooks/useTestRunner';
@@ -92,11 +93,15 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           {current} / {total}
         </p>
         <h1 className={styles.word}>{displayTerm}</h1>
-        {showTranslation && !!item?.jp && (
-          <p className={styles.translation} aria-live="polite">
-            {item.jp}
-          </p>
-        )}
+        <p
+          className={clsx(
+            styles.translation,
+            (!showTranslation || !item?.jp) && styles.translationHidden
+          )}
+          aria-live={showTranslation && item?.jp ? 'polite' : undefined}
+        >
+          {item?.jp ?? ''}
+        </p>
       </div>
 
       {/* 下部の操作/選択肢 */}

@@ -52,6 +52,11 @@
   color: var(--color-neutral-700);
 }
 
+/* 非表示時でも高さを保持するため visibility を使う */
+.translationHidden {
+  visibility: hidden;
+}
+
 .bottom {
   gap: var(--space-100);
   padding: var(--space-150);
