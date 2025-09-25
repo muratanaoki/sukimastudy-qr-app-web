@@ -8,12 +8,14 @@ export type TestRunnerState = {
   current: number; // 1-based
   timeLeftPct: number; // 0-100 (10秒カウントダウンの残量)
   item: PronounItem | undefined;
+  isCompleted: boolean; // テスト完了状態
 };
 
 export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   const hasItems = items && items.length > 0;
   const total = hasItems ? items.length : 1;
   const [index, setIndex] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
   const current = index + 1;
   // timeLeftPct は useCountdown に委譲
   const item = hasItems ? items[index] : undefined;
@@ -22,7 +24,10 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   const { timeLeftPct: countdownPct, reset: resetCountdown } = useCountdown(open, index, 10_000);
   // 再オープン時は最初の問題から再スタート
   useEffect(() => {
-    if (open) setIndex(0);
+    if (open) {
+      setIndex(0);
+      setIsCompleted(false);
+    }
   }, [open]);
 
   // countdownPct を内部 state として扱う（直接使用）
@@ -30,7 +35,7 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   const goNext = useCallback(
     (onFinish?: () => void) => {
       if (index + 1 >= total) {
-        onFinish?.();
+        setIsCompleted(true);
       } else {
         setIndex((v) => v + 1);
       }
@@ -39,12 +44,13 @@ export const useTestRunner = (open: boolean, items: PronounItem[]) => {
   );
 
   const state: TestRunnerState = useMemo(
-    () => ({ index, total, current, timeLeftPct: countdownPct, item }),
-    [index, total, current, countdownPct, item]
+    () => ({ index, total, current, timeLeftPct: countdownPct, item, isCompleted }),
+    [index, total, current, countdownPct, item, isCompleted]
   );
 
   const reset = useCallback(() => {
     setIndex(0);
+    setIsCompleted(false);
     resetCountdown();
   }, [resetCountdown]);
 

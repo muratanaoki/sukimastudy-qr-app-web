@@ -11,7 +11,7 @@ import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
 import { useOrderedItems } from '../hooks/useOrderedItems';
 import { useFlashDisplay } from '../hooks/useFlashDisplay';
-import { JUDGEMENT_BUTTON_TYPE, BUTTON_LABELS } from '../utils/const';
+import { JUDGEMENT_BUTTON_TYPE } from '../utils/const';
 import {
   isJudgementMode,
   shouldFlash,
@@ -45,7 +45,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   // テスト実行状態
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems);
-  const { total, current, timeLeftPct, item } = state;
+  const { total, current, timeLeftPct, item, isCompleted } = state;
 
   // 選択肢とUI表示関連
   const choices = useChoices(item);
@@ -93,10 +93,10 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
   const handleChoiceAnswer = useCallback(
     (_: string, i: number) => {
-      if (answerMode === AnswerMode.Listening) reveal();
+      if (answerMode === AnswerMode.Listening && !revealed) reveal();
       feedback.handleAnswerIndex(i);
     },
-    [answerMode, reveal, feedback]
+    [answerMode, revealed, reveal, feedback]
   );
 
   const handleJudgementAnswer = useCallback(
@@ -147,28 +147,36 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       />
 
       {/* 問題表示エリア */}
-      <div className={styles.content}>
-        <p className={styles.counter}>
-          {current} / {total}
-        </p>
-        <h1 className={styles.word}>{displayWord}</h1>
-        <p
-          className={clsx(styles.translation, !showTranslationComputed && styles.translationHidden)}
-          aria-live={showTranslationComputed ? 'polite' : undefined}
-        >
-          {item?.jp ?? ''}
-        </p>
-      </div>
+      {!isCompleted && (
+        <div className={styles.content}>
+          <p className={styles.counter}>
+            {current} / {total}
+          </p>
+          <h1 className={styles.word}>{displayWord}</h1>
+          <p
+            className={clsx(
+              styles.translation,
+              !showTranslationComputed && styles.translationHidden
+            )}
+            aria-live={showTranslationComputed ? 'polite' : undefined}
+          >
+            {item?.jp ?? ''}
+          </p>
+        </div>
+      )}
 
       {/* 操作エリア */}
       <div className={isJudgementMode(choiceView) ? styles.bottomNone : styles.bottom}>
         {/* 4択選択肢モード */}
-        {choiceView === ChoiceView.Bottom4 && (
+        {choiceView === ChoiceView.Bottom4 && !isCompleted && (
           <ChoiceArea
             showReveal={shouldShowRevealButton}
             onReveal={reveal}
             isRevealed={revealed}
-            onSkip={feedback.handleSkipAsCorrect}
+            onSkip={() => {
+              if (answerMode === AnswerMode.Listening && !revealed) reveal();
+              feedback.handleSkipAsCorrect();
+            }}
             choices={choices}
             disabled={feedback.disabled}
             getIndexDisplay={feedback.getIndexDisplay}
@@ -179,9 +187,8 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
             onAnswer={handleChoiceAnswer}
           />
         )}
-
         {/* 知ってる/知らないモード */}
-        {isJudgementMode(choiceView) && hasItems && (
+        {isJudgementMode(choiceView) && hasItems && !isCompleted && (
           <JudgementControls
             showTranslation={showTranslation}
             onReveal={handleRevealWord}
@@ -193,10 +200,10 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           />
         )}
 
-        {/* 問題なしの場合 */}
-        {!hasItems && (
+        {/* テスト完了または問題なしの場合 */}
+        {(isCompleted || !hasItems) && (
           <div className={styles.noItemsLabel} aria-live="polite">
-            {BUTTON_LABELS.NO_ITEMS}
+            テスト結果画面開発中
           </div>
         )}
       </div>
