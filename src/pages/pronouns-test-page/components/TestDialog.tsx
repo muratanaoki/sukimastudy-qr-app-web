@@ -8,6 +8,7 @@ import { getRevealButtonText, getDisplayWord, shouldShowTranslation } from '../u
 import TopBar from './internal/TopBar';
 import QuestionContent from './internal/QuestionContent';
 import TestControls from './internal/TestControls';
+import TestResult from './internal/TestResult';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
@@ -38,6 +39,8 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     item,
     isCompleted,
     hasItems,
+    correctAnswers,
+    scorePercentage,
     choices,
     questionKey,
     goNextOrClose,
@@ -123,10 +126,20 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         />
       )}
 
-      {/* テスト完了または問題なしの場合 */}
-      {(isCompleted || !hasItems) && (
+      {/* テスト完了の場合 */}
+      {isCompleted && hasItems && (
+        <TestResult
+          total={total}
+          correctAnswers={correctAnswers}
+          scorePercentage={scorePercentage}
+          onClose={onClose}
+        />
+      )}
+
+      {/* 問題なしの場合 */}
+      {!hasItems && (
         <div className={styles.noItemsLabel} aria-live="polite">
-          テスト結果画面開発中
+          問題がありません
         </div>
       )}
 

@@ -16,7 +16,7 @@ export const useTestDialogState = (
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems, paused);
-  const { total, current, timeLeftPct, item, isCompleted } = state;
+  const { total, current, timeLeftPct, item, isCompleted, correctAnswers, scorePercentage } = state;
 
   const choices = useChoices(item);
   const correctIndex = useMemo(
@@ -25,7 +25,7 @@ export const useTestDialogState = (
   );
   const questionKey = item?.term ?? current;
 
-  const goNextOrClose = useCallback(() => goNext(onClose), [goNext, onClose]);
+  const goNextOrClose = useCallback((isCorrect?: boolean) => goNext(onClose, isCorrect), [goNext, onClose]);
 
   const feedback = useAnswerFeedback({
     isCorrect: (label) => !!item && label === item.jp,
@@ -55,6 +55,8 @@ export const useTestDialogState = (
     item,
     isCompleted,
     hasItems,
+    correctAnswers,
+    scorePercentage,
 
     // Derived values
     choices,

@@ -9,6 +9,8 @@ export type TestRunnerState = {
   timeLeftPct: number; // 0-100 (10秒カウントダウンの残量)
   item: PronounItem | undefined;
   isCompleted: boolean; // テスト完了状態
+  correctAnswers: number; // 正解数
+  scorePercentage: number; // 正解率 (0-100)
 };
 
 export const useTestRunner = (open: boolean, items: PronounItem[], paused = false) => {
@@ -16,7 +18,9 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   const total = hasItems ? items.length : 1;
   const [index, setIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
   const current = index + 1;
+  const scorePercentage = total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
   // timeLeftPct は useCountdown に委譲
   const item = hasItems ? items[index] : undefined;
 
@@ -27,13 +31,18 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
     if (open) {
       setIndex(0);
       setIsCompleted(false);
+      setCorrectAnswers(0);
     }
   }, [open]);
 
   // countdownPct を内部 state として扱う（直接使用）
 
   const goNext = useCallback(
-    (onFinish?: () => void) => {
+    (onFinish?: () => void, isCorrect = false) => {
+      if (isCorrect) {
+        setCorrectAnswers(prev => prev + 1);
+      }
+
       if (index + 1 >= total) {
         setIsCompleted(true);
       } else {
@@ -44,13 +53,23 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   );
 
   const state: TestRunnerState = useMemo(
-    () => ({ index, total, current, timeLeftPct: countdownPct, item, isCompleted }),
-    [index, total, current, countdownPct, item, isCompleted]
+    () => ({
+      index,
+      total,
+      current,
+      timeLeftPct: countdownPct,
+      item,
+      isCompleted,
+      correctAnswers,
+      scorePercentage
+    }),
+    [index, total, current, countdownPct, item, isCompleted, correctAnswers, scorePercentage]
   );
 
   const reset = useCallback(() => {
     setIndex(0);
     setIsCompleted(false);
+    setCorrectAnswers(0);
     resetCountdown();
   }, [resetCountdown]);
 

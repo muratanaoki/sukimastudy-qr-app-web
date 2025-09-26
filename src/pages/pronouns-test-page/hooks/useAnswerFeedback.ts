@@ -3,7 +3,7 @@ import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 
 export type AnswerFeedbackConfig = {
   isCorrect: (label: string) => boolean;
-  onNext: () => void;
+  onNext: (isCorrect?: boolean) => void;
   goodDurationMs?: number; // default 650
   wrongDurationMs?: number; // default 900
   choices?: string[]; // 現在の選択肢（index ベース評価用）
@@ -83,7 +83,7 @@ export const useAnswerFeedback = ({
         setSkipped(false);
         setSelectedIdx(null);
         if (isSkipped) setCorrectIdx(null);
-        onNext();
+        onNext(true);
       }, goodDurationMs);
     },
     [correctIndex, goodDurationMs, onNext, schedule, playCorrectSound]
@@ -102,7 +102,7 @@ export const useAnswerFeedback = ({
         setWrong(false);
         setWrongIdx(null);
         setCorrectIdx(null);
-        onNext();
+        onNext(false);
       }, wrongDurationMs);
     },
     [onNext, schedule, wrongDurationMs, playIncorrectSound]
