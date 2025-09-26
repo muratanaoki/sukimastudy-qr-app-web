@@ -68,7 +68,6 @@ const TestControls = ({ choiceView, isCompleted, hasItems, ...props }: TestContr
           selectedButton={props.selectedButton}
         />
       )}
-
     </div>
   );
 };

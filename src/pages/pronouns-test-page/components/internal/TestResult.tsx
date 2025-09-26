@@ -15,16 +15,10 @@ type TestResultProps = {
   onClose: () => void;
 };
 
-const getScoreRating = (percentage: number): string => {
-  if (percentage === 100) return 'Perfect!';
-  if (percentage >= 60) return 'Great!';
-  return 'Nice';
-};
-
-const getRatingClass = (percentage: number): string => {
-  if (percentage === 100) return 'perfect';
-  if (percentage >= 60) return 'great';
-  return 'nice';
+const getScoreInfo = (percentage: number): { rating: string; className: string } => {
+  if (percentage === 100) return { rating: 'Perfect!', className: 'perfect' };
+  if (percentage >= 60) return { rating: 'Great!', className: 'great' };
+  return { rating: 'Nice', className: 'nice' };
 };
 
 const getRatingIcon = (percentage: number) => {
@@ -40,11 +34,10 @@ export const TestResult = ({
   answerHistory,
   onClose,
 }: TestResultProps) => {
-  const rating = getScoreRating(scorePercentage);
-  const ratingClass = getRatingClass(scorePercentage);
+  const { rating, className: ratingClass } = getScoreInfo(scorePercentage);
   const IconComponent = getRatingIcon(scorePercentage);
 
-  // 正解・不正解の単語を分離
+  // 正解・不正解の単語を分離（スキップした単語も不正解としてカウント）
   const { correctWords, incorrectWords } = useMemo(() => {
     const correct = answerHistory.filter((record) => record.isCorrect).map((record) => record.item);
     const incorrect = answerHistory

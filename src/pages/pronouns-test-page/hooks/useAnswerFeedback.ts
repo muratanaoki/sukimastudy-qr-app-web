@@ -83,7 +83,7 @@ export const useAnswerFeedback = ({
         setSkipped(false);
         setSelectedIdx(null);
         if (isSkipped) setCorrectIdx(null);
-        onNext(true);
+        onNext(isSkipped ? false : true);
       }, goodDurationMs);
     },
     [correctIndex, goodDurationMs, onNext, schedule, playCorrectSound]
