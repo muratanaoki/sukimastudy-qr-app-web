@@ -1,16 +1,17 @@
 import styles from './choiceList.module.css';
 import { X, Circle } from 'lucide-react';
 import clsx from 'clsx';
+import type { ChoiceOption } from '../../hooks/useTestRunner';
 
 export type ChoiceListProps = {
-  choices: string[];
+  choices: ChoiceOption[];
   disabled: boolean;
   getIndexDisplay: (i: number) => string | number;
   isCorrectHighlight: (i: number) => boolean;
   isWrongSelected: (i: number) => boolean;
   isDim: (i: number) => boolean;
   showGoodAt: (i: number) => boolean;
-  onAnswer: (label: string, i: number) => void;
+  onAnswer: (choiceId: string, i: number) => void;
 };
 
 export const ChoiceList = ({
@@ -25,16 +26,16 @@ export const ChoiceList = ({
 }: ChoiceListProps) => {
   return (
     <div className={styles.choices}>
-      {choices.map((label, i) => (
+      {choices.map((choice, i) => (
         <button
-          key={i}
+          key={choice.id}
           type="button"
           className={clsx(styles.choiceButton, {
             [styles.choiceButtonCorrect]: isCorrectHighlight(i),
             [styles.choiceButtonWrong]: isWrongSelected(i),
             [styles.choiceButtonDim]: isDim(i),
           })}
-          onClick={() => onAnswer(label, i)}
+          onClick={() => onAnswer(choice.id, i)}
           disabled={disabled}
         >
           <span className={styles.choiceIndex}>
@@ -46,7 +47,7 @@ export const ChoiceList = ({
               (getIndexDisplay(i) as any)
             )}
           </span>
-          <span className={styles.choiceLabel}>{label}</span>
+          <span className={styles.choiceLabel}>{choice.label}</span>
           {showGoodAt(i) && (
             <span className={styles.goodToast} aria-live="polite">
               Good!

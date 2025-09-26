@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 
 export type AnswerFeedbackConfig = {
-  isCorrect: (label: string) => boolean;
+  isCorrect: (choiceId: string) => boolean;
   onNext: (isCorrect?: boolean) => void;
   goodDurationMs?: number; // default 650
   wrongDurationMs?: number; // default 900
-  choices?: string[]; // 現在の選択肢（index ベース評価用）
+  choiceIds?: string[]; // 現在の選択肢ID（index ベース評価用）
   correctIndex?: number; // 正解のインデックス（index ベース評価用）
   currentKey?: string | number; // 問題が切り替わった時のリセット用キー
 };
@@ -16,6 +16,7 @@ export const useAnswerFeedback = ({
   onNext,
   goodDurationMs = 650,
   wrongDurationMs = 900,
+  choiceIds,
   correctIndex,
   currentKey,
 }: AnswerFeedbackConfig) => {
@@ -28,6 +29,7 @@ export const useAnswerFeedback = ({
   const [skipped, setSkipped] = useState(false);
 
   const timerRef = useRef<number | null>(null);
+  const choiceIdsRef = useRef<string[]>([]);
   useEffect(() => {
     return () => {
       if (timerRef.current) window.clearTimeout(timerRef.current);
@@ -47,6 +49,10 @@ export const useAnswerFeedback = ({
       timerRef.current = null;
     }
   }, [currentKey]);
+
+  useEffect(() => {
+    choiceIdsRef.current = Array.isArray(choiceIds) ? choiceIds : [];
+  }, [choiceIds]);
 
   // タイマー管理の共通処理
   const clearTimer = useCallback(() => {
@@ -109,21 +115,24 @@ export const useAnswerFeedback = ({
   );
 
   const handleAnswer = useCallback(
-    (label: string, index: number, currentChoices: string[], correctLabel: string | undefined) => {
-      const ok = isCorrect(label);
+    (choiceId: string, index: number) => {
+      const ok = isCorrect(choiceId);
       if (ok) {
         startGood(index);
-      } else {
-        // 正解インデックスの解決: props の correctIndex が優先、なければ引数の correctLabel から算出
-        let resolved: number | null = null;
-        if (typeof correctIndex === 'number') {
-          resolved = correctIndex;
-        } else if (correctLabel) {
-          const ci = currentChoices.findIndex((c) => c === correctLabel);
-          resolved = ci >= 0 ? ci : null;
-        }
-        startWrong(index, resolved);
+        return;
       }
+
+      // 正解インデックスの解決: props の correctIndex が優先、なければ choiceIds から算出
+      let resolved: number | null = null;
+      if (typeof correctIndex === 'number') {
+        resolved = correctIndex;
+      } else {
+        const ids = choiceIdsRef.current;
+        const resolvedIndex = ids.findIndex((id) => isCorrect(id));
+        resolved = resolvedIndex >= 0 ? resolvedIndex : null;
+      }
+
+      startWrong(index, resolved);
     },
     [isCorrect, correctIndex, startGood, startWrong]
   );
@@ -191,7 +200,7 @@ export const useAnswerFeedback = ({
     correctIdx,
     // helpers
     disabled,
-    handleAnswer,
+    handleAnswerById: handleAnswer,
     handleAnswerIndex,
     getIndexDisplay,
     isCorrectHighlight,

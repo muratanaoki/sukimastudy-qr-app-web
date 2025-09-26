@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './dialog.module.css';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
+import { useNoScrollClass } from '../../hooks/useNoScrollClass';
 
 export type DialogCardProps = {
   onClose: () => void;
@@ -13,6 +14,9 @@ export type DialogCardProps = {
   // 下部のアクション行（PrimaryButton など）
   actions?: React.ReactNode;
   children?: React.ReactNode;
+  closeOnEscape?: boolean;
+  closeOnOverlay?: boolean;
+  lockScroll?: boolean;
 };
 
 export const DialogCard: React.FC<DialogCardProps> = ({
@@ -23,7 +27,28 @@ export const DialogCard: React.FC<DialogCardProps> = ({
   headerLeft,
   actions,
   children,
+  closeOnEscape = false,
+  closeOnOverlay = false,
+  lockScroll = false,
 }) => {
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+
+  useNoScrollClass(lockScroll);
+
+  useEffect(() => {
+    if (!closeOnEscape) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [closeOnEscape, onClose]);
+
   const renderIcon = () => {
     if (!Icon) return null;
     if (React.isValidElement(Icon)) return <div className={styles.iconWrap}>{Icon}</div>;
@@ -35,8 +60,22 @@ export const DialogCard: React.FC<DialogCardProps> = ({
     );
   };
 
+  const handleOverlayMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!closeOnOverlay) return;
+    if (event.target === overlayRef.current) {
+      onClose();
+    }
+  };
+
   return (
-    <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby={titleId}>
+    <div
+      ref={overlayRef}
+      className={styles.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      onMouseDown={handleOverlayMouseDown}
+    >
       <div className={styles.card}>
         {renderIcon()}
         <div className={styles.inner}>

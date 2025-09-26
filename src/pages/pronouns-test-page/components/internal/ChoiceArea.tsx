@@ -2,20 +2,21 @@ import React from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import styles from './choiceArea.module.css';
 import { ChoiceList } from './ChoiceList';
+import type { ChoiceOption } from '../../hooks/useTestRunner';
 
 export type ChoiceAreaProps = {
   showReveal: boolean;
   onReveal: () => void;
   isRevealed?: boolean;
   onSkip: () => void;
-  choices: string[];
+  choices: ChoiceOption[];
   disabled: boolean;
   getIndexDisplay: (i: number) => string | number;
   isCorrectHighlight: (i: number) => boolean;
   isWrongSelected: (i: number) => boolean;
   isDim: (i: number) => boolean;
   showGoodAt: (i: number) => boolean;
-  onAnswer: (label: string, i: number) => void;
+  onAnswer: (choiceId: string, i: number) => void;
 };
 
 export const ChoiceArea: React.FC<ChoiceAreaProps> = ({

@@ -1,5 +1,5 @@
+import styles from './dialogHeader.module.css';
 import { TestDialogPhase } from '../../utils/dialogPhase';
-import styles from '../testDialog.module.css';
 import TopBar from './TopBar';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 

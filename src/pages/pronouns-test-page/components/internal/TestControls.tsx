@@ -3,6 +3,7 @@ import { isJudgementMode } from '../../utils/function';
 import ChoiceArea from './ChoiceArea';
 import JudgementControls from './JudgementControls';
 import styles from '../testDialog.module.css';
+import type { ChoiceOption } from '../../hooks/useTestRunner';
 
 interface TestControlsProps {
   choiceView: ChoiceView;
@@ -10,7 +11,7 @@ interface TestControlsProps {
   hasItems: boolean;
 
   // Choice mode props
-  choices?: string[];
+  choices?: ChoiceOption[];
   shouldShowRevealButton?: boolean;
   onReveal?: () => void;
   isRevealed?: boolean;
@@ -21,7 +22,7 @@ interface TestControlsProps {
   isWrongSelected?: (index: number) => boolean;
   isDim?: (index: number) => boolean;
   showGoodAt?: (index: number) => boolean;
-  onAnswer?: (choice: string, index: number) => void;
+  onAnswer?: (choiceId: string, index: number) => void;
 
   // Judgement mode props
   showTranslation?: boolean;

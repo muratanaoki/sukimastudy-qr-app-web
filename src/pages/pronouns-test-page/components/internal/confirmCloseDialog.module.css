@@ -1,0 +1,9 @@
+.confirmText {
+  margin-bottom: var(--space-150);
+  text-align: center;
+  color: var(--color-neutral-700);
+}
+
+.actionsButton {
+  width: 100%;
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { JudgementButtonType } from '../utils/type';
 import { ChoiceView } from '../utils/type';
 import { shouldFlash } from '../utils/function';
@@ -16,8 +16,11 @@ export const useJudgementHandler = (
   questionKey: string | number
 ) => {
   const [selectedJudgement, setSelectedJudgement] = useState<JudgementButtonType | null>(null);
-  const { isFlashing, startFlash, cancelFlash } = useFlashDisplay();
+  const { isFlashing, startFlash, cancelFlash: cancelFlashInternal } = useFlashDisplay();
   const { playCorrectSound, playIncorrectSound, enableAudio } = useSoundEffects();
+  const advanceTimerRef = useRef<number | null>(null);
+  const fallbackTimerRef = useRef<number | null>(null);
+  const cancelledRef = useRef(false);
 
   const judgementMeta = useMemo<
     Record<JudgementButtonType, { isCorrect: boolean; playSound: () => void }>
@@ -34,12 +37,49 @@ export const useJudgementHandler = (
     }),
     [playCorrectSound, playIncorrectSound]
   );
+  const clearAdvanceTimer = useCallback(() => {
+    if (advanceTimerRef.current) {
+      window.clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+  }, []);
+
+  const clearFallbackTimer = useCallback(() => {
+    if (fallbackTimerRef.current) {
+      window.clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleAdvance = useCallback(
+    (isCorrect: boolean) => {
+      clearAdvanceTimer();
+      if (cancelledRef.current) return;
+      advanceTimerRef.current = window.setTimeout(() => {
+        advance(isCorrect);
+        advanceTimerRef.current = null;
+      }, SOUND_SYNC_DELAY_MS);
+    },
+    [advance, clearAdvanceTimer]
+  );
+
+  const finalizeJudgement = useCallback(
+    (isCorrect: boolean) => {
+      if (cancelledRef.current) return;
+      setSelectedJudgement(null);
+      scheduleAdvance(isCorrect);
+    },
+    [scheduleAdvance]
+  );
 
   const handleJudgementAnswer = useCallback(
     (buttonType: JudgementButtonType) => {
       const meta = judgementMeta[buttonType];
       if (!meta) return;
 
+      cancelledRef.current = false;
+      clearAdvanceTimer();
+      clearFallbackTimer();
       setSelectedJudgement(buttonType);
 
       // 最初のクリックで音声を有効化
@@ -47,36 +87,56 @@ export const useJudgementHandler = (
 
       meta.playSound();
 
-      const scheduleAdvance = () => {
-        window.setTimeout(() => advance(meta.isCorrect), SOUND_SYNC_DELAY_MS);
-      };
-
-      const finalize = () => {
-        setSelectedJudgement(null);
-        scheduleAdvance();
-      };
-
       if (shouldFlash(choiceView)) {
-        const fallbackId = window.setTimeout(finalize, FLASH_DURATION_MS + SOUND_SYNC_DELAY_MS);
+        fallbackTimerRef.current = window.setTimeout(() => {
+          fallbackTimerRef.current = null;
+          finalizeJudgement(meta.isCorrect);
+        }, FLASH_DURATION_MS + SOUND_SYNC_DELAY_MS);
         startFlash(() => {
-          window.clearTimeout(fallbackId);
-          finalize();
+          clearFallbackTimer();
+          finalizeJudgement(meta.isCorrect);
         });
       } else {
-        finalize();
+        finalizeJudgement(meta.isCorrect);
       }
     },
-    [choiceView, startFlash, advance, enableAudio, judgementMeta]
+    [
+      choiceView,
+      startFlash,
+      clearAdvanceTimer,
+      clearFallbackTimer,
+      finalizeJudgement,
+      enableAudio,
+      judgementMeta,
+    ]
   );
 
   useEffect(() => {
     setSelectedJudgement(null);
-  }, [questionKey]);
+    cancelledRef.current = false;
+    clearAdvanceTimer();
+    clearFallbackTimer();
+  }, [questionKey, clearAdvanceTimer, clearFallbackTimer]);
+
+  useEffect(() => {
+    return () => {
+      clearAdvanceTimer();
+      clearFallbackTimer();
+    };
+  }, [clearAdvanceTimer, clearFallbackTimer]);
+
+  const cancelFlashWithTimers = useCallback(() => {
+    cancelledRef.current = true;
+    clearAdvanceTimer();
+    clearFallbackTimer();
+    setSelectedJudgement(null);
+    cancelFlashInternal();
+  }, [clearAdvanceTimer, clearFallbackTimer, cancelFlashInternal]);
 
   return {
     selectedJudgement,
     handleJudgementAnswer,
     isFlashing,
-    cancelFlash,
+    cancelFlash: cancelFlashWithTimers,
   };
 };

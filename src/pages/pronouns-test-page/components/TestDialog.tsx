@@ -14,10 +14,8 @@ import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DialogHeader } from './internal/DialogHeader';
 import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
-import { usePauseManager } from '../hooks/usePauseManager';
+import { usePauseManager, PauseReason } from '../hooks/usePauseManager';
 import { resolveDialogPhase, TestDialogPhase } from '../utils/dialogPhase';
-
-const CONFIRM_PAUSE_REASON = 'confirm';
 
 export type TestDialogProps = {
   open: boolean;
@@ -41,15 +39,19 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   const { choiceView, answerMode } = settings;
   const { total, current, timeLeftPct, item, isCompleted, hasItems } = progress;
   const { correctAnswers, scorePercentage, answerHistory } = results;
-  const { labels: choiceLabels } = choices;
+  const { options: choiceOptions } = choices;
   const { questionKey } = meta;
   const { advance, reset } = actions;
 
+  const handleTestComplete = useCallback(() => {
+    setShowConfirm(false);
+  }, []);
+
   const advanceForJudgement = useCallback(
     (isCorrect?: boolean) => {
-      advance(isCorrect);
+      advance({ isCorrect, onComplete: handleTestComplete });
     },
-    [advance]
+    [advance, handleTestComplete]
   );
 
   const { selectedJudgement, handleJudgementAnswer, isFlashing, cancelFlash } = useJudgementHandler(
@@ -72,16 +74,13 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
   useEffect(() => {
     if (showConfirm) {
-      addReason(CONFIRM_PAUSE_REASON);
+      addReason(PauseReason.Confirm);
     } else {
-      removeReason(CONFIRM_PAUSE_REASON);
+      removeReason(PauseReason.Confirm);
     }
   }, [showConfirm, addReason, removeReason]);
 
-  const dialogPhase = useMemo(
-    () => resolveDialogPhase(hasItems, isCompleted),
-    [hasItems, isCompleted]
-  );
+  const dialogPhase = resolveDialogPhase(hasItems, isCompleted);
 
   const handleCloseClick = useCallback(() => {
     if (dialogPhase === TestDialogPhase.Completed) {
@@ -105,7 +104,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     if (!item?.term) return undefined;
     return () => {
       try {
-        window.requestAnimationFrame(() => speakWord(item.term));
+        speakWord(item.term);
       } catch (error) {
         console.warn('Failed to pronounce term', error);
       }
@@ -113,7 +112,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   }, [item?.term, speakWord]);
 
   useEscapeKey(handleCloseClick, open);
-  useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
+  useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel, paused: isPaused });
 
   const showQuestion = dialogPhase === TestDialogPhase.InProgress;
   const showResult = dialogPhase === TestDialogPhase.Completed;
@@ -172,7 +171,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           choiceView={choiceView}
           isCompleted={false}
           hasItems={hasItems}
-          choices={choiceLabels}
+          choices={choiceOptions}
           shouldShowRevealButton={display.shouldShowRevealButton}
           onReveal={display.reveal}
           isRevealed={display.revealed}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import type { PronounItem } from '../utils/type';
 import { useCountdown } from './useCountdown';
 
@@ -30,7 +30,8 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   const [index, setIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
+  const answerHistoryRef = useRef<AnswerRecord[]>([]);
+  const [, forceHistoryUpdate] = useReducer((x: number) => x + 1, 0);
   const current = index + 1;
   const scorePercentage = total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
   // timeLeftPct は useCountdown に委譲
@@ -49,16 +50,17 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
       setIndex(0);
       setIsCompleted(false);
       setCorrectAnswers(0);
-      setAnswerHistory([]);
+      answerHistoryRef.current = [];
+      forceHistoryUpdate();
     }
-  }, [open]);
+  }, [open, forceHistoryUpdate]);
 
   // countdownPct を内部 state として扱う（直接使用）
 
   const goNext = useCallback(
     ({ isCorrect = false, onComplete }: GoNextOptions = {}) => {
       if (item) {
-        setAnswerHistory((prev) => [...prev, { item, isCorrect }]);
+        answerHistoryRef.current = [...answerHistoryRef.current, { item, isCorrect }];
       }
 
       if (isCorrect) {
@@ -69,15 +71,17 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
 
       if (isLastQuestion) {
         setIsCompleted(true);
+        forceHistoryUpdate();
         onComplete?.();
-        return true;
+        return;
       }
 
       setIndex((v) => v + 1);
-      return false;
     },
-    [index, total, item]
+    [index, total, item, forceHistoryUpdate]
   );
+
+  const answerHistory = answerHistoryRef.current;
 
   const state: TestRunnerState = useMemo(
     () => ({
@@ -108,9 +112,10 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
     setIndex(0);
     setIsCompleted(false);
     setCorrectAnswers(0);
-    setAnswerHistory([]);
+    answerHistoryRef.current = [];
+    forceHistoryUpdate();
     resetCountdown();
-  }, [resetCountdown]);
+  }, [resetCountdown, forceHistoryUpdate]);
 
   return { state, goNext, hasItems, reset } as const;
 };
@@ -121,7 +126,36 @@ export type ChoiceOption = {
   isCorrect: boolean;
 };
 
-export const useChoices = (item: PronounItem | undefined) => {
+const createSeedFromKey = (key: string | number) => {
+  const str = String(key);
+  let hash = 0;
+  for (let i = 0; i < str.length; i += 1) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash || 1;
+};
+
+const mulberry32 = (seed: number) => {
+  let t = seed >>> 0;
+  return () => {
+    t += 0x6d2b79f5;
+    let r = Math.imul(t ^ (t >>> 15), t | 1);
+    r ^= r + Math.imul(r ^ (r >>> 7), r | 61);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
+const shuffleWithSeed = <T>(items: T[], key: string | number) => {
+  const random = mulberry32(createSeedFromKey(key));
+  const array = [...items];
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
+export const useChoices = (item: PronounItem | undefined, questionKey: string | number) => {
   return useMemo<ChoiceOption[]>(() => {
     if (!item) return [];
 
@@ -138,11 +172,6 @@ export const useChoices = (item: PronounItem | undefined) => {
       })),
     ];
 
-    for (let i = base.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [base[i], base[j]] = [base[j], base[i]];
-    }
-
-    return base;
-  }, [item]);
+    return shuffleWithSeed(base, questionKey);
+  }, [item, questionKey]);
 };

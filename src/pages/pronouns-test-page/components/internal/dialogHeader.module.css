@@ -1,0 +1,14 @@
+.resultHeader {
+  padding: var(--space-100) var(--space-150);
+  display: flex;
+  justify-content: flex-end;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.topRight {
+  display: flex;
+}

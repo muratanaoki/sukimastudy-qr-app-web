@@ -6,6 +6,7 @@ interface UseTestDialogHandlersProps {
   revealed: boolean;
   reveal: () => void;
   feedback: {
+    handleAnswerById: (choiceId: string, index: number) => void;
     handleAnswerIndex: (index: number) => void;
     handleSkipAsCorrect: () => void;
   };
@@ -32,9 +33,9 @@ export const useTestDialogHandlers = ({
   }, [cancelFlash, reset, onClose]);
 
   const handleChoiceAnswer = useCallback(
-    (_: string, i: number) => {
+    (choiceId: string, i: number) => {
       if (answerMode === AnswerMode.Listening && !revealed) reveal();
-      feedback.handleAnswerIndex(i);
+      feedback.handleAnswerById(choiceId, i);
     },
     [answerMode, revealed, reveal, feedback]
   );

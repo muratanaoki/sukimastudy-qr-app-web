@@ -27,25 +27,33 @@ export const useTestDialogState = ({ open, group, paused = false }: UseTestDialo
     answerHistory,
   } = state;
 
-  const choiceOptions = useChoices(item);
+  const questionKey = item?.term ?? current;
+  const choiceOptions = useChoices(item, questionKey);
   const choiceLabels = useMemo(() => choiceOptions.map((option) => option.label), [choiceOptions]);
+  const choiceIds = useMemo(() => choiceOptions.map((option) => option.id), [choiceOptions]);
   const correctIndex = useMemo(
     () => choiceOptions.findIndex((option) => option.isCorrect),
     [choiceOptions]
   );
-  const questionKey = item?.term ?? current;
 
   const advance = useCallback(
-    (isCorrect?: boolean, onComplete?: () => void) =>
-      goNext({ isCorrect: !!isCorrect, onComplete }),
+    (params?: boolean | { isCorrect?: boolean; onComplete?: () => void }) => {
+      const config =
+        typeof params === 'boolean' || params === undefined
+          ? { isCorrect: !!params }
+          : { isCorrect: !!params.isCorrect, onComplete: params.onComplete };
+
+      goNext(config);
+    },
     [goNext]
   );
 
   const feedback = useAnswerFeedback({
-    isCorrect: (label) =>
-      choiceOptions.some((option) => option.label === label && option.isCorrect),
+    isCorrect: (choiceId) =>
+      choiceOptions.some((option) => option.id === choiceId && option.isCorrect),
     onNext: advance,
     correctIndex: correctIndex >= 0 ? correctIndex : undefined,
+    choiceIds,
     currentKey: questionKey,
   });
 
@@ -78,6 +86,7 @@ export const useTestDialogState = ({ open, group, paused = false }: UseTestDialo
     choices: {
       options: choiceOptions,
       labels: choiceLabels,
+      ids: choiceIds,
       correctIndex,
     },
     meta: {
