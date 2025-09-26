@@ -1,4 +1,5 @@
 import styles from './testResult.module.css';
+import clsx from 'clsx';
 import { ThumbsUp, TrendingUp, CircleCheck } from 'lucide-react';
 import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { EnglishWord } from '../EnglishWord';
@@ -57,8 +58,8 @@ export const TestResult = ({
 
   return (
     <div className={styles.testResult}>
-      <IconComponent size={64} className={`${styles.resultRating} ${styles[ratingClass]}`} />
-      <h2 className={`${styles.resultRating} ${styles[ratingClass]}`}>{rating}</h2>
+      <IconComponent size={64} className={clsx(styles.resultRating, styles[ratingClass])} />
+      <h2 className={clsx(styles.resultRating, styles[ratingClass])}>{rating}</h2>
       <div className={styles.resultStats}>
         {correctAnswers} / {total} 問正解
       </div>
