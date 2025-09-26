@@ -16,7 +16,7 @@ export const useTestDialogState = (
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems, paused);
-  const { total, current, timeLeftPct, item, isCompleted, correctAnswers, scorePercentage } = state;
+  const { total, current, timeLeftPct, item, isCompleted, correctAnswers, scorePercentage, answerHistory } = state;
 
   const choices = useChoices(item);
   const correctIndex = useMemo(
@@ -57,6 +57,7 @@ export const useTestDialogState = (
     hasItems,
     correctAnswers,
     scorePercentage,
+    answerHistory,
 
     // Derived values
     choices,

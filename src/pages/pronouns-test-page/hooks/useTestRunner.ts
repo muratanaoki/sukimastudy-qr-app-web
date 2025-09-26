@@ -2,6 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PronounItem } from '../utils/type';
 import { useCountdown } from './useCountdown';
 
+export type AnswerRecord = {
+  item: PronounItem;
+  isCorrect: boolean;
+};
+
 export type TestRunnerState = {
   index: number; // 0-based
   total: number;
@@ -11,6 +16,7 @@ export type TestRunnerState = {
   isCompleted: boolean; // テスト完了状態
   correctAnswers: number; // 正解数
   scorePercentage: number; // 正解率 (0-100)
+  answerHistory: AnswerRecord[]; // 回答履歴
 };
 
 export const useTestRunner = (open: boolean, items: PronounItem[], paused = false) => {
@@ -19,6 +25,7 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   const [index, setIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
   const current = index + 1;
   const scorePercentage = total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
   // timeLeftPct は useCountdown に委譲
@@ -32,6 +39,7 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
       setIndex(0);
       setIsCompleted(false);
       setCorrectAnswers(0);
+      setAnswerHistory([]);
     }
   }, [open]);
 
@@ -39,6 +47,11 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
 
   const goNext = useCallback(
     (onFinish?: () => void, isCorrect = false) => {
+      // 現在の問題を履歴に追加
+      if (item) {
+        setAnswerHistory(prev => [...prev, { item, isCorrect }]);
+      }
+
       if (isCorrect) {
         setCorrectAnswers(prev => prev + 1);
       }
@@ -49,7 +62,7 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
         setIndex((v) => v + 1);
       }
     },
-    [index, total]
+    [index, total, item]
   );
 
   const state: TestRunnerState = useMemo(
@@ -61,15 +74,17 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
       item,
       isCompleted,
       correctAnswers,
-      scorePercentage
+      scorePercentage,
+      answerHistory
     }),
-    [index, total, current, countdownPct, item, isCompleted, correctAnswers, scorePercentage]
+    [index, total, current, countdownPct, item, isCompleted, correctAnswers, scorePercentage, answerHistory]
   );
 
   const reset = useCallback(() => {
     setIndex(0);
     setIsCompleted(false);
     setCorrectAnswers(0);
+    setAnswerHistory([]);
     resetCountdown();
   }, [resetCountdown]);
 

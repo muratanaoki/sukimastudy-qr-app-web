@@ -41,6 +41,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     hasItems,
     correctAnswers,
     scorePercentage,
+    answerHistory,
     choices,
     questionKey,
     goNextOrClose,
@@ -132,6 +133,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           total={total}
           correctAnswers={correctAnswers}
           scorePercentage={scorePercentage}
+          answerHistory={answerHistory}
           onClose={onClose}
         />
       )}
