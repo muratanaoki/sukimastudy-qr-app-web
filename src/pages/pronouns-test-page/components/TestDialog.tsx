@@ -5,18 +5,19 @@ import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
 import { JUDGEMENT_BUTTON_TYPE } from '../utils/const';
 import { getRevealButtonText, getDisplayWord, shouldShowTranslation } from '../utils/function';
-import TopBar from './internal/TopBar';
 import QuestionContent from './internal/QuestionContent';
 import TestControls from './internal/TestControls';
 import TestResult from './internal/TestResult';
-import { CloseButton } from '@/shared/components/close-button/CloseButton';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
 import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
-import { DialogCard } from '@/shared/components/dialog/DialogCard';
-import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
-import { AlertTriangle } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DialogHeader } from './internal/DialogHeader';
+import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
+import { usePauseManager } from '../hooks/usePauseManager';
+import { resolveDialogPhase, TestDialogPhase } from '../utils/dialogPhase';
+
+const CONFIRM_PAUSE_REASON = 'confirm';
 
 export type TestDialogProps = {
   open: boolean;
@@ -27,72 +28,102 @@ export type TestDialogProps = {
 
 export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
-
   const { speakWord, cancel } = useSpeech();
+  const { isPaused, addReason, removeReason } = usePauseManager();
 
-  const {
-    choiceView,
-    answerMode,
-    total,
-    current,
-    timeLeftPct,
-    item,
-    isCompleted,
-    hasItems,
-    correctAnswers,
-    scorePercentage,
-    answerHistory,
-    choices,
-    questionKey,
-    goNextOrClose,
-    reset,
-    feedback,
-    display,
-  } = useTestDialogState(open, group, onClose, showConfirm);
+  const { settings, progress, results, choices, meta, actions, feedback, display } =
+    useTestDialogState({
+      open,
+      group,
+      paused: isPaused,
+    });
+
+  const { choiceView, answerMode } = settings;
+  const { total, current, timeLeftPct, item, isCompleted, hasItems } = progress;
+  const { correctAnswers, scorePercentage, answerHistory } = results;
+  const { labels: choiceLabels } = choices;
+  const { questionKey } = meta;
+  const { advance, reset } = actions;
+
+  const advanceForJudgement = useCallback(
+    (isCorrect?: boolean) => {
+      advance(isCorrect);
+    },
+    [advance]
+  );
 
   const { selectedJudgement, handleJudgementAnswer, isFlashing, cancelFlash } = useJudgementHandler(
     choiceView,
-    goNextOrClose,
+    advanceForJudgement,
     questionKey
   );
 
-  const { handleChoiceAnswer, handleSkip, handleRevealWord } = useTestDialogHandlers({
-    answerMode,
-    revealed: display.revealed,
-    reveal: display.reveal,
-    feedback,
-    setShowTranslation: display.setShowTranslation,
-    reset,
-    onClose,
-    cancelFlash,
-  });
+  const { handleDialogClose, handleChoiceAnswer, handleSkip, handleRevealWord } =
+    useTestDialogHandlers({
+      answerMode,
+      revealed: display.revealed,
+      reveal: display.reveal,
+      feedback,
+      setShowTranslation: display.setShowTranslation,
+      reset,
+      onClose,
+      cancelFlash,
+    });
 
-  const handleCloseClick = () => {
-    if (isCompleted) {
-      onClose();
+  useEffect(() => {
+    if (showConfirm) {
+      addReason(CONFIRM_PAUSE_REASON);
     } else {
-      setShowConfirm(true);
+      removeReason(CONFIRM_PAUSE_REASON);
     }
-  };
+  }, [showConfirm, addReason, removeReason]);
 
-  const handleConfirmClose = () => {
-    setShowConfirm(false);
-    onClose();
-  };
+  const dialogPhase = useMemo(
+    () => resolveDialogPhase(hasItems, isCompleted),
+    [hasItems, isCompleted]
+  );
 
-  const handleCancelClose = () => {
+  const handleCloseClick = useCallback(() => {
+    if (dialogPhase === TestDialogPhase.Completed) {
+      setShowConfirm(false);
+      handleDialogClose();
+      return;
+    }
+    setShowConfirm(true);
+  }, [dialogPhase, handleDialogClose]);
+
+  const handleConfirmClose = useCallback(() => {
     setShowConfirm(false);
-  };
+    handleDialogClose();
+  }, [handleDialogClose]);
+
+  const handleCancelClose = useCallback(() => {
+    setShowConfirm(false);
+  }, []);
+
+  const handleWordClick = useMemo(() => {
+    if (!item?.term) return undefined;
+    return () => {
+      try {
+        window.requestAnimationFrame(() => speakWord(item.term));
+      } catch (error) {
+        console.warn('Failed to pronounce term', error);
+      }
+    };
+  }, [item?.term, speakWord]);
 
   useEscapeKey(handleCloseClick, open);
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel });
 
-  // これらの計算はテスト実行中のみ必要
-  const displayWord = !isCompleted
+  const showQuestion = dialogPhase === TestDialogPhase.InProgress;
+  const showResult = dialogPhase === TestDialogPhase.Completed;
+  const showEmpty = dialogPhase === TestDialogPhase.Empty;
+
+  const displayWord = showQuestion
     ? getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm)
     : '';
-  const revealButtonText = !isCompleted ? getRevealButtonText(answerMode) : '';
-  const showTranslationComputed = !isCompleted
+  const revealButtonText = showQuestion ? getRevealButtonText(answerMode) : '';
+  const showTranslationComputed = showQuestion
     ? shouldShowTranslation(display.showTranslation, isFlashing, !!item?.jp)
     : false;
 
@@ -100,58 +131,48 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
   return (
     <div role="dialog" aria-modal="true" aria-label="テスト" className={styles.dialog}>
-      {isCompleted ? (
-        <div className={styles.resultHeader}>
-          <div className={styles.topRight}>
-            <CloseButton onClose={handleCloseClick} />
-          </div>
-        </div>
-      ) : (
-        <TopBar
-          posTitle={pos.title}
-          groupTitle={group.title}
-          timeLeftPct={timeLeftPct}
-          onClose={handleCloseClick}
-          resetKey={questionKey}
-        />
-      )}
+      <DialogHeader
+        phase={dialogPhase}
+        posTitle={pos.title}
+        groupTitle={group.title}
+        timeLeftPct={timeLeftPct}
+        onClose={handleCloseClick}
+        questionKey={questionKey}
+      />
 
-      {!isCompleted && (
+      {showQuestion && (
         <QuestionContent
           current={current}
           total={total}
           displayWord={displayWord}
           translation={item?.jp ?? ''}
           showTranslation={showTranslationComputed}
-          onWordClick={item?.term ? () => speakWord(item.term) : undefined}
+          onWordClick={handleWordClick}
         />
       )}
 
-      {/* テスト完了の場合 */}
-      {isCompleted && hasItems && (
+      {showResult && hasItems && (
         <TestResult
           total={total}
           correctAnswers={correctAnswers}
           scorePercentage={scorePercentage}
           answerHistory={answerHistory}
-          onClose={onClose}
+          onClose={handleDialogClose}
         />
       )}
 
-      {/* 問題なしの場合 */}
-      {!hasItems && (
+      {showEmpty && (
         <div className={styles.noItemsLabel} aria-live="polite">
           問題がありません
         </div>
       )}
 
-      {!isCompleted && (
+      {showQuestion && (
         <TestControls
           choiceView={choiceView}
           isCompleted={false}
           hasItems={hasItems}
-          // Choice mode props
-          choices={choices}
+          choices={choiceLabels}
           shouldShowRevealButton={display.shouldShowRevealButton}
           onReveal={display.reveal}
           isRevealed={display.revealed}
@@ -163,7 +184,6 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           isDim={feedback.isDim}
           showGoodAt={feedback.showGoodAt}
           onAnswer={handleChoiceAnswer}
-          // Judgement mode props
           showTranslation={display.showTranslation}
           onRevealWord={handleRevealWord}
           onDontKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW)}
@@ -174,24 +194,12 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         />
       )}
 
-      {/* 確認ダイアログ */}
-      {showConfirm && (
-        <DialogCard
-          onClose={handleCancelClose}
-          title="テストを終了しますか？"
-          titleId="confirm-dialog-title"
-          Icon={AlertTriangle}
-          actions={
-            <PrimaryButton className={styles.actionsButton} onClick={handleConfirmClose}>
-              終了する
-            </PrimaryButton>
-          }
-        >
-          <p className={styles.confirmText}>現在の進行状況は保存されません。</p>
-        </DialogCard>
-      )}
+      <ConfirmCloseDialog
+        open={showConfirm}
+        onConfirm={handleConfirmClose}
+        onCancel={handleCancelClose}
+      />
     </div>
   );
 };
-
 export default TestDialog;

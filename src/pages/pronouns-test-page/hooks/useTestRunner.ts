@@ -19,6 +19,11 @@ export type TestRunnerState = {
   answerHistory: AnswerRecord[]; // 回答履歴
 };
 
+type GoNextOptions = {
+  isCorrect?: boolean;
+  onComplete?: () => void;
+};
+
 export const useTestRunner = (open: boolean, items: PronounItem[], paused = false) => {
   const hasItems = items && items.length > 0;
   const total = hasItems ? items.length : 1;
@@ -32,7 +37,12 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   const item = hasItems ? items[index] : undefined;
 
   // countdown は useCountdown に委譲
-  const { timeLeftPct: countdownPct, reset: resetCountdown } = useCountdown(open, index, 10_000, paused);
+  const { timeLeftPct: countdownPct, reset: resetCountdown } = useCountdown(
+    open,
+    index,
+    10_000,
+    paused
+  );
   // 再オープン時は最初の問題から再スタート
   useEffect(() => {
     if (open) {
@@ -46,21 +56,25 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   // countdownPct を内部 state として扱う（直接使用）
 
   const goNext = useCallback(
-    (onFinish?: () => void, isCorrect = false) => {
-      // 現在の問題を履歴に追加
+    ({ isCorrect = false, onComplete }: GoNextOptions = {}) => {
       if (item) {
-        setAnswerHistory(prev => [...prev, { item, isCorrect }]);
+        setAnswerHistory((prev) => [...prev, { item, isCorrect }]);
       }
 
       if (isCorrect) {
-        setCorrectAnswers(prev => prev + 1);
+        setCorrectAnswers((prev) => prev + 1);
       }
 
-      if (index + 1 >= total) {
+      const isLastQuestion = index + 1 >= total;
+
+      if (isLastQuestion) {
         setIsCompleted(true);
-      } else {
-        setIndex((v) => v + 1);
+        onComplete?.();
+        return true;
       }
+
+      setIndex((v) => v + 1);
+      return false;
     },
     [index, total, item]
   );
@@ -75,9 +89,19 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
       isCompleted,
       correctAnswers,
       scorePercentage,
-      answerHistory
+      answerHistory,
     }),
-    [index, total, current, countdownPct, item, isCompleted, correctAnswers, scorePercentage, answerHistory]
+    [
+      index,
+      total,
+      current,
+      countdownPct,
+      item,
+      isCompleted,
+      correctAnswers,
+      scorePercentage,
+      answerHistory,
+    ]
   );
 
   const reset = useCallback(() => {
@@ -91,14 +115,34 @@ export const useTestRunner = (open: boolean, items: PronounItem[], paused = fals
   return { state, goNext, hasItems, reset } as const;
 };
 
+export type ChoiceOption = {
+  id: string;
+  label: string;
+  isCorrect: boolean;
+};
+
 export const useChoices = (item: PronounItem | undefined) => {
-  return useMemo(() => {
-    if (!item) return [] as string[];
-    const base = [item.jp, ...item.choices.enToJp];
+  return useMemo<ChoiceOption[]>(() => {
+    if (!item) return [];
+
+    const base: ChoiceOption[] = [
+      {
+        id: `choice-${item.term}-correct`,
+        label: item.jp,
+        isCorrect: true,
+      },
+      ...item.choices.enToJp.map((label, idx) => ({
+        id: `choice-${item.term}-alt-${idx}`,
+        label,
+        isCorrect: false,
+      })),
+    ];
+
     for (let i = base.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [base[i], base[j]] = [base[j], base[i]];
     }
+
     return base;
   }, [item]);
 };

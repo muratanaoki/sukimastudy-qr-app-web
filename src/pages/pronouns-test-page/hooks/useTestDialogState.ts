@@ -1,36 +1,50 @@
 import { useCallback, useMemo } from 'react';
 import { useTestSettings } from './useTestSettings';
-import { useTestRunner } from './useTestRunner';
-import { useChoices } from './useTestRunner';
+import { useTestRunner, useChoices } from './useTestRunner';
 import { useOrderedItems } from './useOrderedItems';
 import { useAnswerFeedback } from './useAnswerFeedback';
 import { useTestDisplay } from './useTestDisplay';
 import type { PronounGroup } from '../utils/type';
 
-export const useTestDialogState = (
-  open: boolean,
-  group: PronounGroup,
-  onClose: () => void,
-  paused = false
-) => {
+type UseTestDialogStateParams = {
+  open: boolean;
+  group: PronounGroup;
+  paused?: boolean;
+};
+
+export const useTestDialogState = ({ open, group, paused = false }: UseTestDialogStateParams) => {
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems, paused);
-  const { total, current, timeLeftPct, item, isCompleted, correctAnswers, scorePercentage, answerHistory } = state;
+  const {
+    total,
+    current,
+    timeLeftPct,
+    item,
+    isCompleted,
+    correctAnswers,
+    scorePercentage,
+    answerHistory,
+  } = state;
 
-  const choices = useChoices(item);
+  const choiceOptions = useChoices(item);
+  const choiceLabels = useMemo(() => choiceOptions.map((option) => option.label), [choiceOptions]);
   const correctIndex = useMemo(
-    () => (item ? choices.findIndex((c) => c === item.jp) : -1),
-    [item, choices]
+    () => choiceOptions.findIndex((option) => option.isCorrect),
+    [choiceOptions]
   );
   const questionKey = item?.term ?? current;
 
-  const goNextOrClose = useCallback((isCorrect?: boolean) => goNext(onClose, isCorrect), [goNext, onClose]);
+  const advance = useCallback(
+    (isCorrect?: boolean, onComplete?: () => void) =>
+      goNext({ isCorrect: !!isCorrect, onComplete }),
+    [goNext]
+  );
 
   const feedback = useAnswerFeedback({
-    isCorrect: (label) => !!item && label === item.jp,
-    onNext: goNextOrClose,
-    choices,
+    isCorrect: (label) =>
+      choiceOptions.some((option) => option.label === label && option.isCorrect),
+    onNext: advance,
     correctIndex: correctIndex >= 0 ? correctIndex : undefined,
     currentKey: questionKey,
   });
@@ -44,32 +58,36 @@ export const useTestDialogState = (
   });
 
   return {
-    // Settings
-    choiceView,
-    answerMode,
-
-    // State
-    total,
-    current,
-    timeLeftPct,
-    item,
-    isCompleted,
-    hasItems,
-    correctAnswers,
-    scorePercentage,
-    answerHistory,
-
-    // Derived values
-    choices,
-    correctIndex,
-    questionKey,
-
-    // Functions
-    goNextOrClose,
-    reset,
-
-    // Sub-hooks
+    settings: {
+      choiceView,
+      answerMode,
+    },
+    progress: {
+      total,
+      current,
+      timeLeftPct,
+      item,
+      isCompleted,
+      hasItems,
+    },
+    results: {
+      correctAnswers,
+      scorePercentage,
+      answerHistory,
+    },
+    choices: {
+      options: choiceOptions,
+      labels: choiceLabels,
+      correctIndex,
+    },
+    meta: {
+      questionKey,
+    },
+    actions: {
+      advance,
+      reset,
+    },
     feedback,
     display,
-  };
+  } as const;
 };
