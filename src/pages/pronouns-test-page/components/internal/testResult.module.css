@@ -2,9 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   padding: var(--space-250);
   gap: var(--space-150);
+  max-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .resultRating {
