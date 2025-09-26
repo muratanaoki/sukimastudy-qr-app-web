@@ -2,6 +2,7 @@ import { memo, useMemo, useState, useId } from 'react';
 import styles from './englishWord.module.css';
 import { Volume2 } from 'lucide-react';
 import type { PronounItem } from '../utils/type';
+import gridStyles from '../learningEnglishPage.module.css';
 import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../hooks/useSpeech';
 import { buildExamples } from '../utils/function';
@@ -62,4 +63,14 @@ const EnglishWordCardInner = ({ item, speech }: { item: PronounItem; speech: Use
   );
 };
 
-export const EnglishWord = memo(EnglishWordCardInner);
+const EnglishWordListInner = ({ items, speech }: { items: PronounItem[]; speech: UseSpeech }) => {
+  return (
+    <ul className={gridStyles.cardGrid}>
+      {items.map((it) => (
+        <EnglishWordCardInner key={it.index} item={it} speech={speech} />
+      ))}
+    </ul>
+  );
+};
+
+export const EnglishWord = memo(EnglishWordListInner);

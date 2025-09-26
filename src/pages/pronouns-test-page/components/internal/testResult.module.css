@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-250);
-  text-align: center;
   gap: var(--space-150);
 }
 
@@ -15,15 +14,15 @@
 }
 
 .resultRating.perfect {
-  color: #FFD700; /* Gold */
+  color: #ffd700; /* Gold */
 }
 
 .resultRating.great {
-  color: #00C851; /* Green */
+  color: #00c851; /* Green */
 }
 
 .resultRating.nice {
-  color: #FF4444; /* Red */
+  color: #ff4444; /* Red */
 }
 
 .resultPercentage {
@@ -56,9 +55,8 @@
 }
 
 .wordList {
-  list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 300px;
-  overflow-y: auto;
+  display: grid;
+  gap: var(--space-100);
 }

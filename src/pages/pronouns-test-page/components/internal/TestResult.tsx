@@ -71,11 +71,7 @@ export const TestResult = ({
       {incorrectWords.length > 0 && (
         <div className={styles.wordSection}>
           <h3 className={styles.sectionTitle}>間違えた単語</h3>
-          <ul className={styles.wordList}>
-            {incorrectWords.map((item) => (
-              <EnglishWord key={item.term} item={item} speech={speech} />
-            ))}
-          </ul>
+          <EnglishWord items={incorrectWords} speech={speech} />
         </div>
       )}
 
@@ -83,11 +79,7 @@ export const TestResult = ({
       {correctWords.length > 0 && (
         <div className={styles.wordSection}>
           <h3 className={styles.sectionTitle}>正解した単語</h3>
-          <ul className={styles.wordList}>
-            {correctWords.map((item) => (
-              <EnglishWord key={item.term} item={item} speech={speech} />
-            ))}
-          </ul>
+          <EnglishWord items={correctWords} speech={speech} />
         </div>
       )}
     </div>

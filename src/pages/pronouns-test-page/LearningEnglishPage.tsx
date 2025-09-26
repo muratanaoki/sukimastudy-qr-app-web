@@ -80,11 +80,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
                   <h1 className={styles.title}>{title}</h1>
                   <IconComp className={styles.headerIcon} />
                 </div>
-                <ul className={styles.cardGrid}>
-                  {items.map((it) => (
-                    <EnglishWord key={it.index} item={it} speech={speech} />
-                  ))}
-                </ul>
+                <EnglishWord items={items} speech={speech} />
               </section>
             );
           })}

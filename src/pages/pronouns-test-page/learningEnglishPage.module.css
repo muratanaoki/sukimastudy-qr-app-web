@@ -55,7 +55,6 @@
 /* Grid for cards on the page */
 .cardGrid {
   display: grid;
-  grid-template-columns: 1fr; /* 1列固定 */
   gap: var(--space-100);
   list-style: none;
   padding: 0;
