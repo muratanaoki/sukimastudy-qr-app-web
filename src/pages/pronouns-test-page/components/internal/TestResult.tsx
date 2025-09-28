@@ -1,5 +1,4 @@
 import styles from './testResult.module.css';
-import clsx from 'clsx';
 import { ThumbsUp, TrendingUp, CircleCheck } from 'lucide-react';
 import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { EnglishWord } from '../EnglishWord';
@@ -15,10 +14,10 @@ type TestResultProps = {
   onClose: () => void;
 };
 
-const getScoreInfo = (percentage: number): { rating: string; className: string } => {
-  if (percentage === 100) return { rating: 'Perfect!', className: 'perfect' };
-  if (percentage >= 60) return { rating: 'Great!', className: 'great' };
-  return { rating: 'Nice', className: 'nice' };
+const getScoreInfo = (percentage: number): { rating: string } => {
+  if (percentage === 100) return { rating: 'Perfect!' };
+  if (percentage >= 60) return { rating: 'Great!' };
+  return { rating: 'Nice!' };
 };
 
 const getRatingIcon = (percentage: number) => {
@@ -34,7 +33,7 @@ export const TestResult = ({
   answerHistory,
   onClose,
 }: TestResultProps) => {
-  const { rating, className: ratingClass } = getScoreInfo(scorePercentage);
+  const { rating } = getScoreInfo(scorePercentage);
   const IconComponent = getRatingIcon(scorePercentage);
 
   // 正解・不正解の単語を分離（スキップした単語も不正解としてカウント）
@@ -51,31 +50,44 @@ export const TestResult = ({
 
   return (
     <div className={styles.testResult}>
-      <IconComponent size={64} className={clsx(styles.resultRating, styles[ratingClass])} />
-      <h2 className={clsx(styles.resultRating, styles[ratingClass])}>{rating}</h2>
-      <div className={styles.resultStats}>
-        {correctAnswers} / {total} 問正解
+      <div className={styles.resultBox}>
+        <IconComponent className={styles.resultIcon} />
+        <h2 className={styles.resultRating}>{rating}</h2>
+        <div className={styles.resultStats}>
+          <p className={styles.resultLabel}>わかった数</p>
+          <p>
+            <span className={styles.correctAnswers}>{correctAnswers}</span>
+            <span className={styles.totalQuestions}>/{total}</span>
+          </p>
+        </div>
+
+        <PrimaryButton className={styles.actionsButton} onClick={onClose}>
+          終了
+        </PrimaryButton>
       </div>
+      <div className={styles.resultBody}>
+        {/* 不正解した単語 */}
+        {incorrectWords.length > 0 && (
+          <div className={styles.wordSection}>
+            <h3 className={styles.sectionTitle}>
+              <span className={styles.wordLabel}>わからなかった</span>
+              <span className={styles.wordIncorrectCount}>{incorrectWords.length}</span>
+            </h3>
+            <EnglishWord items={incorrectWords} speech={speech} />
+          </div>
+        )}
 
-      <PrimaryButton className={styles.actionsButton} onClick={onClose}>
-        終了
-      </PrimaryButton>
-
-      {/* 不正解した単語 */}
-      {incorrectWords.length > 0 && (
-        <div className={styles.wordSection}>
-          <h3 className={styles.sectionTitle}>間違えた単語</h3>
-          <EnglishWord items={incorrectWords} speech={speech} />
-        </div>
-      )}
-
-      {/* 正解した単語 */}
-      {correctWords.length > 0 && (
-        <div className={styles.wordSection}>
-          <h3 className={styles.sectionTitle}>正解した単語</h3>
-          <EnglishWord items={correctWords} speech={speech} />
-        </div>
-      )}
+        {/* 正解した単語 */}
+        {correctWords.length > 0 && (
+          <div className={styles.wordSection}>
+            <h3 className={styles.sectionTitle}>
+              <span className={styles.wordLabel}>わかった</span>
+              <span className={styles.wordCorrectCount}>{correctWords.length}</span>
+            </h3>
+            <EnglishWord items={correctWords} speech={speech} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -75,6 +75,8 @@
   --space-250: calc(var(--rem) * 2.5);
   --space-300: calc(var(--rem) * 3);
   --space-350: calc(var(--rem) * 3.5);
+  --space-400: calc(var(--rem) * 4);
+  --space-450: calc(var(--rem) * 4.5);
 
   /* 固定フォントサイズ
     - 最低限の UI 用プリセット（ボタン/ラベルなど）
@@ -86,6 +88,18 @@
   --fs-175: calc(var(--rem) * 1.75);
   --fs-200: calc(var(--rem) * 2);
   --fs-225: calc(var(--rem) * 2.25);
+  --fs-250: calc(var(--rem) * 2.5);
+  --fs-275: calc(var(--rem) * 2.75);
+  --fs-300: calc(var(--rem) * 3);
+
+  --fs-325: calc(var(--rem) * 3.25);
+  --fs-350: calc(var(--rem) * 3.5);
+  --fs-375: calc(var(--rem) * 3.75);
+
+  --fs-400: calc(var(--rem) * 4);
+  --fs-425: calc(var(--rem) * 4.25);
+  --fs-450: calc(var(--rem) * 4.5);
+  --fs-475: calc(var(--rem) * 4.75);
 
   /* 行間/レイアウトベース */
   --lh-body: 1.7; /* 本文の行間 */
