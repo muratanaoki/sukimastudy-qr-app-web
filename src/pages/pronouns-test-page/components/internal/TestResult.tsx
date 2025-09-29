@@ -89,10 +89,8 @@ export const TestResult = ({
   return (
     <div className={styles.testResult}>
       <div className={styles.resultBox}>
-        <div>
-          <Icon className={styles.resultIcon} />
-          <h2 className={styles.resultRating}>{rating}</h2>
-        </div>
+        <Icon className={styles.resultIcon} />
+        <h2 className={styles.resultRating}>{rating}</h2>
       </div>
 
       <div className={styles.rateBox}>
