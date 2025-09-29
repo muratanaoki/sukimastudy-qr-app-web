@@ -26,6 +26,7 @@
 }
 
 .resultRating {
+  color: var(--color-neutral-800);
   font-size: var(--fs-250);
   letter-spacing: 0.05rem;
 }

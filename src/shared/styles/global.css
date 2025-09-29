@@ -15,13 +15,15 @@
   --main-color-200: #e7f1fc;
   --main-color-300: #2196f3;
   --main-color-400: #1976d2;
+
   --accent-red-color: #f85659;
   --accent-green-color-100: #ecffed;
   --accent-green-color-200: #7ed321;
   --accent-green-color-300: #66bb6a;
-  --medal-gold-color: #8a6200;
-  --medal-silver-color: #4f5b6a;
-  --medal-bronze-color: #8a4022;
+
+  --medal-gold-color: #fecd51;
+  --medal-silver-color: #6e7f93;
+  --medal-bronze-color: #b26637;
   /* ---------------------------------
     Token 命名規則（抜粋 / 要約）
     ---------------------------------
