@@ -1,0 +1,43 @@
+.rateBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--main-color-100);
+}
+
+.resultStats {
+  margin-left: var(--space-150);
+  margin-right: var(--space-150);
+  padding: var(--space-150);
+  background: var(--base-color);
+  width: 100%;
+  margin-bottom: var(--space-150);
+  border-radius: var(--radius-050);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.resultLabel {
+  font-size: var(--fs-100);
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  margin-bottom: var(--space-050);
+  padding: var(--space-050) var(--space-100);
+  background-color: var(--main-color-200);
+  border-radius: var(--radius-100);
+}
+
+.correctAnswers {
+  font-weight: 900;
+  font-size: var(--fs-250);
+  letter-spacing: 0.2rem;
+}
+
+.totalQuestions {
+  font-weight: 900;
+  font-size: var(--fs-200);
+  letter-spacing: 0.2rem;
+}

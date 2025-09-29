@@ -1,0 +1,23 @@
+.resultBox {
+  width: 100%;
+  background: var(--main-color-100);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-500) 0 var(--space-200) 0;
+}
+
+.resultIcon {
+  color: var(--main-color-400);
+  margin-bottom: var(--space-050);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resultRating {
+  color: var(--color-neutral-800);
+  font-size: var(--fs-250);
+  letter-spacing: 0.05rem;
+}
