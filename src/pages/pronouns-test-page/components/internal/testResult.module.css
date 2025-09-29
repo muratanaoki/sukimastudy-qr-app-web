@@ -22,12 +22,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-700) 0 var(--space-700) 0;
+  padding: var(--space-500) 0 var(--space-200) 0;
 }
 
 .resultRating {
   font-size: var(--fs-250);
-  padding-right: var(--space-025);
+  letter-spacing: 0.05rem;
 }
 
 .resultBody {
@@ -41,8 +41,6 @@
 
 .resultIcon {
   color: var(--main-color-400);
-  width: var(--fs-600);
-  height: var(--fs-600);
   margin-bottom: var(--space-050);
   display: flex;
   align-items: center;
@@ -137,12 +135,14 @@
 }
 
 .correctAnswers {
+  font-weight: 900;
   font-size: var(--fs-250);
   font-weight: bold;
   letter-spacing: 0.2rem;
 }
 
 .totalQuestions {
+  font-weight: 900;
   font-size: var(--fs-200);
   font-weight: bold;
   letter-spacing: 0.2rem;

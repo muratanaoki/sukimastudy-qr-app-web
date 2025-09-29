@@ -5,7 +5,7 @@ import { EnglishWord } from '../EnglishWord';
 import type { AnswerRecord } from '../../hooks/useTestRunner';
 import { useSpeech } from '../../hooks/useSpeech';
 import type { UseSpeech } from '../../hooks/useSpeech';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import prizeIcon from '@/shared/loadicon/prize.json';
 
 type TestResultProps = {
@@ -30,16 +30,46 @@ const SECTION_COUNT_CLASS_NAMES: Record<ResultSectionVariant, string> = {
   [ResultSectionVariant.Incorrect]: styles.sectionCountNegative,
 };
 
-const getScoreMeta = (percentage: number): { rating: string } => {
-  if (percentage === 100) return { rating: 'Perfect!' };
-  if (percentage >= 60) return { rating: 'Great!' };
-  return { rating: 'Nice!' };
+const SCORE_MEDAL_COLORS = {
+  gold: 'var(--medal-gold-color)',
+  silver: 'var(--medal-silver-color)',
+  bronze: 'var(--medal-bronze-color)',
+} as const;
+
+type ScoreMeta = {
+  rating: string;
+  medalColor: string;
+};
+
+const getScoreMeta = (percentage: number): ScoreMeta => {
+  if (percentage === 100) {
+    return { rating: 'Perfect!', medalColor: SCORE_MEDAL_COLORS.gold };
+  }
+
+  if (percentage >= 60) {
+    return { rating: 'Great!', medalColor: SCORE_MEDAL_COLORS.silver };
+  }
+
+  return { rating: 'Nice!', medalColor: SCORE_MEDAL_COLORS.bronze };
 };
 
 const createInitialWordGroups = (): WordGroups => ({
   [ResultSectionVariant.Correct]: [],
   [ResultSectionVariant.Incorrect]: [],
 });
+
+const RESULT_ICON_SIZE_REM = 9.375; // 150px based on 16px root font-size
+
+const convertRemToPixels = (rem: number): number => {
+  if (typeof window === 'undefined') {
+    return rem * 16;
+  }
+
+  const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const baseFontSize = Number.isNaN(rootFontSize) ? 16 : rootFontSize;
+
+  return rem * baseFontSize;
+};
 
 const groupAnswerHistory = (history: AnswerRecord[]): WordGroups =>
   history.reduce<WordGroups>((acc, record) => {
@@ -76,8 +106,9 @@ export const TestResult = ({
   answerHistory,
   onClose,
 }: TestResultProps) => {
-  const { rating } = getScoreMeta(scorePercentage);
+  const { rating, medalColor } = getScoreMeta(scorePercentage);
   const playerRef = useRef<InstanceType<typeof LordiconPlayer> | null>(null);
+  const [iconSize, setIconSize] = useState<number>(() => convertRemToPixels(RESULT_ICON_SIZE_REM));
 
   // 正解・不正解の単語を分離（スキップした単語も不正解としてカウント）
   const groupedWords = useMemo(() => groupAnswerHistory(answerHistory), [answerHistory]);
@@ -91,16 +122,26 @@ export const TestResult = ({
     playerRef.current?.playFromBeginning();
   }, [scorePercentage]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const updateIconSize = () => {
+      setIconSize(convertRemToPixels(RESULT_ICON_SIZE_REM));
+    };
+
+    updateIconSize();
+    window.addEventListener('resize', updateIconSize);
+
+    return () => {
+      window.removeEventListener('resize', updateIconSize);
+    };
+  }, []);
+
   return (
     <div className={styles.testResult}>
       <div className={styles.resultBox}>
         <div className={styles.resultIcon}>
-          <LordiconPlayer
-            ref={playerRef}
-            icon={prizeIcon}
-            size={96}
-            colorize="var(--main-color-400)"
-          />
+          <LordiconPlayer ref={playerRef} icon={prizeIcon} size={iconSize} colorize={medalColor} />
         </div>
         <h2 className={styles.resultRating}>{rating}</h2>
       </div>
