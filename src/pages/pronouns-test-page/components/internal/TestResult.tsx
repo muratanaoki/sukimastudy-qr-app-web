@@ -1,12 +1,12 @@
 import styles from './testResult.module.css';
-import { ThumbsUp, TrendingUp, CircleCheck } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Player as LordiconPlayer } from '@lordicon/react';
 import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { EnglishWord } from '../EnglishWord';
 import type { AnswerRecord } from '../../hooks/useTestRunner';
 import { useSpeech } from '../../hooks/useSpeech';
 import type { UseSpeech } from '../../hooks/useSpeech';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import prizeIcon from '@/shared/loadicon/prize.json';
 
 type TestResultProps = {
   total: number;
@@ -30,10 +30,10 @@ const SECTION_COUNT_CLASS_NAMES: Record<ResultSectionVariant, string> = {
   [ResultSectionVariant.Incorrect]: styles.sectionCountNegative,
 };
 
-const getScoreMeta = (percentage: number): { rating: string; Icon: LucideIcon } => {
-  if (percentage === 100) return { rating: 'Perfect!', Icon: CircleCheck };
-  if (percentage >= 60) return { rating: 'Great!', Icon: TrendingUp };
-  return { rating: 'Nice!', Icon: ThumbsUp };
+const getScoreMeta = (percentage: number): { rating: string } => {
+  if (percentage === 100) return { rating: 'Perfect!' };
+  if (percentage >= 60) return { rating: 'Great!' };
+  return { rating: 'Nice!' };
 };
 
 const createInitialWordGroups = (): WordGroups => ({
@@ -76,7 +76,8 @@ export const TestResult = ({
   answerHistory,
   onClose,
 }: TestResultProps) => {
-  const { rating, Icon } = getScoreMeta(scorePercentage);
+  const { rating } = getScoreMeta(scorePercentage);
+  const playerRef = useRef<InstanceType<typeof LordiconPlayer> | null>(null);
 
   // 正解・不正解の単語を分離（スキップした単語も不正解としてカウント）
   const groupedWords = useMemo(() => groupAnswerHistory(answerHistory), [answerHistory]);
@@ -86,10 +87,21 @@ export const TestResult = ({
   // useSpeechフックを作成（EnglishWordコンポーネントが必要とする）
   const speech = useSpeech();
 
+  useEffect(() => {
+    playerRef.current?.playFromBeginning();
+  }, [scorePercentage]);
+
   return (
     <div className={styles.testResult}>
       <div className={styles.resultBox}>
-        <Icon className={styles.resultIcon} />
+        <div className={styles.resultIcon}>
+          <LordiconPlayer
+            ref={playerRef}
+            icon={prizeIcon}
+            size={96}
+            colorize="var(--main-color-400)"
+          />
+        </div>
         <h2 className={styles.resultRating}>{rating}</h2>
       </div>
 

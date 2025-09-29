@@ -44,6 +44,9 @@
   width: var(--fs-600);
   height: var(--fs-600);
   margin-bottom: var(--space-050);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .resultPercentage {

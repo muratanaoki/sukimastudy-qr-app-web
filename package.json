@@ -48,6 +48,7 @@
     "info": "echo '🚀 利用可能なコマンド:' && echo '  npm start          - 開発サーバー起動' && echo '  npm run dev:full   - Firebase + 開発サーバー同時起動' && echo '  npm run firebase:* - Firebase関連コマンド' && echo '    firebase:cleanup - ポート競合解決 + エミュレーター停止' && echo '    postgres:kill    - PostgreSQLプロセス強制終了' && echo '  npm run check      - 全体的なコード品質チェック'"
   },
   "dependencies": {
+    "@lordicon/react": "^1.11.0",
     "@sukimastudy/shared": "file:../shared",
     "@tanstack-query-firebase/react": "^1.0.0",
     "@tanstack/react-query": "^5.0.0",
@@ -56,6 +57,7 @@
     "@types/uuid": "^10.0.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.5.0",
+    "lottie-web": "^5.13.0",
     "lucide-react": "^0.503.0",
     "papaparse": "^5.5.3",
     "qs": "^6.14.0",
