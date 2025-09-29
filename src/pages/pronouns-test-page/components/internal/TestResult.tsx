@@ -89,8 +89,13 @@ export const TestResult = ({
   return (
     <div className={styles.testResult}>
       <div className={styles.resultBox}>
-        <Icon className={styles.resultIcon} />
-        <h2 className={styles.resultRating}>{rating}</h2>
+        <div>
+          <Icon className={styles.resultIcon} />
+          <h2 className={styles.resultRating}>{rating}</h2>
+        </div>
+      </div>
+
+      <div className={styles.rateBox}>
         <div className={styles.resultStats}>
           <p className={styles.resultLabel}>わかった数</p>
           <p>
@@ -98,11 +103,14 @@ export const TestResult = ({
             <span className={styles.totalQuestions}>/{total}</span>
           </p>
         </div>
+      </div>
 
+      <div className={styles.actionsButtonBox}>
         <PrimaryButton className={styles.actionsButton} onClick={onClose}>
           終了
         </PrimaryButton>
       </div>
+
       <div className={styles.resultBody}>
         {/* 不正解した単語 */}
         {incorrectWords.length > 0 && (

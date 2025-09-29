@@ -7,13 +7,27 @@
   overflow-y: auto;
 }
 
+.rateBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--main-color-100);
+}
+
 .resultBox {
   width: 100%;
   background: var(--main-color-100);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-300) var(--space-150) var(--space-150) var(--space-150);
+  justify-content: center;
+  padding: var(--space-700) 0 var(--space-700) 0;
+}
+
+.resultRating {
+  font-size: var(--fs-250);
+  padding-right: var(--space-025);
 }
 
 .resultBody {
@@ -27,14 +41,9 @@
 
 .resultIcon {
   color: var(--main-color-400);
-  width: var(--fs-425);
-  height: var(--fs-425);
+  width: var(--fs-600);
+  height: var(--fs-600);
   margin-bottom: var(--space-050);
-}
-
-.resultRating {
-  font-size: var(--fs-225);
-  margin-bottom: var(--space-150);
 }
 
 .resultPercentage {
@@ -44,15 +53,25 @@
 }
 
 .resultStats {
+  margin-left: var(--space-150);
+  margin-right: var(--space-150);
   padding: var(--space-150);
   background: var(--base-color);
   width: 100%;
-  margin-bottom: var(--space-200);
+  margin-bottom: var(--space-150);
   border-radius: var(--radius-050);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.actionsButtonBox {
+  width: 100%;
+  padding-left: var(--space-150);
+  padding-right: var(--space-150);
+  background: var(--main-color-100);
+  padding-bottom: var(--space-150);
 }
 
 .resultLabel {
