@@ -134,14 +134,12 @@
 }
 
 .correctAnswers {
-  font-family: var(--font-family-heading);
   font-size: var(--fs-250);
   font-weight: bold;
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.2rem;
 }
 
 .totalQuestions {
-  font-family: var(--font-family-heading);
   font-size: var(--fs-200);
   font-weight: bold;
   letter-spacing: 0.2rem;

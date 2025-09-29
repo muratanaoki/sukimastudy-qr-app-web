@@ -34,10 +34,7 @@ const QuestionContent = ({
         {displayWord}
       </button>
       <p
-        className={clsx(
-          styles.translation,
-          !showTranslation && styles.translationHidden
-        )}
+        className={clsx(styles.translation, !showTranslation && styles.translationHidden)}
         aria-live={showTranslation ? 'polite' : undefined}
       >
         {translation}

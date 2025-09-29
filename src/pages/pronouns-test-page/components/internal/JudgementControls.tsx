@@ -53,7 +53,7 @@ export const JudgementControls = ({
           })}
           onClick={onDontKnow}
           aria-label={BUTTON_LABELS.DONT_KNOW}
-          disabled={false}
+          disabled={disabled}
         >
           <span className={styles.question}>？</span>
           <span className={styles.circleLabel}>{BUTTON_LABELS.DONT_KNOW}</span>
@@ -67,7 +67,7 @@ export const JudgementControls = ({
           })}
           onClick={onKnow}
           aria-label={BUTTON_LABELS.KNOW}
-          disabled={false}
+          disabled={disabled}
         >
           <ThumbsUp aria-hidden className={styles.know} />
           <span className={styles.circleLabel}>{BUTTON_LABELS.KNOW}</span>
