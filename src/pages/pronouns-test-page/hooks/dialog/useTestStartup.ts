@@ -1,24 +1,37 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type Params = {
   open: boolean;
   audioSrc?: string;
   onComplete?: () => void;
+  createAudio?: (src: string) => HTMLAudioElement;
 };
 
-export const useTestStartup = ({ open, audioSrc, onComplete }: Params) => {
+type UseTestStartupResult = {
+  isStartupComplete: boolean;
+};
+
+const defaultCreateAudio = (src: string) => new Audio(src);
+
+export const useTestStartup = ({
+  open,
+  audioSrc,
+  onComplete,
+  createAudio = defaultCreateAudio,
+}: Params): UseTestStartupResult => {
   const completedRef = useRef(false);
+  const [isStartupComplete, setIsStartupComplete] = useState(false);
 
   const finish = useCallback(() => {
     if (completedRef.current) return;
     completedRef.current = true;
+    setIsStartupComplete(true);
     onComplete?.();
   }, [onComplete]);
 
   useEffect(() => {
-    if (open) {
-      completedRef.current = false;
-    }
+    completedRef.current = false;
+    setIsStartupComplete(false);
   }, [open]);
 
   useEffect(() => {
@@ -29,7 +42,7 @@ export const useTestStartup = ({ open, audioSrc, onComplete }: Params) => {
       return;
     }
 
-    const audio = new Audio(audioSrc);
+    const audio = createAudio(audioSrc);
     audio.preload = 'auto';
     let cancelled = false;
 
@@ -59,8 +72,9 @@ export const useTestStartup = ({ open, audioSrc, onComplete }: Params) => {
       audio.pause();
       audio.currentTime = 0;
     };
-  }, [open, audioSrc, finish]);
-  // 以前は UI ブロック用の戻り値/isBlocking があったが表示抑止を廃止したため何も返さない
+  }, [open, audioSrc, finish, createAudio]);
+
+  return { isStartupComplete };
 };
 
 export default useTestStartup;

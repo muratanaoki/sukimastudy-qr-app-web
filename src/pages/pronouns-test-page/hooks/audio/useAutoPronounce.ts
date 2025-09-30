@@ -7,6 +7,7 @@ type Params = {
   speakWord: (text: string) => void;
   cancel: () => void;
   paused?: boolean;
+  enabled?: boolean;
 };
 
 /**
@@ -14,7 +15,14 @@ type Params = {
  * - 同一語の二重発音を回避（lastKey ガード）
  * - 閉時/アンマウントで cancel 実行
  */
-export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false }: Params) => {
+export const useAutoPronounce = ({
+  open,
+  term,
+  speakWord,
+  cancel,
+  paused = false,
+  enabled = true,
+}: Params) => {
   const controllerRef = useRef(createAutoPronounceController());
   const cancelRef = useRef(cancel);
 
@@ -31,7 +39,7 @@ export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false
 
   // 出題時に即時発音（重複ガード）
   useEffect(() => {
-    if (!open || paused || !term) return;
+    if (!open || paused || !enabled || !term) return;
     const controller = controllerRef.current;
     if (!controller.shouldSchedule(term)) return;
 
@@ -48,7 +56,7 @@ export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false
       controller.clearScheduled(term);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, term, paused]); // speakWordを意図的に依存配列から除外（無限ループ回避）
+  }, [open, term, paused, enabled]); // speakWordを意図的に依存配列から除外（無限ループ回避）
 
   // 閉時に停止、アンマウント保険
   useEffect(() => {

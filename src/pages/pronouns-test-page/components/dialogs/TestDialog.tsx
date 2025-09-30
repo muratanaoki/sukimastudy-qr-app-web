@@ -20,6 +20,7 @@ import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmClos
 import { buildTestDialogView } from '../../utils/dialog/testDialogView';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSoundEffect';
+import { useStartupPauseControl } from '../../hooks/dialog/internal/useStartupPauseControl';
 
 const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 
@@ -42,11 +43,21 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     removePauseReason: removeReason,
   });
 
+  const { isStartupComplete } = useTestStartup({ open, audioSrc: STARTUP_AUDIO_SRC });
+
+  const dialogPaused = useStartupPauseControl({
+    open,
+    isStartupComplete,
+    isPaused,
+    addReason,
+    removeReason,
+  });
+
   const { settings, progress, results, choices, meta, actions, feedback, display } =
     useTestDialogState({
       open,
       group,
-      paused: isPaused,
+      paused: dialogPaused,
     });
 
   const { choiceView, answerMode } = settings;
@@ -103,9 +114,6 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       cancelFlash,
     });
 
-  // 起動サウンドのみ再生（ブロック処理は廃止）
-  useTestStartup({ open, audioSrc: STARTUP_AUDIO_SRC, onComplete: undefined });
-
   const dialogPhase = resolveDialogPhase(hasItems, isCompleted);
 
   const handleCloseClick = useCallback(() => {
@@ -140,7 +148,14 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   }, [term, speakWord]);
 
   useEscapeKey(handleCloseClick, open);
-  useAutoPronounce({ open, term, speakWord, cancel, paused: isPaused });
+  useAutoPronounce({
+    open,
+    term,
+    speakWord,
+    cancel,
+    paused: dialogPaused,
+    enabled: isStartupComplete,
+  });
 
   const view = useMemo(
     () =>

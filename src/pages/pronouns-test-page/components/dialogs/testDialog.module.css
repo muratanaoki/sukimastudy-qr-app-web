@@ -29,7 +29,7 @@
   margin: auto;
   overflow: hidden;
   transform: translateY(0);
-  animation: dialogSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: dialogSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: transform, opacity;
 }
 
