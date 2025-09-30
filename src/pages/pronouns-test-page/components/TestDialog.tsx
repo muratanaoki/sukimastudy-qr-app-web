@@ -10,7 +10,7 @@ import TestResult from './internal/TestResult';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
 import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { DialogHeader } from './internal/DialogHeader';
 import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
 import { usePauseManager } from '../hooks/usePauseManager';
@@ -19,7 +19,7 @@ import { useTestStartup } from '../hooks/useTestStartup';
 import { useConfirmCloseState } from '../hooks/internal/useConfirmCloseState';
 import { buildTestDialogView } from '../utils/testDialogView';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
-import { resolveScoreTier } from '../utils/score';
+import { useResultSoundEffect } from '../hooks/internal/useResultSoundEffect';
 
 const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 
@@ -66,17 +66,26 @@ export const TestDialog = ({
   const { advance, reset } = actions;
 
   const soundEffects = useSoundEffects();
-  const { playResultSound } = soundEffects;
-  const resultSoundPlayedRef = useRef(false);
+  const { playCorrectSound, playIncorrectSound, enableAudio, playResultSound } = soundEffects;
 
-  const handleTestComplete = useCallback(() => {
-    closeConfirm();
-    if (!hasItems || resultSoundPlayedRef.current) return;
+  const judgementSoundEffects = useMemo(
+    () => ({
+      playCorrectSound,
+      playIncorrectSound,
+      enableAudio,
+    }),
+    [enableAudio, playCorrectSound, playIncorrectSound]
+  );
 
-    resultSoundPlayedRef.current = true;
-    const tier = resolveScoreTier(scorePercentage);
-    playResultSound(tier);
-  }, [closeConfirm, hasItems, playResultSound, scorePercentage]);
+  const { handleTestComplete } = useResultSoundEffect({
+    hasItems,
+    scorePercentage,
+    playResultSound,
+    closeConfirm,
+    isCompleted,
+    questionKey,
+    open,
+  });
 
   const advanceForJudgement = useCallback(
     (isCorrect?: boolean) => {
@@ -89,19 +98,8 @@ export const TestDialog = ({
     choiceView,
     advanceForJudgement,
     questionKey,
-    soundEffects
+    judgementSoundEffects
   );
-  useEffect(() => {
-    if (!isCompleted) {
-      resultSoundPlayedRef.current = false;
-    }
-  }, [isCompleted, questionKey]);
-
-  useEffect(() => {
-    if (!open) {
-      resultSoundPlayedRef.current = false;
-    }
-  }, [open]);
 
   const { handleDialogClose, handleChoiceAnswer, handleSkip, handleRevealWord } =
     useTestDialogHandlers({
