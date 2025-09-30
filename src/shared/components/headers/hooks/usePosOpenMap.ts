@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { PosGroup } from '@/pages/pronouns-test-page/utils/type';
+import type { PosGroup } from '@/pages/pronouns-test-page/utils/domain/type';
 
 // 開閉マップの初期値を作る（全て閉）
 const createClosedMap = (posGroups: PosGroup[]): Record<string, boolean> => {

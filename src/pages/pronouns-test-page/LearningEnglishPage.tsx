@@ -1,19 +1,19 @@
 import styles from './learningEnglishPage.module.css';
-import { useSpeech } from './hooks/useSpeech';
-import { EnglishWord } from './components/EnglishWord';
-import type { PronounGroup } from './utils/type';
-import { useFabHideOnBottom } from './hooks/useFabHideOnBottom';
+import { useSpeech } from './hooks/audio/useSpeech';
+import { EnglishWord } from './components/display/EnglishWord';
+import type { PronounGroup } from './utils/domain/type';
+import { useFabHideOnBottom } from './hooks/ui/useFabHideOnBottom';
 import { useMemo } from 'react';
-import { useBodyScrollLock } from './hooks/useBodyScrollLock';
-import { TestIntroDialog } from './components/TestIntroDialog';
-import { SettingDialog } from './components/SettingDialog';
-import { GroupTabs } from './components/GroupTabs';
-import { TestFabButton } from './components/TestFabButton';
-import { useSwipeTabs } from './hooks/useSwipeTabs';
-import { TestDialog } from './components/TestDialog';
-import { TestSettingsProvider } from './hooks/TestSettingsContext';
-import { useTabManager } from './hooks/useTabManager';
-import { useDialogManager } from './hooks/useDialogManager';
+import { useBodyScrollLock } from './hooks/ui/useBodyScrollLock';
+import { TestIntroDialog } from './components/dialogs/TestIntroDialog';
+import { SettingDialog } from './components/dialogs/SettingDialog';
+import { GroupTabs } from './components/display/GroupTabs';
+import { TestFabButton } from './components/buttons/TestFabButton';
+import { useSwipeTabs } from './hooks/ui/useSwipeTabs';
+import { TestDialog } from './components/dialogs/TestDialog';
+import { TestSettingsProvider } from './hooks/context/TestSettingsContext';
+import { useTabManager } from './hooks/ui/useTabManager';
+import { useDialogManager } from './hooks/dialog/useDialogManager';
 
 export type LearningEnglishPageProps = {
   data: PronounGroup[]; // グループ一覧（ページ内表示は複数タブのまま）

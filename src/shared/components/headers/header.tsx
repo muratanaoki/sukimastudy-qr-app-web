@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './header.module.css';
-import { POS_GROUPS } from '@/pages/pronouns-test-page/utils/const';
+import { POS_GROUPS } from '@/pages/pronouns-test-page/utils/constants/const';
 import { SectionList } from './components/SectionList';
 import { HamburgerButton } from './components/HamburgerButton';
 import logoPng from '../../images/logo.png';
