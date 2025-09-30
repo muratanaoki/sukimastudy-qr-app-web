@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Player as LordiconPlayer } from '@lordicon/react';
 
-import prizeIcon from '@/shared/loadicon/prize.json';
+import prizePinchIcon from '@/shared/loadicon/prizePinch.json';
+import prizeRevealIcon from '@/shared/loadicon/prizeReveal.json';
 
 import styles from './resultSummary.module.css';
 
@@ -19,6 +20,7 @@ export const ResultSummary = ({
   scorePercentage,
 }: ResultSummaryProps) => {
   const playerRef = useRef<InstanceType<typeof LordiconPlayer> | null>(null);
+  const icon = medalColor === 'var(--medal-gold-color)' ? prizeRevealIcon : prizePinchIcon;
 
   useEffect(() => {
     playerRef.current?.playFromBeginning();
@@ -27,7 +29,7 @@ export const ResultSummary = ({
   return (
     <div className={styles.resultBox}>
       <div className={styles.resultIcon}>
-        <LordiconPlayer ref={playerRef} icon={prizeIcon} size={iconSize} colorize={medalColor} />
+        <LordiconPlayer ref={playerRef} icon={icon} size={iconSize} colorize={medalColor} />
       </div>
       <h2 className={styles.resultRating}>{rating}</h2>
     </div>
