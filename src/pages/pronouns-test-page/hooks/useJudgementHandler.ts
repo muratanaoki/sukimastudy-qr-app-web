@@ -4,20 +4,26 @@ import { ChoiceView } from '../utils/type';
 import { shouldFlash } from '../utils/function';
 import { useFlashDisplay } from './useFlashDisplay';
 import { FLASH_DURATION_MS, JUDGEMENT_BUTTON_TYPE } from '../utils/const';
-import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
+import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 
 type AdvanceHandler = (isCorrect?: boolean) => void;
 
 const SOUND_SYNC_DELAY_MS = 60;
 
+type SoundEffectsForJudgement = Pick<
+  UseSoundEffectsReturn,
+  'playCorrectSound' | 'playIncorrectSound' | 'enableAudio'
+>;
+
 export const useJudgementHandler = (
   choiceView: ChoiceView,
   advance: AdvanceHandler,
-  questionKey: string | number
+  questionKey: string | number,
+  soundEffects: SoundEffectsForJudgement
 ) => {
   const [selectedJudgement, setSelectedJudgement] = useState<JudgementButtonType | null>(null);
   const { isFlashing, startFlash, cancelFlash: cancelFlashInternal } = useFlashDisplay();
-  const { playCorrectSound, playIncorrectSound, enableAudio } = useSoundEffects();
+  const { playCorrectSound, playIncorrectSound, enableAudio } = soundEffects;
   const advanceTimerRef = useRef<number | null>(null);
   const fallbackTimerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);

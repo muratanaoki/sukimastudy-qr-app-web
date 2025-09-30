@@ -6,6 +6,7 @@ import { ResultWordSections, useResultSections } from './test-result/ResultWordS
 import type { AnswerRecord } from '../../hooks/useTestRunner';
 import { useSpeech } from '../../hooks/useSpeech';
 import { useCallback, useEffect, useState } from 'react';
+import { getScoreMeta } from '../../utils/score';
 
 type TestResultProps = {
   total: number;
@@ -13,29 +14,6 @@ type TestResultProps = {
   scorePercentage: number;
   answerHistory: AnswerRecord[];
   onClose: () => void;
-};
-
-const SCORE_MEDAL_COLORS = {
-  gold: 'var(--medal-gold-color)',
-  silver: 'var(--medal-silver-color)',
-  bronze: 'var(--medal-bronze-color)',
-} as const;
-
-type ScoreMeta = {
-  rating: string;
-  medalColor: string;
-};
-
-const getScoreMeta = (percentage: number): ScoreMeta => {
-  if (percentage === 100) {
-    return { rating: 'Perfect!', medalColor: SCORE_MEDAL_COLORS.gold };
-  }
-
-  if (percentage >= 60) {
-    return { rating: 'Great!', medalColor: SCORE_MEDAL_COLORS.silver };
-  }
-
-  return { rating: 'Nice!', medalColor: SCORE_MEDAL_COLORS.bronze };
 };
 
 const RESULT_ICON_SIZE_REM = 9.375; // 150px based on 16px root font-size

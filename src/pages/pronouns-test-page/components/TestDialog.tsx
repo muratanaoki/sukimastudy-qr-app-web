@@ -10,7 +10,7 @@ import TestResult from './internal/TestResult';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
 import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { DialogHeader } from './internal/DialogHeader';
 import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
 import { usePauseManager } from '../hooks/usePauseManager';
@@ -18,6 +18,8 @@ import { resolveDialogPhase, TestDialogPhase } from '../utils/dialogPhase';
 import { useTestStartup } from '../hooks/useTestStartup';
 import { useConfirmCloseState } from '../hooks/internal/useConfirmCloseState';
 import { buildTestDialogView } from '../utils/testDialogView';
+import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
+import { resolveScoreTier } from '../utils/score';
 
 const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 
@@ -63,9 +65,18 @@ export const TestDialog = ({
   const { questionKey } = meta;
   const { advance, reset } = actions;
 
+  const soundEffects = useSoundEffects();
+  const { playResultSound } = soundEffects;
+  const resultSoundPlayedRef = useRef(false);
+
   const handleTestComplete = useCallback(() => {
     closeConfirm();
-  }, [closeConfirm]);
+    if (!hasItems || resultSoundPlayedRef.current) return;
+
+    resultSoundPlayedRef.current = true;
+    const tier = resolveScoreTier(scorePercentage);
+    playResultSound(tier);
+  }, [closeConfirm, hasItems, playResultSound, scorePercentage]);
 
   const advanceForJudgement = useCallback(
     (isCorrect?: boolean) => {
@@ -77,8 +88,20 @@ export const TestDialog = ({
   const { selectedJudgement, handleJudgementAnswer, isFlashing, cancelFlash } = useJudgementHandler(
     choiceView,
     advanceForJudgement,
-    questionKey
+    questionKey,
+    soundEffects
   );
+  useEffect(() => {
+    if (!isCompleted) {
+      resultSoundPlayedRef.current = false;
+    }
+  }, [isCompleted, questionKey]);
+
+  useEffect(() => {
+    if (!open) {
+      resultSoundPlayedRef.current = false;
+    }
+  }, [open]);
 
   const { handleDialogClose, handleChoiceAnswer, handleSkip, handleRevealWord } =
     useTestDialogHandlers({

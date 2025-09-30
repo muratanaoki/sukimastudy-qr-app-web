@@ -2,6 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 type AudioRef = React.MutableRefObject<HTMLAudioElement | null>;
 
+const SOUND_SOURCES = {
+  correct: '/sounds/maru.wav',
+  incorrect: '/sounds/batu.wav',
+  high: '/sounds/highScore.wav',
+  middle: '/sounds/middleScore.wav',
+  low: '/sounds/lowScore.wav',
+} as const;
+
+type ResultTier = 'perfect' | 'great' | 'nice';
+
 // 音声ファイルのプリロード処理
 const createPreloadedAudio = async (src: string): Promise<HTMLAudioElement> => {
   const audio = new Audio();
@@ -75,6 +85,9 @@ const unlockAudioContext = async (): Promise<boolean> => {
 export const useSoundEffects = () => {
   const correctAudioRef = useRef<HTMLAudioElement | null>(null);
   const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
+  const highScoreAudioRef = useRef<HTMLAudioElement | null>(null);
+  const middleScoreAudioRef = useRef<HTMLAudioElement | null>(null);
+  const lowScoreAudioRef = useRef<HTMLAudioElement | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
   // 音声ファイルの初期化
@@ -82,15 +95,22 @@ export const useSoundEffects = () => {
     let isMounted = true;
 
     const initializeAudio = async () => {
-      const [correctAudio, incorrectAudio] = await Promise.all([
-        createPreloadedAudio('/sounds/maru.wav'),
-        createPreloadedAudio('/sounds/batu.wav'),
-      ]);
+      const [correctAudio, incorrectAudio, highScoreAudio, middleScoreAudio, lowScoreAudio] =
+        await Promise.all([
+          createPreloadedAudio(SOUND_SOURCES.correct),
+          createPreloadedAudio(SOUND_SOURCES.incorrect),
+          createPreloadedAudio(SOUND_SOURCES.high),
+          createPreloadedAudio(SOUND_SOURCES.middle),
+          createPreloadedAudio(SOUND_SOURCES.low),
+        ]);
 
-      if (isMounted) {
-        correctAudioRef.current = correctAudio;
-        incorrectAudioRef.current = incorrectAudio;
-      }
+      if (!isMounted) return;
+
+      correctAudioRef.current = correctAudio;
+      incorrectAudioRef.current = incorrectAudio;
+      highScoreAudioRef.current = highScoreAudio;
+      middleScoreAudioRef.current = middleScoreAudio;
+      lowScoreAudioRef.current = lowScoreAudio;
     };
 
     initializeAudio();
@@ -99,6 +119,9 @@ export const useSoundEffects = () => {
       isMounted = false;
       cleanupAudio(correctAudioRef.current);
       cleanupAudio(incorrectAudioRef.current);
+      cleanupAudio(highScoreAudioRef.current);
+      cleanupAudio(middleScoreAudioRef.current);
+      cleanupAudio(lowScoreAudioRef.current);
     };
   }, []);
 
@@ -107,7 +130,13 @@ export const useSoundEffects = () => {
     if (isAudioEnabled) return;
 
     const attemptEnable = async () => {
-      const audio = correctAudioRef.current;
+      const audio =
+        correctAudioRef.current ||
+        incorrectAudioRef.current ||
+        highScoreAudioRef.current ||
+        middleScoreAudioRef.current ||
+        lowScoreAudioRef.current;
+
       if (!audio) return;
 
       try {
@@ -124,7 +153,6 @@ export const useSoundEffects = () => {
     attemptEnable();
   }, [isAudioEnabled]);
 
-  // 再生関数
   const playCorrectSound = useCallback(() => {
     playAudioSafely(correctAudioRef, enableAudio);
   }, [enableAudio]);
@@ -132,6 +160,31 @@ export const useSoundEffects = () => {
   const playIncorrectSound = useCallback(() => {
     playAudioSafely(incorrectAudioRef, enableAudio);
   }, [enableAudio]);
+
+  const playHighScoreSound = useCallback(() => {
+    playAudioSafely(highScoreAudioRef, enableAudio);
+  }, [enableAudio]);
+
+  const playMiddleScoreSound = useCallback(() => {
+    playAudioSafely(middleScoreAudioRef, enableAudio);
+  }, [enableAudio]);
+
+  const playLowScoreSound = useCallback(() => {
+    playAudioSafely(lowScoreAudioRef, enableAudio);
+  }, [enableAudio]);
+
+  const playResultSound = useCallback(
+    (tier: ResultTier) => {
+      const map = {
+        perfect: playHighScoreSound,
+        great: playMiddleScoreSound,
+        nice: playLowScoreSound,
+      } as const;
+
+      map[tier]();
+    },
+    [playHighScoreSound, playMiddleScoreSound, playLowScoreSound]
+  );
 
   const playSound = useCallback((soundFile: string) => {
     try {
@@ -148,8 +201,14 @@ export const useSoundEffects = () => {
   return {
     playCorrectSound,
     playIncorrectSound,
+    playHighScoreSound,
+    playMiddleScoreSound,
+    playLowScoreSound,
+    playResultSound,
     playSound,
     enableAudio,
     isAudioEnabled,
   };
 };
+
+export type UseSoundEffectsReturn = ReturnType<typeof useSoundEffects>;
