@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-type AudioRef = React.MutableRefObject<HTMLAudioElement | null>;
+import { createSoundHandle } from '@/shared/utils/audio/soundHandle';
 
 const SOUND_SOURCES = {
   correct: '/sounds/maru.wav',
@@ -12,44 +11,9 @@ const SOUND_SOURCES = {
 
 type ResultTier = 'perfect' | 'great' | 'nice';
 
-// 音声ファイルのプリロード処理
-const createPreloadedAudio = async (src: string): Promise<HTMLAudioElement> => {
-  const audio = new Audio();
-  audio.volume = 0.5;
-  audio.preload = 'auto';
-  audio.src = src;
-  audio.load();
+type SoundKey = keyof typeof SOUND_SOURCES;
 
-  return new Promise<HTMLAudioElement>((resolve) => {
-    const cleanup = () => {
-      audio.removeEventListener('canplaythrough', handleReady);
-      audio.removeEventListener('error', handleError);
-    };
-
-    const handleReady = () => {
-      cleanup();
-      resolve(audio);
-    };
-
-    const handleError = (e: Event) => {
-      cleanup();
-      console.warn(`音声読み込みエラー: ${src}`, e);
-      resolve(audio);
-    };
-
-    audio.addEventListener('canplaythrough', handleReady);
-    audio.addEventListener('error', handleError);
-  });
-};
-
-// 音声リソースのクリーンアップ
-const cleanupAudio = (audio: HTMLAudioElement | null) => {
-  if (audio) {
-    audio.pause();
-    audio.removeAttribute('src');
-    audio.load();
-  }
-};
+const SOUND_KEYS = Object.keys(SOUND_SOURCES) as SoundKey[];
 
 // ブラウザの音声制限を解除する処理
 const unlockAudioContext = async (): Promise<boolean> => {
@@ -64,173 +28,127 @@ const unlockAudioContext = async (): Promise<boolean> => {
   }
 };
 
+const buildSoundHandles = () =>
+  SOUND_KEYS.reduce<Record<SoundKey, ReturnType<typeof createSoundHandle>>>(
+    (acc, key) => {
+      acc[key] = createSoundHandle(SOUND_SOURCES[key]);
+      return acc;
+    },
+    {} as Record<SoundKey, ReturnType<typeof createSoundHandle>>
+  );
+
 export const useSoundEffects = () => {
-  const correctAudioRef = useRef<HTMLAudioElement | null>(null);
-  const incorrectAudioRef = useRef<HTMLAudioElement | null>(null);
-  const highScoreAudioRef = useRef<HTMLAudioElement | null>(null);
-  const middleScoreAudioRef = useRef<HTMLAudioElement | null>(null);
-  const lowScoreAudioRef = useRef<HTMLAudioElement | null>(null);
+  const soundHandlesRef = useRef<Record<SoundKey, ReturnType<typeof createSoundHandle>>>();
+  if (!soundHandlesRef.current) {
+    soundHandlesRef.current = buildSoundHandles();
+  }
+
   const initializationPromiseRef = useRef<Promise<void> | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
-  // 音声ファイルの初期化
   useEffect(() => {
-    let isMounted = true;
-
-    initializationPromiseRef.current = (async () => {
-      const [correctAudio, incorrectAudio, highScoreAudio, middleScoreAudio, lowScoreAudio] =
-        await Promise.all([
-          createPreloadedAudio(SOUND_SOURCES.correct),
-          createPreloadedAudio(SOUND_SOURCES.incorrect),
-          createPreloadedAudio(SOUND_SOURCES.high),
-          createPreloadedAudio(SOUND_SOURCES.middle),
-          createPreloadedAudio(SOUND_SOURCES.low),
-        ]);
-
-      if (!isMounted) return;
-
-      correctAudioRef.current = correctAudio;
-      incorrectAudioRef.current = incorrectAudio;
-      highScoreAudioRef.current = highScoreAudio;
-      middleScoreAudioRef.current = middleScoreAudio;
-      lowScoreAudioRef.current = lowScoreAudio;
-    })();
+    const handles = soundHandlesRef.current!;
+    initializationPromiseRef.current = Promise.all(
+      SOUND_KEYS.map((key) => handles[key].ensureLoaded())
+    )
+      .then(() => undefined)
+      .catch((error) => {
+        console.warn('音声初期化待機中にエラー:', error);
+      });
 
     return () => {
-      isMounted = false;
       initializationPromiseRef.current = null;
-      cleanupAudio(correctAudioRef.current);
-      cleanupAudio(incorrectAudioRef.current);
-      cleanupAudio(highScoreAudioRef.current);
-      cleanupAudio(middleScoreAudioRef.current);
-      cleanupAudio(lowScoreAudioRef.current);
+      SOUND_KEYS.forEach((key) => {
+        handles[key].cleanup();
+      });
     };
   }, []);
 
-  // 音声有効化（スマホ対応）
-  const enableAudio = useCallback(async () => {
-    if (isAudioEnabled) return;
+  const awaitInitialization = useCallback(async () => {
+    const promise = initializationPromiseRef.current;
+    if (!promise) return;
 
-    const attemptEnable = async () => {
-      try {
-        await initializationPromiseRef.current;
-      } catch (error) {
-        console.warn('音声初期化待機中にエラー:', error);
-      }
+    try {
+      await promise;
+    } catch (error) {
+      console.warn('音声初期化待機中にエラー:', error);
+    }
+  }, []);
 
-      const audio =
-        correctAudioRef.current ||
-        incorrectAudioRef.current ||
-        highScoreAudioRef.current ||
-        middleScoreAudioRef.current ||
-        lowScoreAudioRef.current;
+  const enableAudio = useCallback(async (): Promise<boolean> => {
+    if (isAudioEnabled) return true;
 
-      if (!audio) return;
+    await awaitInitialization();
 
-      try {
-        const originalVolume = audio.volume ?? 0.5;
-        audio.volume = 0;
-        await audio.play();
-        try {
-          audio.pause();
-        } catch (error) {
-          console.warn('音声停止に失敗:', error);
-        }
-        audio.currentTime = 0;
-        audio.volume = originalVolume;
-        setIsAudioEnabled(true);
-      } catch {
-        const success = await unlockAudioContext();
-        if (success) setIsAudioEnabled(true);
-      }
+    const handles = soundHandlesRef.current!;
+    const sampleHandle = handles[SOUND_KEYS[0]];
+
+    const unlockWithSample = async () => {
+      if (!sampleHandle) return false;
+      const unlocked = await sampleHandle.playFromStart({ volume: 0 });
+      sampleHandle.reset();
+      return unlocked;
     };
 
-    await attemptEnable();
-  }, [isAudioEnabled]);
+    if (await unlockWithSample()) {
+      setIsAudioEnabled(true);
+      return true;
+    }
 
-  const playSoundWithRef = useCallback(
-    async (audioRef: AudioRef, src: string) => {
-      const waitForInitialization = initializationPromiseRef.current;
-      if (waitForInitialization) {
-        try {
-          await waitForInitialization;
-        } catch (error) {
-          console.warn('音声初期化待機中にエラー:', error);
-        }
-      }
+    const contextUnlocked = await unlockAudioContext();
+    if (contextUnlocked) {
+      setIsAudioEnabled(true);
+      return true;
+    }
 
-      const ensureAudioReady = async (): Promise<HTMLAudioElement | null> => {
-        let audio = audioRef.current;
-        if (audio && audio.readyState >= 2) {
-          return audio;
-        }
+    return false;
+  }, [awaitInitialization, isAudioEnabled]);
 
-        try {
-          audio = await createPreloadedAudio(src);
-          audioRef.current = audio;
-          return audio;
-        } catch (error) {
-          console.warn('音声再読み込みに失敗:', error);
-          return null;
-        }
-      };
+  const playManagedSound = useCallback(
+    async (key: SoundKey) => {
+      const handles = soundHandlesRef.current!;
+      const handle = handles[key];
+      if (!handle) return;
 
-      const attemptPlay = async (): Promise<boolean> => {
-        const audio = await ensureAudioReady();
-        if (!audio || audio.readyState < 2) {
-          console.warn('音声が準備完了していません');
-          return false;
-        }
+      const play = async () => handle.playFromStart();
 
-        try {
-          if (!audio.paused) audio.pause();
-          audio.currentTime = 0;
-          await audio.play();
-          return true;
-        } catch (error) {
-          console.warn('音声再生エラー:', error);
-          return false;
-        }
-      };
+      if (await play()) return;
 
-      if (await attemptPlay()) return;
+      const unlocked = await enableAudio();
+      if (!unlocked) return;
 
-      await enableAudio();
-
-      if (!(await attemptPlay())) {
-        console.warn('音声再生リトライに失敗しました');
-      }
+      await play();
     },
     [enableAudio]
   );
 
   const playCorrectSound = useCallback(() => {
-    void playSoundWithRef(correctAudioRef, SOUND_SOURCES.correct);
-  }, [playSoundWithRef]);
+    void playManagedSound('correct');
+  }, [playManagedSound]);
 
   const playIncorrectSound = useCallback(() => {
-    void playSoundWithRef(incorrectAudioRef, SOUND_SOURCES.incorrect);
-  }, [playSoundWithRef]);
+    void playManagedSound('incorrect');
+  }, [playManagedSound]);
 
   const playHighScoreSound = useCallback(() => {
-    void playSoundWithRef(highScoreAudioRef, SOUND_SOURCES.high);
-  }, [playSoundWithRef]);
+    void playManagedSound('high');
+  }, [playManagedSound]);
 
   const playMiddleScoreSound = useCallback(() => {
-    void playSoundWithRef(middleScoreAudioRef, SOUND_SOURCES.middle);
-  }, [playSoundWithRef]);
+    void playManagedSound('middle');
+  }, [playManagedSound]);
 
   const playLowScoreSound = useCallback(() => {
-    void playSoundWithRef(lowScoreAudioRef, SOUND_SOURCES.low);
-  }, [playSoundWithRef]);
+    void playManagedSound('low');
+  }, [playManagedSound]);
 
   const playResultSound = useCallback(
     (tier: ResultTier) => {
-      const map = {
+      const map: Record<ResultTier, () => void> = {
         perfect: playHighScoreSound,
         great: playMiddleScoreSound,
         nice: playLowScoreSound,
-      } as const;
+      };
 
       map[tier]();
     },
