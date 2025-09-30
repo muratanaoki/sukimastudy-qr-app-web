@@ -77,11 +77,10 @@ export const TestDialog = ({
     [enableAudio, playCorrectSound, playIncorrectSound]
   );
 
-  const { handleTestComplete } = useResultSoundEffect({
+  useResultSoundEffect({
     hasItems,
     scorePercentage,
     playResultSound,
-    closeConfirm,
     isCompleted,
     questionKey,
     open,
@@ -89,9 +88,9 @@ export const TestDialog = ({
 
   const advanceForJudgement = useCallback(
     (isCorrect?: boolean) => {
-      advance({ isCorrect, onComplete: handleTestComplete });
+      advance({ isCorrect });
     },
-    [advance, handleTestComplete]
+    [advance]
   );
 
   const { selectedJudgement, handleJudgementAnswer, isFlashing, cancelFlash } = useJudgementHandler(

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 import { resolveScoreTier } from '../../utils/score';
 
@@ -6,45 +6,43 @@ export type UseResultSoundEffectParams = {
   hasItems: boolean;
   scorePercentage: number;
   playResultSound: UseSoundEffectsReturn['playResultSound'];
-  closeConfirm: () => void;
   isCompleted: boolean;
-  questionKey: string | number;
-  open: boolean;
+  questionKey: string | number; // 問題セットが変わったらサウンド再生フラグをリセット
+  open: boolean; // ダイアログ開閉でのリセット
 };
 
 export const useResultSoundEffect = ({
   hasItems,
   scorePercentage,
   playResultSound,
-  closeConfirm,
   isCompleted,
   questionKey,
   open,
 }: UseResultSoundEffectParams) => {
   const resultSoundPlayedRef = useRef(false);
 
-  const handleTestComplete = useCallback(() => {
-    closeConfirm();
-    if (!hasItems || resultSoundPlayedRef.current) return;
+  // テスト完了を監視してサウンドを再生
+  useEffect(() => {
+    if (!isCompleted) return;
+    if (!hasItems) return;
+    if (resultSoundPlayedRef.current) return;
 
     resultSoundPlayedRef.current = true;
     const tier = resolveScoreTier(scorePercentage);
     playResultSound(tier);
-  }, [closeConfirm, hasItems, playResultSound, scorePercentage]);
+  }, [isCompleted, hasItems, scorePercentage, playResultSound]);
 
+  // questionKey 変化でリセット
   useEffect(() => {
-    if (!isCompleted) {
-      resultSoundPlayedRef.current = false;
-    }
-  }, [isCompleted, questionKey]);
+    resultSoundPlayedRef.current = false;
+  }, [questionKey]);
 
+  // ダイアログが閉じたらリセット
   useEffect(() => {
     if (!open) {
       resultSoundPlayedRef.current = false;
     }
   }, [open]);
 
-  return {
-    handleTestComplete,
-  };
+  return {};
 };
