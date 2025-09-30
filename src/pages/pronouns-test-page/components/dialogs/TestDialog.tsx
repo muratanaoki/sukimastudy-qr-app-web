@@ -1,18 +1,12 @@
-import styles from './testDialog.module.css';
+import { useCallback, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import type { PosGroup, PronounGroup } from '../../utils/domain/type';
 import { useSpeech } from '../../hooks/audio/useSpeech';
 import { useAutoPronounce } from '../../hooks/audio/useAutoPronounce';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
-import QuestionContent from './internal/QuestionContent';
-import TestControls from './internal/TestControls';
-import TestResult from './internal/TestResult';
 import { useTestDialogState } from '../../hooks/dialog/useTestDialogState';
 import { useJudgementHandler } from '../../hooks/gameplay/useJudgementHandler';
 import { useTestDialogHandlers } from '../../hooks/dialog/useTestDialogHandlers';
-import { useCallback, useMemo } from 'react';
-import { DialogHeader } from './internal/DialogHeader';
-import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
 import { usePauseManager } from '../../hooks/gameplay/usePauseManager';
 import { resolveDialogPhase, TestDialogPhase } from '../../utils/dialog/dialogPhase';
 import { useTestStartup } from '../../hooks/dialog/useTestStartup';
@@ -23,6 +17,8 @@ import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSound
 import { useDelayedCompletion } from '../../hooks/dialog/internal/useDelayedCompletion';
 import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReasonEffect';
 import { PauseReason } from '../../hooks/gameplay/usePauseManager';
+import { deriveControlState } from '../../utils/dialog/controlState';
+import { TestDialogContent } from './internal/TestDialogContent';
 
 const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 const RESULT_TRANSITION_DELAY_MS = 500;
@@ -195,9 +191,12 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     ]
   );
 
-  // スタートアップ時も操作可能にする
-  const controlsDisabled = feedback.disabled || isTransitioning || isCompleted;
-  const judgementDisabled = selectedJudgement !== null || isTransitioning || isCompleted;
+  const { controlsDisabled, judgementDisabled } = deriveControlState({
+    isFeedbackDisabled: feedback.disabled,
+    isTransitioning,
+    isCompleted,
+    selectedJudgement,
+  });
 
   const handleDontKnow = useCallback(() => {
     handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW);
@@ -210,76 +209,65 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   if (!open) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="テスト" className={styles.dialog}>
-      <DialogHeader
-        phase={dialogPhase}
-        posTitle={pos.title}
-        groupTitle={group.title}
-        timeLeftPct={timeLeftPct}
-        onClose={handleCloseClick}
-        questionKey={questionKey}
-      />
-
-      {view.showQuestion && (
-        <QuestionContent
-          current={current}
-          total={total}
-          displayWord={view.displayWord}
-          translation={translation}
-          showTranslation={view.showTranslation}
-          onWordClick={handleWordClick}
-        />
-      )}
-
-      {view.showResult && hasItems && (
-        <TestResult
-          total={total}
-          correctAnswers={correctAnswers}
-          scorePercentage={scorePercentage}
-          answerHistory={answerHistory}
-          onClose={handleDialogClose}
-        />
-      )}
-
-      {view.showEmpty && (
-        <div className={styles.noItemsLabel} aria-live="polite">
-          問題がありません
-        </div>
-      )}
-
-      {view.showQuestion && (
-        <TestControls
-          choiceView={choiceView}
-          isCompleted={isResultDisplayed}
-          hasItems={hasItems}
-          choices={choiceOptions}
-          shouldShowRevealButton={display.shouldShowRevealButton}
-          onReveal={display.reveal}
-          isRevealed={display.revealed}
-          onSkip={handleSkip}
-          disabled={controlsDisabled}
-          getIndexDisplay={feedback.getIndexDisplay}
-          isCorrectHighlight={feedback.isCorrectHighlight}
-          isWrongSelected={feedback.isWrongSelected}
-          isDim={feedback.isDim}
-          showGoodAt={feedback.showGoodAt}
-          onAnswer={handleChoiceAnswer}
-          showTranslation={display.showTranslation}
-          onRevealWord={handleRevealWord}
-          onDontKnow={handleDontKnow}
-          onKnow={handleKnow}
-          revealButtonText={view.revealButtonText}
-          judgementDisabled={judgementDisabled}
-          selectedButton={selectedJudgement}
-        />
-      )}
-
-      <ConfirmCloseDialog
-        open={isConfirmOpen}
-        onConfirm={handleConfirmClose}
-        onCancel={handleCancelClose}
-      />
-    </div>
+    <TestDialogContent
+      dialogPhase={dialogPhase}
+      header={{
+        posTitle: pos.title,
+        groupTitle: group.title,
+        timeLeftPct,
+        onClose: handleCloseClick,
+        questionKey,
+      }}
+      question={{
+        visible: view.showQuestion,
+        current,
+        total,
+        displayWord: view.displayWord,
+        translation,
+        showTranslation: view.showTranslation,
+        onWordClick: handleWordClick,
+      }}
+      result={{
+        visible: view.showResult,
+        hasItems,
+        total,
+        correctAnswers,
+        scorePercentage,
+        answerHistory,
+        onClose: handleDialogClose,
+      }}
+      emptyLabelVisible={view.showEmpty}
+      controls={{
+        visible: view.showQuestion,
+        choiceView,
+        isCompleted: isResultDisplayed,
+        hasItems,
+        choices: choiceOptions,
+        shouldShowRevealButton: display.shouldShowRevealButton,
+        onReveal: display.reveal,
+        isRevealed: display.revealed,
+        onSkip: handleSkip,
+        disabled: controlsDisabled,
+        getIndexDisplay: feedback.getIndexDisplay,
+        isCorrectHighlight: feedback.isCorrectHighlight,
+        isWrongSelected: feedback.isWrongSelected,
+        isDim: feedback.isDim,
+        showGoodAt: feedback.showGoodAt,
+        onAnswer: handleChoiceAnswer,
+        showTranslation: display.showTranslation,
+        onRevealWord: handleRevealWord,
+        onDontKnow: handleDontKnow,
+        onKnow: handleKnow,
+        revealButtonText: view.revealButtonText,
+        judgementDisabled,
+        selectedButton: selectedJudgement,
+      }}
+      confirm={{
+        open: isConfirmOpen,
+        onConfirm: handleConfirmClose,
+        onCancel: handleCancelClose,
+      }}
+    />
   );
 };
 export default TestDialog;
