@@ -89,9 +89,17 @@ export const useJudgementHandler = (
       setSelectedJudgement(buttonType);
 
       // 最初のクリックで音声を有効化
-      enableAudio();
+      const playSound = () => {
+        if (!cancelledRef.current) {
+          meta.playSound();
+        }
+      };
 
-      meta.playSound();
+      void enableAudio()
+        .catch(() => {
+          /* unlock失敗時もサウンド再生は試行 */
+        })
+        .finally(playSound);
 
       if (shouldFlash(choiceView)) {
         fallbackTimerRef.current = window.setTimeout(() => {

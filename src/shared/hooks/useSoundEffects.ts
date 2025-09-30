@@ -42,24 +42,6 @@ const createPreloadedAudio = async (src: string): Promise<HTMLAudioElement> => {
   });
 };
 
-// 音声の安全な再生処理
-const playAudioSafely = async (audioRef: AudioRef, onError: () => void) => {
-  const audio = audioRef.current;
-  if (!audio || audio.readyState < 2) {
-    console.warn('音声が準備完了していません');
-    return;
-  }
-
-  try {
-    if (!audio.paused) audio.pause();
-    audio.currentTime = 0;
-    await audio.play();
-  } catch (error) {
-    console.warn('音声再生エラー:', error);
-    onError();
-  }
-};
-
 // 音声リソースのクリーンアップ
 const cleanupAudio = (audio: HTMLAudioElement | null) => {
   if (audio) {
@@ -88,13 +70,14 @@ export const useSoundEffects = () => {
   const highScoreAudioRef = useRef<HTMLAudioElement | null>(null);
   const middleScoreAudioRef = useRef<HTMLAudioElement | null>(null);
   const lowScoreAudioRef = useRef<HTMLAudioElement | null>(null);
+  const initializationPromiseRef = useRef<Promise<void> | null>(null);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
 
   // 音声ファイルの初期化
   useEffect(() => {
     let isMounted = true;
 
-    const initializeAudio = async () => {
+    initializationPromiseRef.current = (async () => {
       const [correctAudio, incorrectAudio, highScoreAudio, middleScoreAudio, lowScoreAudio] =
         await Promise.all([
           createPreloadedAudio(SOUND_SOURCES.correct),
@@ -111,12 +94,11 @@ export const useSoundEffects = () => {
       highScoreAudioRef.current = highScoreAudio;
       middleScoreAudioRef.current = middleScoreAudio;
       lowScoreAudioRef.current = lowScoreAudio;
-    };
-
-    initializeAudio();
+    })();
 
     return () => {
       isMounted = false;
+      initializationPromiseRef.current = null;
       cleanupAudio(correctAudioRef.current);
       cleanupAudio(incorrectAudioRef.current);
       cleanupAudio(highScoreAudioRef.current);
@@ -126,10 +108,16 @@ export const useSoundEffects = () => {
   }, []);
 
   // 音声有効化（スマホ対応）
-  const enableAudio = useCallback(() => {
+  const enableAudio = useCallback(async () => {
     if (isAudioEnabled) return;
 
     const attemptEnable = async () => {
+      try {
+        await initializationPromiseRef.current;
+      } catch (error) {
+        console.warn('音声初期化待機中にエラー:', error);
+      }
+
       const audio =
         correctAudioRef.current ||
         incorrectAudioRef.current ||
@@ -140,9 +128,16 @@ export const useSoundEffects = () => {
       if (!audio) return;
 
       try {
+        const originalVolume = audio.volume ?? 0.5;
         audio.volume = 0;
         await audio.play();
-        audio.volume = 0.5;
+        try {
+          audio.pause();
+        } catch (error) {
+          console.warn('音声停止に失敗:', error);
+        }
+        audio.currentTime = 0;
+        audio.volume = originalVolume;
         setIsAudioEnabled(true);
       } catch {
         const success = await unlockAudioContext();
@@ -150,28 +145,84 @@ export const useSoundEffects = () => {
       }
     };
 
-    attemptEnable();
+    await attemptEnable();
   }, [isAudioEnabled]);
 
+  const playSoundWithRef = useCallback(
+    async (audioRef: AudioRef, src: string) => {
+      const waitForInitialization = initializationPromiseRef.current;
+      if (waitForInitialization) {
+        try {
+          await waitForInitialization;
+        } catch (error) {
+          console.warn('音声初期化待機中にエラー:', error);
+        }
+      }
+
+      const ensureAudioReady = async (): Promise<HTMLAudioElement | null> => {
+        let audio = audioRef.current;
+        if (audio && audio.readyState >= 2) {
+          return audio;
+        }
+
+        try {
+          audio = await createPreloadedAudio(src);
+          audioRef.current = audio;
+          return audio;
+        } catch (error) {
+          console.warn('音声再読み込みに失敗:', error);
+          return null;
+        }
+      };
+
+      const attemptPlay = async (): Promise<boolean> => {
+        const audio = await ensureAudioReady();
+        if (!audio || audio.readyState < 2) {
+          console.warn('音声が準備完了していません');
+          return false;
+        }
+
+        try {
+          if (!audio.paused) audio.pause();
+          audio.currentTime = 0;
+          await audio.play();
+          return true;
+        } catch (error) {
+          console.warn('音声再生エラー:', error);
+          return false;
+        }
+      };
+
+      if (await attemptPlay()) return;
+
+      await enableAudio();
+
+      if (!(await attemptPlay())) {
+        console.warn('音声再生リトライに失敗しました');
+      }
+    },
+    [enableAudio]
+  );
+
   const playCorrectSound = useCallback(() => {
-    playAudioSafely(correctAudioRef, enableAudio);
-  }, [enableAudio]);
+    void playSoundWithRef(correctAudioRef, SOUND_SOURCES.correct);
+  }, [playSoundWithRef]);
 
   const playIncorrectSound = useCallback(() => {
-    playAudioSafely(incorrectAudioRef, enableAudio);
-  }, [enableAudio]);
+    void playSoundWithRef(incorrectAudioRef, SOUND_SOURCES.incorrect);
+  }, [playSoundWithRef]);
 
   const playHighScoreSound = useCallback(() => {
-    playAudioSafely(highScoreAudioRef, enableAudio);
-  }, [enableAudio]);
+    void playSoundWithRef(highScoreAudioRef, SOUND_SOURCES.high);
+  }, [playSoundWithRef]);
 
   const playMiddleScoreSound = useCallback(() => {
-    playAudioSafely(middleScoreAudioRef, enableAudio);
-  }, [enableAudio]);
+    void playSoundWithRef(middleScoreAudioRef, SOUND_SOURCES.middle);
+  }, [playSoundWithRef]);
 
   const playLowScoreSound = useCallback(() => {
-    playAudioSafely(lowScoreAudioRef, enableAudio);
-  }, [enableAudio]);
+    void playSoundWithRef(lowScoreAudioRef, SOUND_SOURCES.low);
+  }, [playSoundWithRef]);
 
   const playResultSound = useCallback(
     (tier: ResultTier) => {
