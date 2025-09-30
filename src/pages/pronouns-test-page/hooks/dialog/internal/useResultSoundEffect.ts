@@ -6,7 +6,7 @@ export type UseResultSoundEffectParams = {
   hasItems: boolean;
   scorePercentage: number;
   playResultSound: UseSoundEffectsReturn['playResultSound'];
-  isCompleted: boolean;
+  shouldPlay: boolean;
   questionKey: string | number; // 問題セットが変わったらサウンド再生フラグをリセット
   open: boolean; // ダイアログ開閉でのリセット
 };
@@ -15,7 +15,7 @@ export const useResultSoundEffect = ({
   hasItems,
   scorePercentage,
   playResultSound,
-  isCompleted,
+  shouldPlay,
   questionKey,
   open,
 }: UseResultSoundEffectParams) => {
@@ -23,14 +23,14 @@ export const useResultSoundEffect = ({
 
   // テスト完了を監視してサウンドを再生
   useEffect(() => {
-    if (!isCompleted) return;
+    if (!shouldPlay) return;
     if (!hasItems) return;
     if (resultSoundPlayedRef.current) return;
 
     resultSoundPlayedRef.current = true;
     const tier = resolveScoreTier(scorePercentage);
     playResultSound(tier);
-  }, [isCompleted, hasItems, scorePercentage, playResultSound]);
+  }, [shouldPlay, hasItems, scorePercentage, playResultSound]);
 
   // questionKey 変化でリセット
   useEffect(() => {

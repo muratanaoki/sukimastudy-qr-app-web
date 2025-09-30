@@ -20,9 +20,12 @@ import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmClos
 import { buildTestDialogView } from '../../utils/dialog/testDialogView';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSoundEffect';
-import { useStartupPauseControl } from '../../hooks/dialog/internal/useStartupPauseControl';
+import { useDelayedCompletion } from '../../hooks/dialog/internal/useDelayedCompletion';
+import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReasonEffect';
+import { PauseReason } from '../../hooks/gameplay/usePauseManager';
 
 const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
+const RESULT_TRANSITION_DELAY_MS = 500;
 
 export type TestDialogProps = {
   open: boolean;
@@ -45,10 +48,9 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
 
   const { isStartupComplete } = useTestStartup({ open, audioSrc: STARTUP_AUDIO_SRC });
 
-  const dialogPaused = useStartupPauseControl({
-    open,
-    isStartupComplete,
-    isPaused,
+  usePauseReasonEffect({
+    active: open && !isStartupComplete,
+    reason: PauseReason.Startup,
     addReason,
     removeReason,
   });
@@ -57,7 +59,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     useTestDialogState({
       open,
       group,
-      paused: dialogPaused,
+      paused: isPaused,
     });
 
   const { choiceView, answerMode } = settings;
@@ -79,11 +81,23 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     [enableAudio, playCorrectSound, playIncorrectSound]
   );
 
+  const { isTransitioning, isCompleted: isResultDisplayed } = useDelayedCompletion({
+    isCompletedImmediate: isCompleted,
+    delayMs: RESULT_TRANSITION_DELAY_MS,
+  });
+
+  usePauseReasonEffect({
+    active: isTransitioning,
+    reason: PauseReason.ResultTransition,
+    addReason,
+    removeReason,
+  });
+
   useResultSoundEffect({
     hasItems,
     scorePercentage,
     playResultSound,
-    isCompleted,
+    shouldPlay: isResultDisplayed,
     questionKey,
     open,
   });
@@ -114,7 +128,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       cancelFlash,
     });
 
-  const dialogPhase = resolveDialogPhase(hasItems, isCompleted);
+  const dialogPhase = resolveDialogPhase(hasItems, isResultDisplayed, isTransitioning);
 
   const handleCloseClick = useCallback(() => {
     if (dialogPhase === TestDialogPhase.Completed) {
@@ -153,8 +167,8 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     term,
     speakWord,
     cancel,
-    paused: dialogPaused,
-    enabled: isStartupComplete,
+    paused: isPaused,
+    enabled: isStartupComplete && !isTransitioning,
   });
 
   const view = useMemo(
@@ -182,8 +196,8 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   );
 
   // スタートアップ時も操作可能にする
-  const controlsDisabled = feedback.disabled;
-  const judgementDisabled = selectedJudgement !== null;
+  const controlsDisabled = feedback.disabled || isTransitioning || isCompleted;
+  const judgementDisabled = selectedJudgement !== null || isTransitioning || isCompleted;
 
   const handleDontKnow = useCallback(() => {
     handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW);
@@ -236,7 +250,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
       {view.showQuestion && (
         <TestControls
           choiceView={choiceView}
-          isCompleted={false}
+          isCompleted={isResultDisplayed}
           hasItems={hasItems}
           choices={choiceOptions}
           shouldShowRevealButton={display.shouldShowRevealButton}
