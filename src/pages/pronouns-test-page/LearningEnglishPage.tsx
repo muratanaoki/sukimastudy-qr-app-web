@@ -127,7 +127,6 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
                 group={group}
                 initializing={isPreparingTest}
                 onStartupComplete={completeTestPreparation}
-                startupAudioSrc="/sounds/startTest.wav"
               />
             );
           })()}

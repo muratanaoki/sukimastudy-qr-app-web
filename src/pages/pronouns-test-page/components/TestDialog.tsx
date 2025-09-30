@@ -4,19 +4,22 @@ import type { PosGroup, PronounGroup } from '../utils/type';
 import { useSpeech } from '../hooks/useSpeech';
 import { useAutoPronounce } from '../hooks/useAutoPronounce';
 import { JUDGEMENT_BUTTON_TYPE } from '../utils/const';
-import { getRevealButtonText, getDisplayWord, shouldShowTranslation } from '../utils/function';
 import QuestionContent from './internal/QuestionContent';
 import TestControls from './internal/TestControls';
 import TestResult from './internal/TestResult';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
 import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { DialogHeader } from './internal/DialogHeader';
 import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
-import { usePauseManager, PauseReason } from '../hooks/usePauseManager';
+import { usePauseManager } from '../hooks/usePauseManager';
 import { resolveDialogPhase, TestDialogPhase } from '../utils/dialogPhase';
 import { useTestStartup } from '../hooks/useTestStartup';
+import { useConfirmCloseState } from '../hooks/internal/useConfirmCloseState';
+import { buildTestDialogView } from '../utils/testDialogView';
+
+const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 
 export type TestDialogProps = {
   open: boolean;
@@ -25,7 +28,6 @@ export type TestDialogProps = {
   group: PronounGroup; // 現在テスト中の下位グループ
   initializing?: boolean;
   onStartupComplete?: () => void;
-  startupAudioSrc?: string;
 };
 
 export const TestDialog = ({
@@ -35,11 +37,17 @@ export const TestDialog = ({
   group,
   initializing = false,
   onStartupComplete,
-  startupAudioSrc,
 }: TestDialogProps) => {
-  const [showConfirm, setShowConfirm] = useState(false);
   const { speakWord, cancel } = useSpeech();
   const { isPaused, addReason, removeReason } = usePauseManager();
+  const {
+    isOpen: isConfirmOpen,
+    open: openConfirm,
+    close: closeConfirm,
+  } = useConfirmCloseState({
+    addPauseReason: addReason,
+    removePauseReason: removeReason,
+  });
 
   const { settings, progress, results, choices, meta, actions, feedback, display } =
     useTestDialogState({
@@ -56,8 +64,8 @@ export const TestDialog = ({
   const { advance, reset } = actions;
 
   const handleTestComplete = useCallback(() => {
-    setShowConfirm(false);
-  }, []);
+    closeConfirm();
+  }, [closeConfirm]);
 
   const advanceForJudgement = useCallback(
     (isCorrect?: boolean) => {
@@ -84,18 +92,10 @@ export const TestDialog = ({
       cancelFlash,
     });
 
-  useEffect(() => {
-    if (showConfirm) {
-      addReason(PauseReason.Confirm);
-    } else {
-      removeReason(PauseReason.Confirm);
-    }
-  }, [showConfirm, addReason, removeReason]);
-
   const { isBlocking: isStartupBlocking } = useTestStartup({
     open,
     active: initializing,
-    audioSrc: startupAudioSrc,
+    audioSrc: STARTUP_AUDIO_SRC,
     onComplete: onStartupComplete,
     addPauseReason: addReason,
     removePauseReason: removeReason,
@@ -105,47 +105,74 @@ export const TestDialog = ({
 
   const handleCloseClick = useCallback(() => {
     if (dialogPhase === TestDialogPhase.Completed) {
-      setShowConfirm(false);
+      closeConfirm();
       handleDialogClose();
       return;
     }
-    setShowConfirm(true);
-  }, [dialogPhase, handleDialogClose]);
+    openConfirm();
+  }, [dialogPhase, closeConfirm, handleDialogClose, openConfirm]);
 
   const handleConfirmClose = useCallback(() => {
-    setShowConfirm(false);
+    closeConfirm();
     handleDialogClose();
-  }, [handleDialogClose]);
+  }, [closeConfirm, handleDialogClose]);
 
-  const handleCancelClose = useCallback(() => {
-    setShowConfirm(false);
-  }, []);
+  const handleCancelClose = closeConfirm;
+
+  const term = item?.term ?? null;
+  const translation = item?.jp ?? '';
+  const hasTranslation = translation.length > 0;
 
   const handleWordClick = useMemo(() => {
-    if (!item?.term) return undefined;
+    if (!term) return undefined;
     return () => {
       try {
-        speakWord(item.term);
+        speakWord(term);
       } catch (error) {
         console.warn('Failed to pronounce term', error);
       }
     };
-  }, [item?.term, speakWord]);
+  }, [term, speakWord]);
 
   useEscapeKey(handleCloseClick, open);
-  useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel, paused: isPaused });
+  useAutoPronounce({ open, term, speakWord, cancel, paused: isPaused });
 
-  const showQuestion = dialogPhase === TestDialogPhase.InProgress && !isStartupBlocking;
-  const showResult = dialogPhase === TestDialogPhase.Completed;
-  const showEmpty = dialogPhase === TestDialogPhase.Empty;
+  const view = useMemo(
+    () =>
+      buildTestDialogView({
+        phase: dialogPhase,
+        isStartupBlocking,
+        choiceView,
+        answerMode,
+        term,
+        displayTerm: display.displayTerm,
+        isFlashing,
+        showTranslationState: display.showTranslation,
+        hasTranslation,
+      }),
+    [
+      dialogPhase,
+      isStartupBlocking,
+      choiceView,
+      answerMode,
+      term,
+      display.displayTerm,
+      isFlashing,
+      display.showTranslation,
+      hasTranslation,
+    ]
+  );
 
-  const displayWord = showQuestion
-    ? getDisplayWord(isFlashing, choiceView, item?.term, display.displayTerm)
-    : '';
-  const revealButtonText = showQuestion ? getRevealButtonText(answerMode) : '';
-  const showTranslationComputed = showQuestion
-    ? shouldShowTranslation(display.showTranslation, isFlashing, !!item?.jp)
-    : false;
+  const controlsDisabled = feedback.disabled || isStartupBlocking;
+  const judgementDisabled = selectedJudgement !== null || isStartupBlocking;
+
+  const handleDontKnow = useCallback(() => {
+    handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW);
+  }, [handleJudgementAnswer]);
+
+  const handleKnow = useCallback(() => {
+    handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW);
+  }, [handleJudgementAnswer]);
 
   if (!open) return null;
 
@@ -160,18 +187,18 @@ export const TestDialog = ({
         questionKey={questionKey}
       />
 
-      {showQuestion && (
+      {view.showQuestion && (
         <QuestionContent
           current={current}
           total={total}
-          displayWord={displayWord}
-          translation={item?.jp ?? ''}
-          showTranslation={showTranslationComputed}
+          displayWord={view.displayWord}
+          translation={translation}
+          showTranslation={view.showTranslation}
           onWordClick={handleWordClick}
         />
       )}
 
-      {showResult && hasItems && (
+      {view.showResult && hasItems && (
         <TestResult
           total={total}
           correctAnswers={correctAnswers}
@@ -181,13 +208,13 @@ export const TestDialog = ({
         />
       )}
 
-      {showEmpty && (
+      {view.showEmpty && (
         <div className={styles.noItemsLabel} aria-live="polite">
           問題がありません
         </div>
       )}
 
-      {showQuestion && (
+      {view.showQuestion && (
         <TestControls
           choiceView={choiceView}
           isCompleted={false}
@@ -197,7 +224,7 @@ export const TestDialog = ({
           onReveal={display.reveal}
           isRevealed={display.revealed}
           onSkip={handleSkip}
-          disabled={feedback.disabled || isStartupBlocking}
+          disabled={controlsDisabled}
           getIndexDisplay={feedback.getIndexDisplay}
           isCorrectHighlight={feedback.isCorrectHighlight}
           isWrongSelected={feedback.isWrongSelected}
@@ -206,16 +233,16 @@ export const TestDialog = ({
           onAnswer={handleChoiceAnswer}
           showTranslation={display.showTranslation}
           onRevealWord={handleRevealWord}
-          onDontKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW)}
-          onKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW)}
-          revealButtonText={revealButtonText}
-          judgementDisabled={selectedJudgement !== null || isStartupBlocking}
+          onDontKnow={handleDontKnow}
+          onKnow={handleKnow}
+          revealButtonText={view.revealButtonText}
+          judgementDisabled={judgementDisabled}
           selectedButton={selectedJudgement}
         />
       )}
 
       <ConfirmCloseDialog
-        open={showConfirm}
+        open={isConfirmOpen}
         onConfirm={handleConfirmClose}
         onCancel={handleCancelClose}
       />
