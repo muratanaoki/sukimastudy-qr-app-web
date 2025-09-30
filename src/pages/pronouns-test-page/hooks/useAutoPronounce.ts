@@ -16,6 +16,7 @@ type Params = {
 export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false }: Params) => {
   const lastSpokenKeyRef = useRef<string | null>(null);
   const cancelRef = useRef(cancel);
+  const scheduledTermRef = useRef<string | null>(null);
 
   useEffect(() => {
     cancelRef.current = cancel;
@@ -25,22 +26,30 @@ export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false
   useEffect(() => {
     if (open) {
       lastSpokenKeyRef.current = null;
+      scheduledTermRef.current = null;
     }
   }, [open]);
 
   // 出題時に即時発音（重複ガード）
   useEffect(() => {
     if (!open || paused || !term) return;
-    if (lastSpokenKeyRef.current !== term) {
-      // 最初の発音のみ少し遅らせる
-      const delay = lastSpokenKeyRef.current === null ? 300 : 0;
-      const timeoutId = setTimeout(() => {
-        speakWord(term);
-      }, delay);
-      lastSpokenKeyRef.current = term;
+    if (lastSpokenKeyRef.current === term) return;
+    if (scheduledTermRef.current === term) return;
 
-      return () => clearTimeout(timeoutId);
-    }
+    const delay = lastSpokenKeyRef.current === null ? 300 : 0;
+    scheduledTermRef.current = term;
+    const timeoutId = window.setTimeout(() => {
+      lastSpokenKeyRef.current = term;
+      scheduledTermRef.current = null;
+      speakWord(term);
+    }, delay);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (scheduledTermRef.current === term) {
+        scheduledTermRef.current = null;
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, term, paused]); // speakWordを意図的に依存配列から除外（無限ループ回避）
 

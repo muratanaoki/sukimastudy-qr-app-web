@@ -11,6 +11,7 @@ export const useDialogManager = () => {
     start: number;
     end: number;
   } | null>(null);
+  const [isPreparingTest, setIsPreparingTest] = useState(false);
 
   const openTest = useCallback(() => {
     setShowTest(true);
@@ -28,6 +29,7 @@ export const useDialogManager = () => {
   const closeFullTest = useCallback(() => {
     setShowFullTest(false);
     setTestItems([]);
+    setIsPreparingTest(false);
   }, []);
 
   const openSettings = useCallback(() => {
@@ -40,11 +42,19 @@ export const useDialogManager = () => {
     setShowTest(true);
   }, []);
 
-  const startTest = useCallback((items: PronounGroup['items']) => {
-    closeTest();
-    setTestItems(items);
-    openFullTest();
-  }, [closeTest, openFullTest]);
+  const startTest = useCallback(
+    (items: PronounGroup['items']) => {
+      setTestItems(items);
+      setIsPreparingTest(true);
+      closeTest();
+      openFullTest();
+    },
+    [closeTest, openFullTest]
+  );
+
+  const completeTestPreparation = useCallback(() => {
+    setIsPreparingTest(false);
+  }, []);
 
   return {
     // States
@@ -53,6 +63,7 @@ export const useDialogManager = () => {
     showSettings,
     testItems,
     selectedRange,
+    isPreparingTest,
 
     // Actions
     openTest,
@@ -63,5 +74,6 @@ export const useDialogManager = () => {
     closeSettings,
     startTest,
     setSelectedRange,
+    completeTestPreparation,
   };
 };

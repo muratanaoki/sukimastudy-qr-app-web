@@ -11,7 +11,7 @@ import TestResult from './internal/TestResult';
 import { useTestDialogState } from '../hooks/useTestDialogState';
 import { useJudgementHandler } from '../hooks/useJudgementHandler';
 import { useTestDialogHandlers } from '../hooks/useTestDialogHandlers';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DialogHeader } from './internal/DialogHeader';
 import { ConfirmCloseDialog } from './internal/ConfirmCloseDialog';
 import { usePauseManager, PauseReason } from '../hooks/usePauseManager';
@@ -22,12 +22,24 @@ export type TestDialogProps = {
   onClose: () => void;
   pos: PosGroup; // 上位の品詞グループ（単数）
   group: PronounGroup; // 現在テスト中の下位グループ
+  initializing?: boolean;
+  onStartupComplete?: () => void;
+  startupAudioSrc?: string;
 };
 
-export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
+export const TestDialog = ({
+  open,
+  onClose,
+  pos,
+  group,
+  initializing = false,
+  onStartupComplete,
+  startupAudioSrc,
+}: TestDialogProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const { speakWord, cancel } = useSpeech();
   const { isPaused, addReason, removeReason } = usePauseManager();
+  const startupCompletedRef = useRef(false);
 
   const { settings, progress, results, choices, meta, actions, feedback, display } =
     useTestDialogState({
@@ -80,6 +92,69 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     }
   }, [showConfirm, addReason, removeReason]);
 
+  useEffect(() => {
+    if (!initializing) {
+      removeReason(PauseReason.Startup);
+      return;
+    }
+    addReason(PauseReason.Startup);
+    return () => {
+      removeReason(PauseReason.Startup);
+    };
+  }, [initializing, addReason, removeReason]);
+
+  useEffect(() => {
+    if (open && initializing) {
+      startupCompletedRef.current = false;
+    }
+  }, [open, initializing]);
+
+  const finishStartup = useCallback(() => {
+    if (startupCompletedRef.current) return;
+    startupCompletedRef.current = true;
+    onStartupComplete?.();
+  }, [onStartupComplete]);
+
+  useEffect(() => {
+    if (!open || !initializing) return;
+
+    if (!startupAudioSrc) {
+      finishStartup();
+      return;
+    }
+
+    const audio = new Audio(startupAudioSrc);
+    audio.preload = 'auto';
+    let cancelled = false;
+
+    const handleComplete = () => {
+      if (cancelled) return;
+      finishStartup();
+    };
+
+    audio.addEventListener('ended', handleComplete);
+    audio.addEventListener('error', handleComplete);
+
+    const playAudio = async () => {
+      try {
+        await audio.play();
+      } catch (error) {
+        console.warn('Failed to play startup audio', error);
+        handleComplete();
+      }
+    };
+
+    void playAudio();
+
+    return () => {
+      cancelled = true;
+      audio.removeEventListener('ended', handleComplete);
+      audio.removeEventListener('error', handleComplete);
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [open, initializing, startupAudioSrc, finishStartup]);
+
   const dialogPhase = resolveDialogPhase(hasItems, isCompleted);
 
   const handleCloseClick = useCallback(() => {
@@ -114,7 +189,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   useEscapeKey(handleCloseClick, open);
   useAutoPronounce({ open, term: item?.term ?? null, speakWord, cancel, paused: isPaused });
 
-  const showQuestion = dialogPhase === TestDialogPhase.InProgress;
+  const showQuestion = dialogPhase === TestDialogPhase.InProgress && !initializing;
   const showResult = dialogPhase === TestDialogPhase.Completed;
   const showEmpty = dialogPhase === TestDialogPhase.Empty;
 
@@ -176,7 +251,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           onReveal={display.reveal}
           isRevealed={display.revealed}
           onSkip={handleSkip}
-          disabled={feedback.disabled}
+          disabled={feedback.disabled || initializing}
           getIndexDisplay={feedback.getIndexDisplay}
           isCorrectHighlight={feedback.isCorrectHighlight}
           isWrongSelected={feedback.isWrongSelected}
@@ -188,7 +263,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
           onDontKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW)}
           onKnow={() => handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW)}
           revealButtonText={revealButtonText}
-          judgementDisabled={selectedJudgement !== null}
+          judgementDisabled={selectedJudgement !== null || initializing}
           selectedButton={selectedJudgement}
         />
       )}
@@ -198,6 +273,13 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         onConfirm={handleConfirmClose}
         onCancel={handleCancelClose}
       />
+
+      {initializing && (
+        <div className={styles.loadingOverlay} role="status" aria-live="polite">
+          <div className={styles.loadingSpinner} aria-hidden="true" />
+          <span className={styles.loadingLabel}>準備中...</span>
+        </div>
+      )}
     </div>
   );
 };
