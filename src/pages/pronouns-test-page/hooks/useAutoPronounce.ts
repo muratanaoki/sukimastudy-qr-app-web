@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createAutoPronounceController } from './internal/autoPronounceController';
 
 type Params = {
   open: boolean;
@@ -14,9 +15,8 @@ type Params = {
  * - 閉時/アンマウントで cancel 実行
  */
 export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false }: Params) => {
-  const lastSpokenKeyRef = useRef<string | null>(null);
+  const controllerRef = useRef(createAutoPronounceController());
   const cancelRef = useRef(cancel);
-  const scheduledTermRef = useRef<string | null>(null);
 
   useEffect(() => {
     cancelRef.current = cancel;
@@ -25,30 +25,27 @@ export const useAutoPronounce = ({ open, term, speakWord, cancel, paused = false
   // ダイアログ再オープン時は履歴をリセット
   useEffect(() => {
     if (open) {
-      lastSpokenKeyRef.current = null;
-      scheduledTermRef.current = null;
+      controllerRef.current.reset();
     }
   }, [open]);
 
   // 出題時に即時発音（重複ガード）
   useEffect(() => {
     if (!open || paused || !term) return;
-    if (lastSpokenKeyRef.current === term) return;
-    if (scheduledTermRef.current === term) return;
+    const controller = controllerRef.current;
+    if (!controller.shouldSchedule(term)) return;
 
-    const delay = lastSpokenKeyRef.current === null ? 300 : 0;
-    scheduledTermRef.current = term;
+    const delay = controller.hasSpoken() ? 0 : 300;
+    controller.markScheduled(term);
+
     const timeoutId = window.setTimeout(() => {
-      lastSpokenKeyRef.current = term;
-      scheduledTermRef.current = null;
+      controller.markSpoken(term);
       speakWord(term);
     }, delay);
 
     return () => {
       window.clearTimeout(timeoutId);
-      if (scheduledTermRef.current === term) {
-        scheduledTermRef.current = null;
-      }
+      controller.clearScheduled(term);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, term, paused]); // speakWordを意図的に依存配列から除外（無限ループ回避）
