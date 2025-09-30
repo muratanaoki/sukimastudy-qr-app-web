@@ -32,7 +32,6 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
     showSettings,
     testItems,
     selectedRange,
-    isPreparingTest,
     openTest,
     closeTest,
     closeFullTest,
@@ -40,7 +39,6 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
     closeSettings,
     startTest,
     setSelectedRange,
-    completeTestPreparation,
   } = useDialogManager();
 
   // タブ切替/内容変化で再評価されるよう依存に activeGroupNo を渡す
@@ -120,14 +118,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
               items: testItems,
             };
             return (
-              <TestDialog
-                open={showFullTest}
-                onClose={closeFullTest}
-                pos={pos}
-                group={group}
-                initializing={isPreparingTest}
-                onStartupComplete={completeTestPreparation}
-              />
+              <TestDialog open={showFullTest} onClose={closeFullTest} pos={pos} group={group} />
             );
           })()}
         {showSettings && <SettingDialog onClose={closeSettings} />}

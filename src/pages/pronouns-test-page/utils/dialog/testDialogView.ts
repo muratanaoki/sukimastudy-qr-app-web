@@ -4,7 +4,6 @@ import { TestDialogPhase } from './dialogPhase';
 
 type BuildTestDialogViewParams = {
   phase: TestDialogPhase;
-  isStartupBlocking: boolean;
   choiceView: ChoiceView;
   answerMode: AnswerMode;
   term: string | null;
@@ -25,7 +24,6 @@ type TestDialogView = {
 
 export const buildTestDialogView = ({
   phase,
-  isStartupBlocking,
   choiceView,
   answerMode,
   term,
@@ -34,7 +32,7 @@ export const buildTestDialogView = ({
   showTranslationState,
   hasTranslation,
 }: BuildTestDialogViewParams): TestDialogView => {
-  const showQuestion = phase === TestDialogPhase.InProgress && !isStartupBlocking;
+  const showQuestion = phase === TestDialogPhase.InProgress;
   const showResult = phase === TestDialogPhase.Completed;
   const showEmpty = phase === TestDialogPhase.Empty;
 

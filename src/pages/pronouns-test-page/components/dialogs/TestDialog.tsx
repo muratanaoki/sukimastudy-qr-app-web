@@ -28,18 +28,9 @@ export type TestDialogProps = {
   onClose: () => void;
   pos: PosGroup; // 上位の品詞グループ（単数）
   group: PronounGroup; // 現在テスト中の下位グループ
-  initializing?: boolean;
-  onStartupComplete?: () => void;
 };
 
-export const TestDialog = ({
-  open,
-  onClose,
-  pos,
-  group,
-  initializing = false,
-  onStartupComplete,
-}: TestDialogProps) => {
+export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
   const { speakWord, cancel } = useSpeech();
   const { isPaused, addReason, removeReason } = usePauseManager();
   const {
@@ -112,14 +103,8 @@ export const TestDialog = ({
       cancelFlash,
     });
 
-  const { isBlocking: isStartupBlocking } = useTestStartup({
-    open,
-    active: initializing,
-    audioSrc: STARTUP_AUDIO_SRC,
-    onComplete: onStartupComplete,
-    addPauseReason: addReason,
-    removePauseReason: removeReason,
-  });
+  // 起動サウンドのみ再生（ブロック処理は廃止）
+  useTestStartup({ open, audioSrc: STARTUP_AUDIO_SRC, onComplete: undefined });
 
   const dialogPhase = resolveDialogPhase(hasItems, isCompleted);
 
@@ -161,7 +146,6 @@ export const TestDialog = ({
     () =>
       buildTestDialogView({
         phase: dialogPhase,
-        isStartupBlocking,
         choiceView,
         answerMode,
         term,
@@ -172,7 +156,6 @@ export const TestDialog = ({
       }),
     [
       dialogPhase,
-      isStartupBlocking,
       choiceView,
       answerMode,
       term,
@@ -183,8 +166,9 @@ export const TestDialog = ({
     ]
   );
 
-  const controlsDisabled = feedback.disabled || isStartupBlocking;
-  const judgementDisabled = selectedJudgement !== null || isStartupBlocking;
+  // スタートアップ時も操作可能にする
+  const controlsDisabled = feedback.disabled;
+  const judgementDisabled = selectedJudgement !== null;
 
   const handleDontKnow = useCallback(() => {
     handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW);
@@ -266,12 +250,6 @@ export const TestDialog = ({
         onConfirm={handleConfirmClose}
         onCancel={handleCancelClose}
       />
-
-      {isStartupBlocking && (
-        <div className={styles.loadingOverlay} role="status" aria-live="polite">
-          <div className={styles.loadingSpinner} aria-hidden="true" />
-        </div>
-      )}
     </div>
   );
 };

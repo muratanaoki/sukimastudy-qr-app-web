@@ -1,27 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { PauseReason } from '../gameplay/usePauseManager';
 
 type Params = {
   open: boolean;
-  active: boolean;
   audioSrc?: string;
   onComplete?: () => void;
-  addPauseReason: (reason: PauseReason) => void;
-  removePauseReason: (reason: PauseReason) => void;
 };
 
-type UseTestStartupResult = {
-  isBlocking: boolean;
-};
-
-export const useTestStartup = ({
-  open,
-  active,
-  audioSrc,
-  onComplete,
-  addPauseReason,
-  removePauseReason,
-}: Params): UseTestStartupResult => {
+export const useTestStartup = ({ open, audioSrc, onComplete }: Params) => {
   const completedRef = useRef(false);
 
   const finish = useCallback(() => {
@@ -31,25 +16,13 @@ export const useTestStartup = ({
   }, [onComplete]);
 
   useEffect(() => {
-    if (!active) {
-      removePauseReason(PauseReason.Startup);
-      return;
-    }
-
-    addPauseReason(PauseReason.Startup);
-    return () => {
-      removePauseReason(PauseReason.Startup);
-    };
-  }, [active, addPauseReason, removePauseReason]);
-
-  useEffect(() => {
-    if (open && active) {
+    if (open) {
       completedRef.current = false;
     }
-  }, [open, active]);
+  }, [open]);
 
   useEffect(() => {
-    if (!open || !active) return;
+    if (!open) return;
 
     if (!audioSrc) {
       finish();
@@ -86,9 +59,8 @@ export const useTestStartup = ({
       audio.pause();
       audio.currentTime = 0;
     };
-  }, [open, active, audioSrc, finish]);
-
-  return { isBlocking: active };
+  }, [open, audioSrc, finish]);
+  // 以前は UI ブロック用の戻り値/isBlocking があったが表示抑止を廃止したため何も返さない
 };
 
 export default useTestStartup;
