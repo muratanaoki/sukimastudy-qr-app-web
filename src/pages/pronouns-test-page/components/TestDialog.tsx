@@ -250,7 +250,6 @@ export const TestDialog = ({
       {isStartupBlocking && (
         <div className={styles.loadingOverlay} role="status" aria-live="polite">
           <div className={styles.loadingSpinner} aria-hidden="true" />
-          <span className={styles.loadingLabel}>準備中...</span>
         </div>
       )}
     </div>
