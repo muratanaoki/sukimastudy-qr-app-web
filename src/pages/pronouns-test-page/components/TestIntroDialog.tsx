@@ -9,6 +9,7 @@ import { PrimaryButton } from '../../../shared/components/primary-button/Primary
 import { useInitialSelect } from '../hooks/useInitialSelect';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
 import { DialogCard } from '@/shared/components/dialog/DialogCard';
+import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
@@ -120,6 +121,7 @@ export const TestIntroDialog = ({
 
   const handleStart = useCallback(() => {
     if (!selectedSegment || !selectedRange) return;
+    unlockSpeechSynthesis();
     onStart?.({
       groupNo: selectedRange.groupNo,
       start: selectedSegment.start,
