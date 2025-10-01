@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createSoundHandle } from '@/shared/utils/audio/soundHandle';
 
 const SOUND_SOURCES = {
-  correct: '/sounds/maru.wav',
-  incorrect: '/sounds/batu.wav',
-  high: '/sounds/highScore.wav',
-  middle: '/sounds/middleScore.wav',
-  low: '/sounds/lowScore.wav',
+  correct: '/sounds/maru.mp3',
+  incorrect: '/sounds/batu.mp3',
+  high: '/sounds/highScore.mp3',
+  middle: '/sounds/middleScore.mp3',
+  low: '/sounds/lowScore.mp3',
 } as const;
 
 type ResultTier = 'perfect' | 'great' | 'nice';
