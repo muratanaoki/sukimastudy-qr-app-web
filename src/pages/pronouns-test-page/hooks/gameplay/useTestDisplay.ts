@@ -19,7 +19,7 @@ export const useTestDisplay = ({
 }: UseTestDisplayParams) => {
   const [showTranslation, setShowTranslation] = useState(false);
 
-  // 問題切替と再オープンの両方でリセット
+  // 問題切替/再オープン時に翻訳を非表示(=開いた目アイコン)へ戻す
   useEffect(() => {
     setShowTranslation(false);
   }, [itemTerm, currentKey, open]);

@@ -1,4 +1,5 @@
 import { ThumbsUp, Eye, EyeOff } from 'lucide-react';
+import { useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import styles from './judgementControls.module.css';
 import { BUTTON_LABELS, JUDGEMENT_BUTTON_TYPE } from '../../../utils/constants/const';
@@ -23,6 +24,14 @@ export const JudgementControls = ({
   disabled = false,
   selectedButton = null,
 }: JudgementControlsProps) => {
+  // アイコンちらつき対策: disabled 遷移中も直前の stable state を保持
+  const lastShowRef = useRef(showTranslation);
+  useEffect(() => {
+    lastShowRef.current = showTranslation;
+  }, [showTranslation]);
+
+  const effectiveShow = disabled ? lastShowRef.current : showTranslation;
+
   return (
     <>
       <button
@@ -31,18 +40,12 @@ export const JudgementControls = ({
           [styles.revealButtonDim]: disabled && selectedButton !== null,
         })}
         onClick={onReveal}
-        aria-pressed={showTranslation}
-        aria-label={showTranslation ? '和訳を隠す' : revealButtonText}
+        aria-pressed={effectiveShow}
+        aria-label={effectiveShow ? '和訳を隠す' : revealButtonText}
         disabled={disabled}
       >
-        {/* disabled のときは薄くして操作不可にするだけで、EyeOff にしない */}
-        {disabled ? (
-          <Eye className={styles.icon} />
-        ) : showTranslation ? (
-          <EyeOff className={styles.icon} />
-        ) : (
-          <Eye className={styles.icon} />
-        )}
+        {/* disabled 状態でも直前の表示/非表示を維持してちらつきを防ぐ */}
+        {effectiveShow ? <EyeOff className={styles.icon} /> : <Eye className={styles.icon} />}
       </button>
 
       <div className={styles.actionsRow}>

@@ -201,15 +201,21 @@ export function useSpeech(options?: UseSpeechOptions) {
     }
   }, []);
 
-  return {
-    supported,
-    speaking,
-    speak,
-    speakWord,
-    speakSentence,
-    cancel,
-    setSelectedVoiceName,
-  } as const;
+  const api = useMemo(
+    () =>
+      ({
+        supported,
+        speaking,
+        speak,
+        speakWord,
+        speakSentence,
+        cancel,
+        setSelectedVoiceName,
+      }) as const,
+    [supported, speaking, speak, speakWord, speakSentence, cancel, setSelectedVoiceName]
+  );
+
+  return api;
 }
 
 export type UseSpeech = ReturnType<typeof useSpeech>;
