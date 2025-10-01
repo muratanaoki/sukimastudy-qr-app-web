@@ -78,16 +78,23 @@ export const useSoundEffects = () => {
   const enableAudio = useCallback(async (): Promise<boolean> => {
     if (isAudioEnabled) return true;
 
-    await awaitInitialization();
+    void awaitInitialization();
 
     const handles = soundHandlesRef.current!;
     const sampleHandle = handles[SOUND_KEYS[0]];
 
     const unlockWithSample = async () => {
       if (!sampleHandle) return false;
-      const unlocked = await sampleHandle.playFromStart({ volume: 0 });
-      sampleHandle.reset();
-      return unlocked;
+
+      try {
+        const unlocked = await sampleHandle.playFromStart({ volume: 0 });
+        sampleHandle.reset();
+        return unlocked;
+      } catch (error) {
+        console.warn('無音サンプル再生失敗:', error);
+        sampleHandle.reset();
+        return false;
+      }
     };
 
     if (await unlockWithSample()) {
