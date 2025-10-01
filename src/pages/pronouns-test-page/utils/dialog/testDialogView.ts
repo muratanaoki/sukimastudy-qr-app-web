@@ -20,7 +20,6 @@ type TestDialogView = {
   displayWord: string;
   revealButtonText: string;
   showTranslation: boolean;
-  isTransitioning: boolean;
 };
 
 export const buildTestDialogView = ({
@@ -33,8 +32,7 @@ export const buildTestDialogView = ({
   showTranslationState,
   hasTranslation,
 }: BuildTestDialogViewParams): TestDialogView => {
-  const isTransitioning = phase === TestDialogPhase.Transitioning;
-  const showQuestion = phase === TestDialogPhase.InProgress || isTransitioning;
+  const showQuestion = phase === TestDialogPhase.InProgress;
   const showResult = phase === TestDialogPhase.Completed;
   const showEmpty = phase === TestDialogPhase.Empty;
 
@@ -53,7 +51,6 @@ export const buildTestDialogView = ({
     displayWord,
     revealButtonText,
     showTranslation,
-    isTransitioning,
   };
 };
 

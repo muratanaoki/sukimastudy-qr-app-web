@@ -2,7 +2,6 @@ import type { JudgementButtonType } from '../domain/type';
 
 export type ControlStateInput = {
   isFeedbackDisabled: boolean;
-  isTransitioning: boolean;
   isCompleted: boolean;
   selectedJudgement: JudgementButtonType | null;
 };
@@ -14,13 +13,12 @@ export type ControlState = {
 
 export const deriveControlState = ({
   isFeedbackDisabled,
-  isTransitioning,
   isCompleted,
   selectedJudgement,
 }: ControlStateInput): ControlState => {
-  const controlsDisabled = isFeedbackDisabled || isTransitioning || isCompleted;
+  const controlsDisabled = isFeedbackDisabled || isCompleted;
   const hasJudgement = selectedJudgement !== null;
-  const judgementDisabled = hasJudgement || isTransitioning || isCompleted;
+  const judgementDisabled = hasJudgement || isCompleted;
 
   return {
     controlsDisabled,

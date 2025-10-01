@@ -14,7 +14,6 @@ import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmClos
 import { buildTestDialogView } from '../../utils/dialog/testDialogView';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSoundEffect';
-import { useDelayedCompletion } from '../../hooks/dialog/internal/useDelayedCompletion';
 import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReasonEffect';
 import { PauseReason } from '../../hooks/gameplay/usePauseManager';
 import { deriveControlState } from '../../utils/dialog/controlState';
@@ -23,7 +22,6 @@ import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogC
 import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 
-const RESULT_TRANSITION_DELAY_MS = 0;
 const CLOSE_ANIMATION_DURATION_MS = 450;
 
 export type TestDialogProps = {
@@ -94,17 +92,7 @@ export const TestDialog = ({
     [enableAudio, playCorrectSound, playIncorrectSound]
   );
 
-  const { isTransitioning, isCompleted: isResultDisplayed } = useDelayedCompletion({
-    isCompletedImmediate: isCompleted,
-    delayMs: RESULT_TRANSITION_DELAY_MS,
-  });
-
-  usePauseReasonEffect({
-    active: isTransitioning,
-    reason: PauseReason.ResultTransition,
-    addReason,
-    removeReason,
-  });
+  const isResultDisplayed = isCompleted;
 
   useResultSoundEffect({
     hasItems,
@@ -148,7 +136,7 @@ export const TestDialog = ({
     onClosed: handleDialogClosed,
   });
 
-  const dialogPhase = resolveDialogPhase(hasItems, isResultDisplayed, isTransitioning);
+  const dialogPhase = resolveDialogPhase(hasItems, isResultDisplayed);
 
   const handleCloseClick = useCallback(() => {
     if (dialogPhase === TestDialogPhase.Completed) {
@@ -188,7 +176,7 @@ export const TestDialog = ({
     speakWord,
     cancel,
     paused: isPaused,
-    enabled: isStartupComplete && !isTransitioning,
+    enabled: isStartupComplete && !isResultDisplayed,
   });
 
   const view = useMemo(
@@ -217,7 +205,6 @@ export const TestDialog = ({
 
   const { controlsDisabled, judgementDisabled } = deriveControlState({
     isFeedbackDisabled: feedback.disabled,
-    isTransitioning,
     isCompleted,
     selectedJudgement,
   });

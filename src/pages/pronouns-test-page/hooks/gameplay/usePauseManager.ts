@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from 'react';
 export enum PauseReason {
   Confirm = 'confirm',
   Startup = 'startup',
-  ResultTransition = 'result-transition',
 }
 
 export const usePauseManager = () => {
