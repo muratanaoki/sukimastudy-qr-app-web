@@ -6,7 +6,7 @@ import {
   createPlaybackAudibilityVerifier,
   createPlaybackRetrier,
 } from '@/shared/utils/audio/playbackRetry';
-import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
+import { createPlaybackDiagnostics } from '@/shared/utils/audio/playbackDiagnostics';
 
 export type AnswerFeedbackConfig = {
   isCorrect: (choiceId: string) => boolean;
@@ -50,26 +50,41 @@ export const createFeedbackSoundPlayer = (
     defaultAttempts: retryCount,
   });
 
-  const createVerify = (key: SoundKey) =>
-    createPlaybackAudibilityVerifier({
-      getAudioElement: () => getAudioElement(key),
-    });
-
   return {
-    playCorrect: () =>
-      playWithRetry({
+    playCorrect: () => {
+      const diagnostics = createPlaybackDiagnostics({
+        label: 'AnswerFeedback:Correct',
+        context: '正解',
+      });
+
+      return playWithRetry({
         play: playCorrectSound,
         failureContext: '正解',
         logLabel: 'Correct',
-        verify: createVerify('correct'),
-      }),
-    playIncorrect: () =>
-      playWithRetry({
+        verify: createPlaybackAudibilityVerifier({
+          getAudioElement: () => getAudioElement('correct'),
+          diagnostics,
+        }),
+        diagnostics,
+      });
+    },
+    playIncorrect: () => {
+      const diagnostics = createPlaybackDiagnostics({
+        label: 'AnswerFeedback:Incorrect',
+        context: '不正解',
+      });
+
+      return playWithRetry({
         play: playIncorrectSound,
         failureContext: '不正解',
         logLabel: 'Incorrect',
-        verify: createVerify('incorrect'),
-      }),
+        verify: createPlaybackAudibilityVerifier({
+          getAudioElement: () => getAudioElement('incorrect'),
+          diagnostics,
+        }),
+        diagnostics,
+      });
+    },
   } as const;
 };
 

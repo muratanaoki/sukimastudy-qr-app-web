@@ -1,0 +1,60 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: min(520px, 90vw);
+}
+
+.summary {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-primary-color, #1f2937);
+}
+
+.metaList {
+  display: grid;
+  row-gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary-color, #4b5563);
+}
+
+.metaItem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.metaKey {
+  font-weight: 600;
+}
+
+.logsLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary-color, #1f2937);
+}
+
+.logsBox {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem;
+  max-height: 240px;
+  overflow-y: auto;
+  font-family:
+    ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.footerNote {
+  font-size: 0.75rem;
+  color: var(--text-tertiary-color, #6b7280);
+}
+
+.actionHint {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color, #4b5563);
+}

@@ -10,6 +10,7 @@ import {
   createPlaybackRetrier,
 } from '@/shared/utils/audio/playbackRetry';
 import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
+import { createPlaybackDiagnostics } from '@/shared/utils/audio/playbackDiagnostics';
 
 type AdvanceHandler = (isCorrect?: boolean) => void;
 
@@ -113,14 +114,26 @@ export const useJudgementHandler = (
   );
 
   const playJudgementSound = useCallback(
-    (playFn: () => Promise<boolean>, failureContext: string, soundKey: SoundKey) => {
+    (meta: {
+      playSound: () => Promise<boolean>;
+      failureContext: string;
+      soundKey: SoundKey;
+      label: string;
+    }) => {
+      const diagnostics = createPlaybackDiagnostics({
+        label: `Judgement:${meta.label}`,
+        context: meta.failureContext,
+      });
+
       void playbackRetrier({
-        play: playFn,
-        failureContext,
+        play: meta.playSound,
+        failureContext: meta.failureContext,
         logLabel: 'Judgement',
         verify: createPlaybackAudibilityVerifier({
-          getAudioElement: () => getAudioElement(soundKey),
+          getAudioElement: () => getAudioElement(meta.soundKey),
+          diagnostics,
         }),
+        diagnostics,
       });
     },
     [playbackRetrier, getAudioElement]
@@ -137,7 +150,12 @@ export const useJudgementHandler = (
       setSelectedJudgement(buttonType);
 
       if (!cancelledRef.current) {
-        playJudgementSound(meta.playSound, meta.failureContext, meta.soundKey);
+        playJudgementSound({
+          playSound: meta.playSound,
+          failureContext: meta.failureContext,
+          soundKey: meta.soundKey,
+          label: meta.isCorrect ? 'Correct' : 'Incorrect',
+        });
       }
 
       if (shouldFlash(choiceView)) {

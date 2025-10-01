@@ -9,8 +9,10 @@ import {
   createSoundEffectManager,
   createSoundPlayerMap,
 } from '@/shared/utils/audio/soundEffectManager';
+import type { PlaybackFailureInfo } from '@/shared/utils/audio/playbackDiagnostics';
 
 export type { PlaybackFailureHandler } from '@/shared/utils/audio/soundEffectManager';
+export type { PlaybackFailureInfo } from '@/shared/utils/audio/playbackDiagnostics';
 
 export const useSoundEffects = () => {
   const managerRef = useRef<SoundEffectManager>();
@@ -60,8 +62,8 @@ export const useSoundEffects = () => {
     [manager]
   );
 
-  const notifyPlaybackFailure = useCallback((context: string) => {
-    playbackFailureHandlerRef.current?.(context);
+  const notifyPlaybackFailure = useCallback((context: string, info?: PlaybackFailureInfo) => {
+    playbackFailureHandlerRef.current?.(context, info);
   }, []);
 
   const setPlaybackFailureHandler = useCallback(

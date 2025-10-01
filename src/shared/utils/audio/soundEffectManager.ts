@@ -1,4 +1,5 @@
 import { createSoundHandle } from './soundHandle';
+import type { PlaybackFailureInfo } from './playbackDiagnostics';
 
 export const SOUND_SOURCES = {
   correct: '/sounds/maru.mp3',
@@ -20,7 +21,7 @@ export const RESULT_TIER_TO_SOUND_KEY: Record<ResultTier, SoundKey> = {
 
 const SOUND_KEYS = Object.keys(SOUND_SOURCES) as SoundKey[];
 
-export type PlaybackFailureHandler = (context: string) => void;
+export type PlaybackFailureHandler = (context: string, info?: PlaybackFailureInfo) => void;
 
 type BeforePlayListener = () => void;
 
@@ -32,7 +33,19 @@ export const createAlertPlaybackFailureHandler = (
   const resolvedWindow =
     targetWindow ?? (typeof window !== 'undefined' ? (window as AlertCapableWindow) : undefined);
 
-  return (context: string) => {
+  return (context: string, info?: PlaybackFailureInfo) => {
+    if (info) {
+      const groupLabel = `[SoundEffects] Playback failure: ${info.label}`;
+      if (typeof console.groupCollapsed === 'function') {
+        console.groupCollapsed(groupLabel);
+        console.log(info);
+        console.log(info.text);
+        console.groupEnd();
+      } else {
+        console.warn(groupLabel, info);
+      }
+    }
+
     if (!resolvedWindow?.alert) return;
     resolvedWindow.alert(
       `${context}の効果音を再生できませんでした。音量やサイレントモードを確認してください。`

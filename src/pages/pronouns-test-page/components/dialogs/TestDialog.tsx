@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import type { PosGroup, PronounGroup } from '../../utils/domain/type';
 import { useSpeech } from '../../hooks/audio/useSpeech';
@@ -13,6 +13,7 @@ import { useTestStartup } from '../../hooks/dialog/useTestStartup';
 import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmCloseState';
 import { buildTestDialogView } from '../../utils/dialog/testDialogView';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
+import type { PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
 import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSoundEffect';
 import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReasonEffect';
 import { PauseReason } from '../../hooks/gameplay/usePauseManager';
@@ -21,6 +22,7 @@ import { TestDialogContent } from './internal/TestDialogContent';
 import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogCloseController';
 import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
+import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;
 
@@ -94,6 +96,11 @@ export const TestDialog = ({
     getAudioElement,
   } = soundEffects;
 
+  const [playbackFailureInfo, setPlaybackFailureInfo] = useState<{
+    context: string;
+    info?: PlaybackFailureInfo;
+  } | null>(null);
+
   const beforePlay = useCallback(() => {
     try {
       cancel();
@@ -102,14 +109,18 @@ export const TestDialog = ({
     }
   }, [cancel]);
 
+  const handlePlaybackFailure = useCallback((context: string, info?: PlaybackFailureInfo) => {
+    setPlaybackFailureInfo({ context, info });
+  }, []);
+
   useEffect(() => {
     setBeforePlay(beforePlay);
-    setPlaybackFailureHandler(null);
+    setPlaybackFailureHandler(handlePlaybackFailure);
     return () => {
       setBeforePlay(null);
       setPlaybackFailureHandler(null);
     };
-  }, [beforePlay, setBeforePlay, setPlaybackFailureHandler]);
+  }, [beforePlay, setBeforePlay, setPlaybackFailureHandler, handlePlaybackFailure]);
 
   const judgementSoundEffects = useMemo(
     () => ({
@@ -247,70 +258,81 @@ export const TestDialog = ({
     handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW);
   }, [handleJudgementAnswer]);
 
-  if (!shouldRender) return null;
+  if (!shouldRender && !playbackFailureInfo) return null;
 
   return (
-    <TestDialogContent
-      dialogPhase={dialogPhase}
-      closing={isClosing}
-      onCloseAnimationEnd={finalizeClose}
-      header={{
-        posTitle: pos.title,
-        groupTitle: group.title,
-        timeLeftPct,
-        onClose: handleCloseClick,
-        questionKey,
-      }}
-      question={{
-        visible: view.showQuestion,
-        current,
-        total,
-        displayWord: view.displayWord,
-        translation,
-        showTranslation: view.showTranslation,
-        onWordClick: handleWordClick,
-      }}
-      result={{
-        visible: view.showResult,
-        hasItems,
-        total,
-        correctAnswers,
-        scorePercentage,
-        answerHistory,
-        onClose: requestClose,
-      }}
-      emptyLabelVisible={view.showEmpty}
-      controls={{
-        visible: view.showQuestion,
-        choiceView,
-        isCompleted: isResultDisplayed,
-        hasItems,
-        choices: choiceOptions,
-        shouldShowRevealButton: display.shouldShowRevealButton,
-        onReveal: display.reveal,
-        isRevealed: display.revealed,
-        onSkip: handleSkip,
-        disabled: controlsDisabled,
-        getIndexDisplay: feedback.getIndexDisplay,
-        isCorrectHighlight: feedback.isCorrectHighlight,
-        isWrongSelected: feedback.isWrongSelected,
-        isDim: feedback.isDim,
-        showGoodAt: feedback.showGoodAt,
-        onAnswer: handleChoiceAnswer,
-        showTranslation: display.showTranslation,
-        onRevealWord: handleRevealWord,
-        onDontKnow: handleDontKnow,
-        onKnow: handleKnow,
-        revealButtonText: view.revealButtonText,
-        judgementDisabled,
-        selectedButton: selectedJudgement,
-      }}
-      confirm={{
-        open: isConfirmOpen,
-        onConfirm: handleConfirmClose,
-        onCancel: handleCancelClose,
-      }}
-    />
+    <>
+      {shouldRender ? (
+        <TestDialogContent
+          dialogPhase={dialogPhase}
+          closing={isClosing}
+          onCloseAnimationEnd={finalizeClose}
+          header={{
+            posTitle: pos.title,
+            groupTitle: group.title,
+            timeLeftPct,
+            onClose: handleCloseClick,
+            questionKey,
+          }}
+          question={{
+            visible: view.showQuestion,
+            current,
+            total,
+            displayWord: view.displayWord,
+            translation,
+            showTranslation: view.showTranslation,
+            onWordClick: handleWordClick,
+          }}
+          result={{
+            visible: view.showResult,
+            hasItems,
+            total,
+            correctAnswers,
+            scorePercentage,
+            answerHistory,
+            onClose: requestClose,
+          }}
+          emptyLabelVisible={view.showEmpty}
+          controls={{
+            visible: view.showQuestion,
+            choiceView,
+            isCompleted: isResultDisplayed,
+            hasItems,
+            choices: choiceOptions,
+            shouldShowRevealButton: display.shouldShowRevealButton,
+            onReveal: display.reveal,
+            isRevealed: display.revealed,
+            onSkip: handleSkip,
+            disabled: controlsDisabled,
+            getIndexDisplay: feedback.getIndexDisplay,
+            isCorrectHighlight: feedback.isCorrectHighlight,
+            isWrongSelected: feedback.isWrongSelected,
+            isDim: feedback.isDim,
+            showGoodAt: feedback.showGoodAt,
+            onAnswer: handleChoiceAnswer,
+            showTranslation: display.showTranslation,
+            onRevealWord: handleRevealWord,
+            onDontKnow: handleDontKnow,
+            onKnow: handleKnow,
+            revealButtonText: view.revealButtonText,
+            judgementDisabled,
+            selectedButton: selectedJudgement,
+          }}
+          confirm={{
+            open: isConfirmOpen,
+            onConfirm: handleConfirmClose,
+            onCancel: handleCancelClose,
+          }}
+        />
+      ) : null}
+      {playbackFailureInfo ? (
+        <PlaybackFailureDialog
+          info={playbackFailureInfo.info}
+          fallbackContext={playbackFailureInfo.context}
+          onClose={() => setPlaybackFailureInfo(null)}
+        />
+      ) : null}
+    </>
   );
 };
 export default TestDialog;
