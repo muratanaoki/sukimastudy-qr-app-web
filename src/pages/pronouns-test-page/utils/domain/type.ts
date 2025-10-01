@@ -1,4 +1,10 @@
 import type { LucideIcon } from 'lucide-react';
+
+/**
+ * Pronouns テストで利用するドメインモデル群。
+ * - Firestore 等の永続層ではなく、現在は静的データを前提にした型定義を集約。
+ * - UI コンポーネントやロジック層が同じ型を共有することで、データ整合性を担保する。
+ */
 export type PronounItem = {
   /** 通し番号（1〜） */
   index: number;
@@ -13,11 +19,17 @@ export type PronounItem = {
   choices: QAChoices;
 };
 
+/**
+ * 出題モードごとの選択肢。固定長 3 件に揃えることでインデックスアクセスを単純化している。
+ */
 export type QAChoices = {
   enToJp: [string, string, string];
   jpToEn: [string, string, string];
 };
 
+/**
+ * 例文データ。レベルは 1(易)〜3(難) で UI の難易度ラベルに利用。
+ */
 export type ExampleEntry = { en?: string; jp?: string; level?: 1 | 2 | 3 };
 
 // 単一グループ

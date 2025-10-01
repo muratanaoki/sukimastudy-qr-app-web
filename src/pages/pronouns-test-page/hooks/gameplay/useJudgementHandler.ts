@@ -12,6 +12,12 @@ import {
 import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
 import { createPlaybackDiagnostics } from '@/shared/utils/audio/playbackDiagnostics';
 
+/**
+ * 「わかる/わからない」など判定ボタンの押下処理を一元化するフック。
+ * - 押下後の UI 演出（フラッシュ）とサウンド再生の同期を取りつつ、自動で次の問題へ進める。
+ * - 効果音再生失敗時にはリトライと診断ログ生成も行い、後段で復旧 UI を表示できるようにする。
+ */
+
 type AdvanceHandler = (isCorrect?: boolean) => void;
 
 const SOUND_SYNC_DELAY_MS = 60;
@@ -43,6 +49,7 @@ export const useJudgementHandler = (
   const fallbackTimerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);
 
+  // 効果音再生が失敗した際、自動でリトライしつつ enableAudio を促すヘルパー
   const playbackRetrier = useMemo(
     () =>
       createPlaybackRetrier({
@@ -52,6 +59,7 @@ export const useJudgementHandler = (
     [enableAudio, notifyPlaybackFailure]
   );
 
+  // ボタン種別ごとのメタ情報（正誤判定・使用するサウンド・失敗時文言）
   const judgementMeta = useMemo<
     Record<
       JudgementButtonType,
@@ -79,6 +87,7 @@ export const useJudgementHandler = (
     }),
     [playCorrectSound, playIncorrectSound]
   );
+  // 効果音とアニメーションの終了を待つためのタイマーを安全に破棄
   const clearAdvanceTimer = useCallback(() => {
     if (advanceTimerRef.current) {
       window.clearTimeout(advanceTimerRef.current);
@@ -93,6 +102,7 @@ export const useJudgementHandler = (
     }
   }, []);
 
+  // 効果音の同期を取るため、少し遅らせて次の問題へ進める
   const scheduleAdvance = useCallback(
     (isCorrect: boolean) => {
       clearAdvanceTimer();
@@ -113,6 +123,7 @@ export const useJudgementHandler = (
     [scheduleAdvance]
   );
 
+  // 音声再生時に診断ログとリトライ機構を挟み込む
   const playJudgementSound = useCallback(
     (meta: {
       playSound: () => Promise<boolean>;
@@ -139,6 +150,7 @@ export const useJudgementHandler = (
     [playbackRetrier, getAudioElement]
   );
 
+  // ボタン押下時のメインフロー。演出開始→音再生→完了後 advance を呼び出す。
   const handleJudgementAnswer = useCallback(
     (buttonType: JudgementButtonType) => {
       const meta = judgementMeta[buttonType];
@@ -182,6 +194,7 @@ export const useJudgementHandler = (
     ]
   );
 
+  // 問題が切り替わったタイミングで内部状態を初期化
   useEffect(() => {
     setSelectedJudgement(null);
     cancelledRef.current = false;
@@ -189,6 +202,7 @@ export const useJudgementHandler = (
     clearFallbackTimer();
   }, [questionKey, clearAdvanceTimer, clearFallbackTimer]);
 
+  // アンマウント時にもタイマーを確実に破棄
   useEffect(() => {
     return () => {
       clearAdvanceTimer();

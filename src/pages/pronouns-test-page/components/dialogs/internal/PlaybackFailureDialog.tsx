@@ -5,6 +5,12 @@ import { SecondaryButton } from '@/shared/components/secondary-button/SecondaryB
 import type { PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
 import styles from './playbackFailureDialog.module.css';
 
+/**
+ * 効果音再生に繰り返し失敗した際にユーザーへ状況を通知し、診断情報のコピーを促すダイアログ。
+ * - `PlaybackFailureInfo` があれば詳細ログを表示し、なければフォールバック文言で説明。
+ * - クリップボードコピー成功/失敗の状態をUIテキストに反映する。
+ */
+
 export type PlaybackFailureDialogProps = {
   info?: PlaybackFailureInfo;
   fallbackContext: string;

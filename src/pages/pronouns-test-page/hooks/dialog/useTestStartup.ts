@@ -7,6 +7,12 @@ import {
 } from '../../utils/audio/startupAudioController';
 import { STARTUP_AUDIO_FADE_MS } from '../../utils/constants/audio';
 
+/**
+ * ダイアログ起動時のスタートアップ音声を制御し、完了フラグを提供するフック。
+ * - 音声の再生・フェードイン・既存ハンドルの採用（プリロード）を内部で完結させる。
+ * - テスト中に閉じた場合でもクリーンに停止し、再オープンで再度初期化できるようにする。
+ */
+
 type Params = {
   open: boolean;
   audioSrc?: string;
@@ -44,6 +50,7 @@ export const useTestStartup = ({
     onComplete?.();
   }, [onComplete]);
 
+  // 音声コントローラの生成・破棄を audioSrc やハンドルに追従させる
   useEffect(() => {
     controllerRef.current?.dispose();
 
@@ -61,6 +68,7 @@ export const useTestStartup = ({
     };
   }, [audioSrc, soundHandle, createAudio, controllerFactory, finish]);
 
+  // ダイアログ open の変化に合わせて実際の再生を管理
   useEffect(() => {
     const controller = controllerRef.current;
 

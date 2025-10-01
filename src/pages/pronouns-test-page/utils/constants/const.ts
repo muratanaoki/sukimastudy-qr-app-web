@@ -7,6 +7,13 @@ import {
 } from '../domain/type';
 import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
 
+/**
+ * Pronouns テストで利用する静的定数集。
+ * - 問題データは段階的に分割された生配列を保持し、後段で UI 用に整形。
+ * - ボタンラベルやフラッシュ秒数など、複数コンポーネントから参照される定数も一元化。
+ * - 本ファイルを更新するときは `RawPronounItem` の構造を維持することで整合性を保つ。
+ */
+
 const DATA_RAW_SOURCE1: RawPronounItem[] = [
   {
     term: 'I\u2060', // ZERO WIDTH WORD JOINER (音は出ない)
@@ -1536,6 +1543,7 @@ const DATA_RAW_SOURCE4: RawPronounItem[] = [
   },
 ];
 
+// 生データに通し番号を付与し、UI 側で扱いやすい `PronounItem` に変換するヘルパー
 const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
   raw.map((d, i) => ({
     index: i + 1,
@@ -1555,7 +1563,7 @@ export const DATA_RAW2: RawPronounItem[] = DATA_RAW_SOURCE2;
 export const DATA_RAW3: RawPronounItem[] = DATA_RAW_SOURCE3;
 export const DATA_RAW4: RawPronounItem[] = DATA_RAW_SOURCE4;
 
-// 画面で使うグループ配列（直書きでシンプルに）
+// 画面で使うグループ配列（現状は静的に定義。API 化する場合の元データとしても利用）
 export const DATA: PronounGroup[] = [
   {
     groupNo: 1,
@@ -1591,7 +1599,7 @@ export const DATA: PronounGroup[] = [
   },
 ];
 
-// 上位の「品詞グループ」レイヤ（とりあえず代名詞のみ）
+// 上位の「品詞グループ」レイヤ（今後他品詞を追加する拡張ポイント）
 // - pos: 品詞キー（URLにも使える識別子）
 // - url: 品詞トップのURL
 // - title: 表示名

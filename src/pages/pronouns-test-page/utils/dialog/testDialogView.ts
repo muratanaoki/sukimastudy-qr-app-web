@@ -2,6 +2,11 @@ import { getDisplayWord, getRevealButtonText, shouldShowTranslation } from '../d
 import { ChoiceView, AnswerMode } from '../domain/type';
 import { TestDialogPhase } from './dialogPhase';
 
+/**
+ * テストダイアログの描画可否をまとめて判定し、表示用プロパティを返す純関数。
+ * - React コンポーネントには計算済みの値だけを渡し、副作用や条件分岐をここで完結させる。
+ */
+
 type BuildTestDialogViewParams = {
   phase: TestDialogPhase;
   choiceView: ChoiceView;

@@ -7,6 +7,12 @@ import { useTestDisplay } from '../gameplay/useTestDisplay';
 import type { PronounGroup } from '../../utils/domain/type';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 
+/**
+ * ダイアログ全体で共有するテスト状態を組み立てるコンポジションフック。
+ * - 設定、進捗、結果、フィードバック、表示制御をそれぞれ専用フックから取得。
+ * - ここでまとめておくことで `TestDialog` からの props ドリリングを抑え、見通しを良くする。
+ */
+
 type UseTestDialogStateParams = {
   open: boolean;
   group: PronounGroup;
@@ -20,8 +26,11 @@ export const useTestDialogState = ({
   paused = false,
   soundEffects,
 }: UseTestDialogStateParams) => {
+  // UI 設定（選択肢表示位置・出題順・モード）を取得
   const { choiceView, questionOrder, answerMode } = useTestSettings();
+  // 出題順を確定（オープン時にシャッフルを行い、ダイアログ閉鎖まで維持）
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
+  // 実際の問題進行と結果計算を司るランナー
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems, paused);
   const {
     total,
@@ -43,6 +52,7 @@ export const useTestDialogState = ({
     [choiceOptions]
   );
 
+  // 進行制御: boolean と詳細オプションの両方を受け取れるようにハイブリッド引数を採用
   const advance = useCallback(
     (params?: boolean | { isCorrect?: boolean; onComplete?: () => void }) => {
       const config =
@@ -55,6 +65,7 @@ export const useTestDialogState = ({
     [goNext]
   );
 
+  // 解答フィードバック: 正誤演出・音響・フラッシュ制御をひとまとめに返す
   const feedback = useAnswerFeedback({
     isCorrect: (choiceId) =>
       choiceOptions.some((option) => option.id === choiceId && option.isCorrect),
@@ -65,6 +76,7 @@ export const useTestDialogState = ({
     soundEffects,
   });
 
+  // UI 表示状態: 現在の単語表示や翻訳の開閉状態を管理
   const display = useTestDisplay({
     open,
     answerMode,

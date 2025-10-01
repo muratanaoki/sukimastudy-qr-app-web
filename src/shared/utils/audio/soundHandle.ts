@@ -1,5 +1,11 @@
 import { createVolumeFadeController } from './volumeFader';
 
+/**
+ * 単一音声ソースを抽象化し、再生・フェード・ボリューム操作を提供するハンドル。
+ * - Audio 要素の再利用とプリロードを内部で管理し、複数再生時の遅延を低減。
+ * - フェードイン/ボリューム制御を `volumeFader` に委譲しつつ、API をシンプルに露出。
+ */
+
 export type PlayOptions = {
   volume?: number;
   startTime?: number;

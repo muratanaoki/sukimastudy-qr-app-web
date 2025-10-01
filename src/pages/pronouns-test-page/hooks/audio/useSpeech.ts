@@ -104,6 +104,7 @@ export function useSpeech(options?: UseSpeechOptions) {
     };
   }, []);
 
+  // ブラウザが保持している音声リストから、言語・名前を基準に最適な音声を選択
   const pickVoice = useCallback(
     (targetLang = 'en') => {
       const list = voicesRef.current || [];
@@ -132,6 +133,7 @@ export function useSpeech(options?: UseSpeechOptions) {
     [selectedVoiceName, opts.preferredVoiceNames]
   );
 
+  // rate/pitch などを指定して SpeechSynthesisUtterance を生成するユーティリティ
   const createUtterance = useCallback(
     (
       text: string,
@@ -148,6 +150,7 @@ export function useSpeech(options?: UseSpeechOptions) {
     [opts.defaultLang, opts.sentenceRate, opts.pitch, pickVoice]
   );
 
+  // 任意テキストを読み上げ。既存再生をキャンセルし、モバイルは遅延再生で安定化
   const speak = useCallback(
     (text: string, local?: { rate?: number; pitch?: number; lang?: string }) => {
       if (!text) return;

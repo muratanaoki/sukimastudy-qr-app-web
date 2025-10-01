@@ -1,6 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { createAutoPronounceController } from './internal/autoPronounceController';
 
+/**
+ * 自動読み上げの発火タイミングと重複制御を管理するフック。
+ * - 開始時/再開時に履歴をリセットし、連続出題でも同じ単語を二重再生しない。
+ * - `paused` や `enabled` に応じて副作用を早期リターンし、必要なときのみ音声を再生。
+ * - アンマウント時に確実に `cancel` を呼ぶことで音声が残らないようにする。
+ */
+
 type Params = {
   open: boolean;
   term?: string | null;

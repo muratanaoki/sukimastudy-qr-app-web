@@ -11,6 +11,12 @@ import {
 } from '@/shared/utils/audio/soundEffectManager';
 import type { PlaybackFailureInfo } from '@/shared/utils/audio/playbackDiagnostics';
 
+/**
+ * 効果音の再生・初期化・失敗ハンドリングを集約するアプリ全体向けフック。
+ * - `SoundEffectManager` の単一インスタンスを保持し、同じ音源の多重ロードを防ぐ。
+ * - 再生前のユーザー操作要求（enableAudio）や失敗ダイアログへの通知もここで定義。
+ */
+
 export type { PlaybackFailureHandler } from '@/shared/utils/audio/soundEffectManager';
 export type { PlaybackFailureInfo } from '@/shared/utils/audio/playbackDiagnostics';
 
@@ -35,6 +41,7 @@ export const useSoundEffects = () => {
     };
   }, [manager]);
 
+  // ブラウザの音声再生制限を解除するためのユーザーアクションを促す
   const enableAudio = useCallback(async (): Promise<boolean> => {
     const enabled = await manager.enable();
     if (enabled) {

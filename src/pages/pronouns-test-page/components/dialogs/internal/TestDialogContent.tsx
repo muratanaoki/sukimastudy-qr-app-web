@@ -8,6 +8,12 @@ import TestResult from './TestResult';
 import { ConfirmCloseDialog } from './ConfirmCloseDialog';
 import type { TestDialogPhase } from '../../../utils/dialog/dialogPhase';
 
+/**
+ * テストダイアログの実際の構造を描画するコンテナコンポーネント。
+ * - ヘッダー、質問、結果、操作、確認ダイアログを 1 か所でレイアウトする。
+ * - 親コンポーネントから受け取った props をそのまま子コンポーネントへ渡すブリッジの役割。
+ */
+
 const CLOSE_ANIMATION_NAME = 'dialogSlideDown';
 
 export type TestDialogHeaderProps = {
@@ -60,6 +66,7 @@ export const TestDialogContent = ({
   const { visible: resultVisible, hasItems, ...resultProps } = result;
   const { visible: controlsVisible, ...controlsProps } = controls;
 
+  // CSS アニメーションの終了タイミングで閉じ処理を呼び出す
   const handleAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
     if (!closing) return;
     if (event.target !== event.currentTarget) return;

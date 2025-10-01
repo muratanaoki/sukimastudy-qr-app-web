@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+/**
+ * ダイアログの閉じアニメーションを管理し、完了時に `onClosed` を呼び出す制御フック。
+ * - `prefers-reduced-motion` を検出してアニメーションをスキップする配慮も含む。
+ * - `requestClose`/`finalizeClose` の二段構えにすることでアニメーション完了を待てる。
+ */
+
 type UseDialogCloseControllerOptions = {
   open: boolean;
   animationDurationMs: number;

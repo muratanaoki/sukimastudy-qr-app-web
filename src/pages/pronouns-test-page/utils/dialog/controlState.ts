@@ -1,5 +1,10 @@
 import type { JudgementButtonType } from '../domain/type';
 
+/**
+ * フィードバック状態や回答済み状態から、操作ボタンの活性/非活性を導出する純粋関数。
+ * - ここで boolean を計算しておくと描画側が条件分岐で煩雑にならない。
+ */
+
 export type ControlStateInput = {
   isFeedbackDisabled: boolean;
   isCompleted: boolean;

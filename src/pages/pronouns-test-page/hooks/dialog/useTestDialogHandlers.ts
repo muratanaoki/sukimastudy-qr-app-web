@@ -1,6 +1,12 @@
 import { useCallback } from 'react';
 import { AnswerMode } from '../../utils/domain/type';
 
+/**
+ * ダイアログに渡す UI ハンドラ群をまとめて生成するフック。
+ * - リスニングモードでは解答時に自動開示するなど、モードごとの分岐をここで吸収。
+ * - Button コンポーネント側は純粋にコールバックを呼ぶだけでよくなる。
+ */
+
 interface UseTestDialogHandlersProps {
   answerMode: AnswerMode;
   revealed: boolean;
@@ -20,6 +26,7 @@ export const useTestDialogHandlers = ({
   feedback,
   setShowTranslation,
 }: UseTestDialogHandlersProps) => {
+  // 選択肢クリック: リスニングモードでは先に単語を表示し、その後フィードバックを進める
   const handleChoiceAnswer = useCallback(
     (choiceId: string, i: number) => {
       if (answerMode === AnswerMode.Listening && !revealed) reveal();
@@ -28,11 +35,13 @@ export const useTestDialogHandlers = ({
     [answerMode, revealed, reveal, feedback]
   );
 
+  // スキップ操作: リスニングモードでは reveal を挟み、次へ進める
   const handleSkip = useCallback(() => {
     if (answerMode === AnswerMode.Listening && !revealed) reveal();
     feedback.handleSkipAsCorrect();
   }, [answerMode, revealed, reveal, feedback]);
 
+  // 和訳表示ボタンのトグル
   const handleRevealWord = useCallback(() => {
     setShowTranslation((prev) => !prev);
   }, [setShowTranslation]);

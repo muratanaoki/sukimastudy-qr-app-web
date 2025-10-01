@@ -2,6 +2,12 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 import { resolveScoreTier } from '../../../utils/score/score';
 
+/**
+ * テスト完了時に結果サウンドを再生する副作用フック。
+ * - ダイアログを閉じたり問題セットが変わった場合は再生フラグをクリア。
+ * - scorePercentage から tier を導出し、適切な効果音を遅延付きで鳴らす。
+ */
+
 const RESULT_SOUND_DELAY_MS = 300;
 
 export type UseResultSoundEffectParams = {
