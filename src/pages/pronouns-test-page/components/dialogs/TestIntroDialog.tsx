@@ -11,7 +11,7 @@ import { SelectableButton } from '@/shared/components/selectable-button/Selectab
 import { DialogCard } from '@/shared/components/dialog/DialogCard';
 import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
-import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
+import { STARTUP_AUDIO_FADE_MS, STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import { getStartupSoundHandle } from '../../utils/audio/startupSoundHandle';
 
 // ===== Types =====
@@ -153,7 +153,7 @@ export const TestIntroDialog = ({
   const handleStart = useCallback(() => {
     if (!selectedSegment || !selectedRange) return;
     unlockSpeechSynthesis();
-    void startupSoundHandle?.playFromStart();
+    void startupSoundHandle?.playFromStart({ fadeInDurationMs: STARTUP_AUDIO_FADE_MS });
     onStart?.({
       groupNo: selectedRange.groupNo,
       start: selectedSegment.start,

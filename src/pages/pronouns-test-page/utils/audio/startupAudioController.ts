@@ -1,4 +1,9 @@
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
+import {
+  createVolumeFadeController,
+  type VolumeFadeController,
+  type VolumeFadeScheduler,
+} from '@/shared/utils/audio/volumeFader';
 
 export type StartupAudioController = {
   play: () => Promise<boolean>;
@@ -12,6 +17,9 @@ export type StartupAudioControllerOptions = {
   soundHandle?: SoundHandle;
   createAudio?: (src: string) => HTMLAudioElement;
   onFinish: () => void;
+  fadeInDurationMs?: number;
+  fadeScheduler?: VolumeFadeScheduler | null;
+  createFadeController?: typeof createVolumeFadeController;
 };
 
 type PlaybackStrategy = {
@@ -22,7 +30,10 @@ type PlaybackStrategy = {
 
 const defaultCreateAudio = (src: string) => new Audio(src);
 
-const createSoundHandleStrategy = (soundHandle?: SoundHandle): PlaybackStrategy | null => {
+const createSoundHandleStrategy = (
+  soundHandle: SoundHandle | undefined,
+  fadeInDurationMs: number
+): PlaybackStrategy | null => {
   if (!soundHandle) return null;
 
   const adopt = () => {
@@ -35,7 +46,7 @@ const createSoundHandleStrategy = (soundHandle?: SoundHandle): PlaybackStrategy 
     const audio = await soundHandle.ensureLoaded();
     if (!audio) return null;
 
-    const started = await soundHandle.playFromStart();
+    const started = await soundHandle.playFromStart({ fadeInDurationMs });
     if (!started) {
       soundHandle.reset();
       return null;
@@ -51,13 +62,21 @@ const createSoundHandleStrategy = (soundHandle?: SoundHandle): PlaybackStrategy 
 };
 
 const createDirectAudioStrategy = (
-  audioSrc?: string,
-  createAudio: (src: string) => HTMLAudioElement = defaultCreateAudio
+  audioSrc: string | undefined,
+  createAudio: (src: string) => HTMLAudioElement,
+  fadeInDurationMs: number,
+  fadeScheduler: VolumeFadeScheduler | null,
+  createFadeController: typeof createVolumeFadeController
 ): PlaybackStrategy | null => {
   if (!audioSrc) return null;
 
+  const fadeControllers = new WeakMap<HTMLAudioElement, VolumeFadeController>();
+
   const reset = (audio: HTMLAudioElement | null) => {
     if (!audio) return;
+    const controller = fadeControllers.get(audio);
+    controller?.cancel();
+    fadeControllers.delete(audio);
     try {
       audio.pause();
     } catch {
@@ -71,11 +90,32 @@ const createDirectAudioStrategy = (
   const play = async () => {
     const audio = createAudio(audioSrc);
     audio.preload = 'auto';
+    const fadeController = createFadeController({
+      audio,
+      targetVolume: audio.volume,
+      durationMs: fadeInDurationMs,
+      scheduler: fadeScheduler ?? undefined,
+    });
+
+    if (fadeController.enabled) {
+      fadeController.prime();
+    }
+
     try {
-      await audio.play();
+      const playPromise = audio.play();
+      if (fadeController.enabled) {
+        fadeController.start();
+        fadeControllers.set(audio, fadeController);
+      }
+
+      await playPromise;
       return audio;
     } catch (error) {
       console.warn('Failed to play startup audio', error);
+      if (fadeController.enabled) {
+        fadeController.cancel();
+        fadeControllers.delete(audio);
+      }
       reset(audio);
       return null;
     }
@@ -103,13 +143,22 @@ export const createStartupAudioController = ({
   soundHandle,
   createAudio = defaultCreateAudio,
   onFinish,
+  fadeInDurationMs = 0,
+  fadeScheduler = null,
+  createFadeController = createVolumeFadeController,
 }: StartupAudioControllerOptions): StartupAudioController => {
   let disposed = false;
   let active: { audio: HTMLAudioElement; strategy: PlaybackStrategy } | null = null;
 
   const strategies = asStrategies(
-    createSoundHandleStrategy(soundHandle),
-    createDirectAudioStrategy(audioSrc, createAudio)
+    createSoundHandleStrategy(soundHandle, fadeInDurationMs),
+    createDirectAudioStrategy(
+      audioSrc,
+      createAudio,
+      fadeInDurationMs,
+      fadeScheduler,
+      createFadeController
+    )
   );
 
   const detachListeners = (audio: HTMLAudioElement | null) => {

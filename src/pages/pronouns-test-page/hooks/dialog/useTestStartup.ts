@@ -5,6 +5,7 @@ import {
   type StartupAudioController,
   type StartupAudioControllerOptions,
 } from '../../utils/audio/startupAudioController';
+import { STARTUP_AUDIO_FADE_MS } from '../../utils/constants/audio';
 
 type Params = {
   open: boolean;
@@ -51,6 +52,7 @@ export const useTestStartup = ({
       soundHandle,
       createAudio,
       onFinish: finish,
+      fadeInDurationMs: STARTUP_AUDIO_FADE_MS,
     });
 
     return () => {

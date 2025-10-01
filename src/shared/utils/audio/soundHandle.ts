@@ -1,6 +1,9 @@
+import { createVolumeFadeController } from './volumeFader';
+
 export type PlayOptions = {
   volume?: number;
   startTime?: number;
+  fadeInDurationMs?: number;
 };
 
 export type SoundHandle = {
@@ -46,7 +49,16 @@ const waitForReady = (audio: HTMLAudioElement): Promise<HTMLAudioElement> => {
   });
 };
 
-export const createSoundHandle = (src: string, initialVolume = 0.5): SoundHandle => {
+type SoundHandleDependencies = {
+  createFadeController?: typeof createVolumeFadeController;
+};
+
+export const createSoundHandle = (
+  src: string,
+  initialVolume = 0.5,
+  dependencies: SoundHandleDependencies = {}
+): SoundHandle => {
+  const { createFadeController = createVolumeFadeController } = dependencies;
   let audio: HTMLAudioElement | null = null;
   let currentVolume = initialVolume;
   let loadPromise: Promise<HTMLAudioElement> | null = null;
@@ -80,22 +92,46 @@ export const createSoundHandle = (src: string, initialVolume = 0.5): SoundHandle
     if (!element) return false;
 
     const previousVolume = element.volume;
-    const volume = options.volume ?? previousVolume;
-    const startTime = options.startTime ?? 0;
+    const { volume, startTime = 0, fadeInDurationMs } = options;
+    const targetVolume = volume ?? previousVolume;
+    const fadeDuration = typeof fadeInDurationMs === 'number' ? fadeInDurationMs : 0;
+    const fadeController = createFadeController({
+      audio: element,
+      targetVolume,
+      durationMs: fadeDuration,
+    });
+    const shouldFade = fadeController.enabled;
 
     try {
       if (!element.paused) element.pause();
-      if (typeof volume === 'number') {
-        element.volume = volume;
-      }
       element.currentTime = startTime;
-      await element.play();
+
+      if (shouldFade) {
+        fadeController.prime();
+      } else if (typeof targetVolume === 'number') {
+        element.volume = targetVolume;
+      }
+
+      const playPromise = element.play();
+
+      if (shouldFade) {
+        fadeController.start();
+      }
+
+      await playPromise;
       return true;
     } catch (error) {
+      if (shouldFade) {
+        fadeController.cancel();
+        element.volume = previousVolume;
+      }
       console.warn('音声再生エラー:', error);
       return false;
     } finally {
-      if (typeof volume === 'number') {
+      if (!shouldFade && typeof volume === 'number') {
+        element.volume = previousVolume;
+      } else if (shouldFade && typeof volume === 'number') {
+        fadeController.cancel();
         element.volume = previousVolume;
       }
     }
