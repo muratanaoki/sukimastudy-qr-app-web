@@ -21,7 +21,6 @@ export const ResultSummary = ({
 }: ResultSummaryProps) => {
   const playerRef = useRef<InstanceType<typeof LordiconPlayer> | null>(null);
   const icon = medalColor === 'var(--medal-gold-color)' ? prizeRevealIcon : prizePinchIcon;
-
   useEffect(() => {
     playerRef.current?.playFromBeginning();
   }, [scorePercentage]);
@@ -29,7 +28,13 @@ export const ResultSummary = ({
   return (
     <div className={styles.resultBox}>
       <div className={styles.resultIcon}>
-        <LordiconPlayer ref={playerRef} icon={icon} size={iconSize} colorize={medalColor} />
+        <LordiconPlayer
+          ref={playerRef}
+          icon={icon}
+          size={iconSize}
+          colorize={medalColor}
+          renderMode="HARDWARE"
+        />
       </div>
       <h2 className={styles.resultRating}>{rating}</h2>
     </div>

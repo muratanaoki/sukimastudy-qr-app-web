@@ -8,7 +8,7 @@ import { resolveScoreTier } from '../../../utils/score/score';
  * - scorePercentage から tier を導出し、適切な効果音を遅延付きで鳴らす。
  */
 
-const RESULT_SOUND_DELAY_MS = 300;
+const RESULT_SOUND_DELAY_MS = 500;
 
 export type UseResultSoundEffectParams = {
   hasItems: boolean;
