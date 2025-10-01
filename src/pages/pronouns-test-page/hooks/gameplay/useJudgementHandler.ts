@@ -72,7 +72,6 @@ export const useJudgementHandler = (
   const finalizeJudgement = useCallback(
     (isCorrect: boolean) => {
       if (cancelledRef.current) return;
-      setSelectedJudgement(null);
       scheduleAdvance(isCorrect);
     },
     [scheduleAdvance]
