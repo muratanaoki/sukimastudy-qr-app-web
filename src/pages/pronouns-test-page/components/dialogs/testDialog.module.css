@@ -33,6 +33,10 @@
   will-change: transform, opacity;
 }
 
+.dialogClosing {
+  animation: dialogSlideDown 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 @keyframes dialogSlideUp {
   from {
     transform: translateY(100%);
@@ -44,8 +48,23 @@
   }
 }
 
+@keyframes dialogSlideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dialog {
+    animation: none;
+  }
+
+  .dialogClosing {
     animation: none;
   }
 }

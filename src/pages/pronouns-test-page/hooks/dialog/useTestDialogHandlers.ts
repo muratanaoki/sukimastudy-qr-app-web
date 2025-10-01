@@ -11,9 +11,6 @@ interface UseTestDialogHandlersProps {
     handleSkipAsCorrect: () => void;
   };
   setShowTranslation: (value: boolean | ((prev: boolean) => boolean)) => void;
-  reset: () => void;
-  onClose: () => void;
-  cancelFlash: () => void;
 }
 
 export const useTestDialogHandlers = ({
@@ -22,16 +19,7 @@ export const useTestDialogHandlers = ({
   reveal,
   feedback,
   setShowTranslation,
-  reset,
-  onClose,
-  cancelFlash,
 }: UseTestDialogHandlersProps) => {
-  const handleDialogClose = useCallback(() => {
-    cancelFlash();
-    reset();
-    onClose();
-  }, [cancelFlash, reset, onClose]);
-
   const handleChoiceAnswer = useCallback(
     (choiceId: string, i: number) => {
       if (answerMode === AnswerMode.Listening && !revealed) reveal();
@@ -50,7 +38,6 @@ export const useTestDialogHandlers = ({
   }, [setShowTranslation]);
 
   return {
-    handleDialogClose,
     handleChoiceAnswer,
     handleSkip,
     handleRevealWord,

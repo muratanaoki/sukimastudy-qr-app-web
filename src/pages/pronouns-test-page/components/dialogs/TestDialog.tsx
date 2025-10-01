@@ -19,9 +19,11 @@ import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReason
 import { PauseReason } from '../../hooks/gameplay/usePauseManager';
 import { deriveControlState } from '../../utils/dialog/controlState';
 import { TestDialogContent } from './internal/TestDialogContent';
+import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogCloseController';
 
 const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 const RESULT_TRANSITION_DELAY_MS = 500;
+const CLOSE_ANIMATION_DURATION_MS = 450;
 
 export type TestDialogProps = {
   open: boolean;
@@ -112,33 +114,40 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     judgementSoundEffects
   );
 
-  const { handleDialogClose, handleChoiceAnswer, handleSkip, handleRevealWord } =
-    useTestDialogHandlers({
-      answerMode,
-      revealed: display.revealed,
-      reveal: display.reveal,
-      feedback,
-      setShowTranslation: display.setShowTranslation,
-      reset,
-      onClose,
-      cancelFlash,
-    });
+  const { handleChoiceAnswer, handleSkip, handleRevealWord } = useTestDialogHandlers({
+    answerMode,
+    revealed: display.revealed,
+    reveal: display.reveal,
+    feedback,
+    setShowTranslation: display.setShowTranslation,
+  });
+  const handleDialogClosed = useCallback(() => {
+    reset();
+    onClose();
+  }, [onClose, reset]);
+
+  const { isClosing, shouldRender, requestClose, finalizeClose } = useDialogCloseController({
+    open,
+    animationDurationMs: CLOSE_ANIMATION_DURATION_MS,
+    onBeginClose: cancelFlash,
+    onClosed: handleDialogClosed,
+  });
 
   const dialogPhase = resolveDialogPhase(hasItems, isResultDisplayed, isTransitioning);
 
   const handleCloseClick = useCallback(() => {
     if (dialogPhase === TestDialogPhase.Completed) {
       closeConfirm();
-      handleDialogClose();
+      requestClose();
       return;
     }
     openConfirm();
-  }, [dialogPhase, closeConfirm, handleDialogClose, openConfirm]);
+  }, [dialogPhase, closeConfirm, openConfirm, requestClose]);
 
   const handleConfirmClose = useCallback(() => {
     closeConfirm();
-    handleDialogClose();
-  }, [closeConfirm, handleDialogClose]);
+    requestClose();
+  }, [closeConfirm, requestClose]);
 
   const handleCancelClose = closeConfirm;
 
@@ -206,11 +215,13 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW);
   }, [handleJudgementAnswer]);
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     <TestDialogContent
       dialogPhase={dialogPhase}
+      closing={isClosing}
+      onCloseAnimationEnd={finalizeClose}
       header={{
         posTitle: pos.title,
         groupTitle: group.title,
@@ -234,7 +245,7 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
         correctAnswers,
         scorePercentage,
         answerHistory,
-        onClose: handleDialogClose,
+        onClose: requestClose,
       }}
       emptyLabelVisible={view.showEmpty}
       controls={{

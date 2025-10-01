@@ -1,4 +1,5 @@
-import type { ComponentProps } from 'react';
+import type { AnimationEvent, ComponentProps } from 'react';
+import clsx from 'clsx';
 import styles from '../testDialog.module.css';
 import { DialogHeader } from './DialogHeader';
 import QuestionContent from './QuestionContent';
@@ -6,6 +7,8 @@ import TestControls from './TestControls';
 import TestResult from './TestResult';
 import { ConfirmCloseDialog } from './ConfirmCloseDialog';
 import type { TestDialogPhase } from '../../../utils/dialog/dialogPhase';
+
+const CLOSE_ANIMATION_NAME = 'dialogSlideDown';
 
 export type TestDialogHeaderProps = {
   posTitle: string;
@@ -38,6 +41,8 @@ export type TestDialogContentProps = {
   emptyLabelVisible: boolean;
   controls: TestDialogControlsProps;
   confirm: TestDialogConfirmProps;
+  closing: boolean;
+  onCloseAnimationEnd: () => void;
 };
 
 export const TestDialogContent = ({
@@ -48,13 +53,28 @@ export const TestDialogContent = ({
   emptyLabelVisible,
   controls,
   confirm,
+  closing,
+  onCloseAnimationEnd,
 }: TestDialogContentProps) => {
   const { visible: questionVisible, ...questionProps } = question;
   const { visible: resultVisible, hasItems, ...resultProps } = result;
   const { visible: controlsVisible, ...controlsProps } = controls;
 
+  const handleAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
+    if (!closing) return;
+    if (event.target !== event.currentTarget) return;
+    if (event.animationName !== CLOSE_ANIMATION_NAME) return;
+    onCloseAnimationEnd();
+  };
+
   return (
-    <div role="dialog" aria-modal="true" aria-label="テスト" className={styles.dialog}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="テスト"
+      className={clsx(styles.dialog, closing && styles.dialogClosing)}
+      onAnimationEnd={handleAnimationEnd}
+    >
       <DialogHeader
         phase={dialogPhase}
         posTitle={header.posTitle}
