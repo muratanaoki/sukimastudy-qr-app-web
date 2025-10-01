@@ -33,7 +33,7 @@ import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmClos
 import { buildTestDialogView } from '../../utils/dialog/testDialogView';
 // 効果音の共通フック（クリック音、正解音など）
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
-import type { PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
+import type { PlaybackFailureHandler, PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
 // 結果表示時のサウンド演出を担当
 import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSoundEffect';
 // 一時停止理由が発生した際に PauseManager に接続
@@ -53,6 +53,57 @@ import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;
+// Web Speech API のキャンセルを待機する上限時間（ms）
+const SPEECH_IDLE_TIMEOUT_MS = 480;
+
+type PlaybackFailureState = {
+  context: string;
+  info?: PlaybackFailureInfo;
+} | null;
+
+// 効果音再生の失敗状態を局所管理し、テストしやすいシンプルな API で返す
+const usePlaybackFailureState = () => {
+  const [state, setState] = useState<PlaybackFailureState>(null);
+
+  const reportFailure = useCallback((context: string, info?: PlaybackFailureInfo) => {
+    setState({ context, info });
+  }, []);
+
+  const clearFailure = useCallback(() => {
+    setState(null);
+  }, []);
+
+  return {
+    state,
+    reportFailure,
+    clearFailure,
+  } as const;
+};
+
+type SoundEffectLifecycleParams = {
+  setBeforePlay: (listener: (() => void | Promise<void>) | null) => void;
+  setPlaybackFailureHandler: (handler: PlaybackFailureHandler | null) => void;
+  beforePlay: () => Promise<void>;
+  onPlaybackFailure: PlaybackFailureHandler;
+};
+
+// 効果音マネージャの before/after ハンドラ登録とクリーンアップを共通化
+const useSoundEffectLifecycle = ({
+  setBeforePlay,
+  setPlaybackFailureHandler,
+  beforePlay,
+  onPlaybackFailure,
+}: SoundEffectLifecycleParams) => {
+  useEffect(() => {
+    setBeforePlay(beforePlay);
+    setPlaybackFailureHandler(onPlaybackFailure);
+
+    return () => {
+      setBeforePlay(null);
+      setPlaybackFailureHandler(null);
+    };
+  }, [setBeforePlay, setPlaybackFailureHandler, beforePlay, onPlaybackFailure]);
+};
 
 export type TestDialogProps = {
   open: boolean;
@@ -137,34 +188,23 @@ export const TestDialog = ({
     getAudioElement,
   } = soundEffects;
 
-  const [playbackFailureInfo, setPlaybackFailureInfo] = useState<{
-    context: string;
-    info?: PlaybackFailureInfo;
-  } | null>(null);
+  const { state: playbackFailureInfo, reportFailure, clearFailure } = usePlaybackFailureState();
 
   // 効果音再生前に読み上げをキャンセルして音が重ならないようにする
   const beforePlay = useCallback(async () => {
     try {
-      await waitForIdle({ forceCancel: true, timeoutMs: 480 });
+      await waitForIdle({ forceCancel: true, timeoutMs: SPEECH_IDLE_TIMEOUT_MS });
     } catch (error) {
       console.warn('Failed to settle speech before sound effect', error);
     }
   }, [waitForIdle]);
 
-  // 効果音再生失敗時に情報を格納し、後続でダイアログ表示する
-  const handlePlaybackFailure = useCallback((context: string, info?: PlaybackFailureInfo) => {
-    setPlaybackFailureInfo({ context, info });
-  }, []);
-
-  // 効果音再生時の前処理・失敗ハンドラを設定し、クリーンアップで元に戻す
-  useEffect(() => {
-    setBeforePlay(beforePlay);
-    setPlaybackFailureHandler(handlePlaybackFailure);
-    return () => {
-      setBeforePlay(null);
-      setPlaybackFailureHandler(null);
-    };
-  }, [beforePlay, setBeforePlay, setPlaybackFailureHandler, handlePlaybackFailure]);
+  useSoundEffectLifecycle({
+    setBeforePlay,
+    setPlaybackFailureHandler,
+    beforePlay,
+    onPlaybackFailure: reportFailure,
+  });
 
   // 判定ボタン操作で利用する効果音群をメモ化して渡しやすく
   const judgementSoundEffects = useMemo(
@@ -396,7 +436,7 @@ export const TestDialog = ({
           // 効果音再生に失敗した場合のフォールバック UI
           info={playbackFailureInfo.info}
           fallbackContext={playbackFailureInfo.context}
-          onClose={() => setPlaybackFailureInfo(null)}
+          onClose={clearFailure}
         />
       ) : null}
     </>

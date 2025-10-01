@@ -1,4 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  DEFAULT_SPEECH_IDLE_TIMEOUT_MS,
+  createSpeechIdleWatcher,
+  type SpeechIdleOptions,
+  type SpeechIdleWatcher,
+} from './internal/speechIdleWatcher';
 
 // =====================================================================================
 // Speech (Web Speech Synthesis) Hook
@@ -60,11 +66,6 @@ export type UseSpeechOptions = {
   pitch?: number; // 共通ピッチ
 };
 
-export type WaitForSpeechIdleOptions = {
-  forceCancel?: boolean;
-  timeoutMs?: number;
-};
-
 const buildDefaultOptions = (): Required<UseSpeechOptions> => ({
   defaultLang: 'en-US',
   preferredVoiceNames: resolvePreferredVoiceNames(),
@@ -73,6 +74,24 @@ const buildDefaultOptions = (): Required<UseSpeechOptions> => ({
   pitch: 1.0,
 });
 
+// モバイル環境で speechSynthesis.speak を僅かに遅延させることで発話安定性を向上
+const DEFAULT_MOBILE_SPEAK_DELAY_MS = 50;
+// requestAnimationFrame が無い環境向けの疑似フレーム時間
+const DEFAULT_IDLE_FALLBACK_FRAME_MS = 16;
+
+const createFallbackRequestFrame =
+  () =>
+  (callback: FrameRequestCallback): number => {
+    return window.setTimeout(() => {
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      callback(now);
+    }, DEFAULT_IDLE_FALLBACK_FRAME_MS);
+  };
+
+const createFallbackCancelFrame = () => (handle: number) => {
+  window.clearTimeout(handle);
+};
+
 export function useSpeech(options?: UseSpeechOptions) {
   // options 変更時に default を再度生成（ブラウザ条件は通常固定なので build 一度でも良いが、テスト容易性を優先）
   const opts = useMemo(() => ({ ...buildDefaultOptions(), ...(options || {}) }), [options]);
@@ -80,6 +99,7 @@ export function useSpeech(options?: UseSpeechOptions) {
   const [speaking, setSpeaking] = useState<boolean>(false);
   const voicesRef = useRef<SpeechSynthesisVoice[] | null>(null);
   const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(null);
+  const speechIdleWatcherRef = useRef<SpeechIdleWatcher | null>(null);
 
   useEffect(() => {
     const ok = typeof window !== 'undefined' && 'speechSynthesis' in window;
@@ -182,7 +202,7 @@ export function useSpeech(options?: UseSpeechOptions) {
 
       // モバイルでは少し遅延を入れて安定性を向上
       if (isMobile) {
-        setTimeout(() => synth.speak(u), 50);
+        window.setTimeout(() => synth.speak(u), DEFAULT_MOBILE_SPEAK_DELAY_MS);
       } else {
         synth.speak(u);
       }
@@ -209,46 +229,51 @@ export function useSpeech(options?: UseSpeechOptions) {
     }
   }, []);
 
+  const getSpeechIdleWatcher = useCallback((): SpeechIdleWatcher | null => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      return null;
+    }
+
+    if (!speechIdleWatcherRef.current) {
+      const requestFrame =
+        typeof window.requestAnimationFrame === 'function'
+          ? window.requestAnimationFrame.bind(window)
+          : createFallbackRequestFrame();
+      const cancelFrame =
+        typeof window.cancelAnimationFrame === 'function'
+          ? window.cancelAnimationFrame.bind(window)
+          : createFallbackCancelFrame();
+
+      speechIdleWatcherRef.current = createSpeechIdleWatcher({
+        getSynth: () => window.speechSynthesis ?? null,
+        requestFrame,
+        cancelFrame,
+        setTimeout: window.setTimeout.bind(window),
+        clearTimeout: window.clearTimeout.bind(window),
+      });
+    }
+
+    return speechIdleWatcherRef.current;
+  }, []);
+
   const waitForIdle = useCallback(
-    async ({ forceCancel = false, timeoutMs = 400 }: WaitForSpeechIdleOptions = {}) => {
-      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-      const synth = window.speechSynthesis;
-      if (!synth.speaking) {
-        setSpeaking(false);
-        return;
-      }
+    async (options?: SpeechIdleOptions) => {
+      const watcher = getSpeechIdleWatcher();
+      if (!watcher) return;
 
-      if (forceCancel) {
-        try {
-          synth.cancel();
-        } catch {
-          /* ignore */
-        }
-      }
-
-      await new Promise<void>((resolve) => {
-        let rafId: number | null = null;
-        const cleanup = () => {
-          if (rafId !== null) {
-            window.cancelAnimationFrame(rafId);
-          }
-          window.clearTimeout(timeoutId);
-          resolve();
-        };
-
-        const check = () => {
-          if (!synth.speaking) {
-            cleanup();
-            return;
-          }
-          rafId = window.requestAnimationFrame(check);
-        };
-
-        const timeoutId = window.setTimeout(cleanup, timeoutMs);
-        check();
+      await watcher({
+        timeoutMs: DEFAULT_SPEECH_IDLE_TIMEOUT_MS,
+        ...options,
       });
 
       setSpeaking(false);
+    },
+    [getSpeechIdleWatcher]
+  );
+
+  useEffect(
+    () => () => {
+      speechIdleWatcherRef.current = null;
     },
     []
   );
@@ -281,3 +306,4 @@ export function useSpeech(options?: UseSpeechOptions) {
 }
 
 export type UseSpeech = ReturnType<typeof useSpeech>;
+export type WaitForSpeechIdleOptions = SpeechIdleOptions;
