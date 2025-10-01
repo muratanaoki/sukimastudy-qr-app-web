@@ -91,6 +91,7 @@ export const TestDialog = ({
     setBeforePlay,
     notifyPlaybackFailure,
     setPlaybackFailureHandler,
+    getAudioElement,
   } = soundEffects;
 
   const beforePlay = useCallback(() => {
@@ -116,8 +117,9 @@ export const TestDialog = ({
       playIncorrectSound,
       enableAudio,
       notifyPlaybackFailure,
+      getAudioElement,
     }),
-    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure]
+    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure, getAudioElement]
   );
 
   const isResultDisplayed = isCompleted;

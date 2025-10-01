@@ -3,8 +3,10 @@ import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 import {
   DEFAULT_PLAYBACK_ATTEMPTS,
   PlaybackRetrierLogger,
+  createPlaybackAudibilityVerifier,
   createPlaybackRetrier,
 } from '@/shared/utils/audio/playbackRetry';
+import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
 
 export type AnswerFeedbackConfig = {
   isCorrect: (choiceId: string) => boolean;
@@ -19,7 +21,11 @@ export type AnswerFeedbackConfig = {
 
 type SoundEffectControls = Pick<
   UseSoundEffectsReturn,
-  'enableAudio' | 'playCorrectSound' | 'playIncorrectSound' | 'notifyPlaybackFailure'
+  | 'enableAudio'
+  | 'playCorrectSound'
+  | 'playIncorrectSound'
+  | 'notifyPlaybackFailure'
+  | 'getAudioElement'
 >;
 
 type SoundRetryLogger = PlaybackRetrierLogger;
@@ -27,7 +33,13 @@ type SoundRetryLogger = PlaybackRetrierLogger;
 const DEFAULT_RETRY = DEFAULT_PLAYBACK_ATTEMPTS;
 
 export const createFeedbackSoundPlayer = (
-  { enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure }: SoundEffectControls,
+  {
+    enableAudio,
+    playCorrectSound,
+    playIncorrectSound,
+    notifyPlaybackFailure,
+    getAudioElement,
+  }: SoundEffectControls,
   logger: SoundRetryLogger = console,
   retryCount = DEFAULT_RETRY
 ) => {
@@ -38,18 +50,25 @@ export const createFeedbackSoundPlayer = (
     defaultAttempts: retryCount,
   });
 
+  const createVerify = (key: SoundKey) =>
+    createPlaybackAudibilityVerifier({
+      getAudioElement: () => getAudioElement(key),
+    });
+
   return {
     playCorrect: () =>
       playWithRetry({
         play: playCorrectSound,
         failureContext: '正解',
         logLabel: 'Correct',
+        verify: createVerify('correct'),
       }),
     playIncorrect: () =>
       playWithRetry({
         play: playIncorrectSound,
         failureContext: '不正解',
         logLabel: 'Incorrect',
+        verify: createVerify('incorrect'),
       }),
   } as const;
 };
@@ -77,7 +96,13 @@ export const useAnswerFeedback = ({
   currentKey,
   soundEffects,
 }: AnswerFeedbackConfig) => {
-  const { playCorrectSound, playIncorrectSound, enableAudio, notifyPlaybackFailure } = soundEffects;
+  const {
+    playCorrectSound,
+    playIncorrectSound,
+    enableAudio,
+    notifyPlaybackFailure,
+    getAudioElement,
+  } = soundEffects;
   const soundPlayer = useMemo(
     () =>
       createFeedbackSoundPlayer({
@@ -85,8 +110,9 @@ export const useAnswerFeedback = ({
         playCorrectSound,
         playIncorrectSound,
         notifyPlaybackFailure,
+        getAudioElement,
       }),
-    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure]
+    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure, getAudioElement]
   );
   const [good, setGood] = useState(false);
   const [wrong, setWrong] = useState(false);

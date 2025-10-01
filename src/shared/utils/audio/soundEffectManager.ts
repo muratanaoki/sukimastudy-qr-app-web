@@ -55,6 +55,7 @@ export type SoundEffectManager = {
   setBeforePlay: (listener: BeforePlayListener | null) => void;
   dispose: () => void;
   isEnabled: () => boolean;
+  getAudioElement: (key: SoundKey) => HTMLAudioElement | null;
 };
 
 type SoundEffectManagerOptions = {
@@ -176,6 +177,12 @@ export const createSoundEffectManager = ({
 
   const isEnabled = () => enabled;
 
+  const getAudioElement = (key: SoundKey) => {
+    const handle = handles.get(key);
+    if (!handle) return null;
+    return handle.getCurrent();
+  };
+
   return {
     ensureInitialized,
     enable,
@@ -183,5 +190,6 @@ export const createSoundEffectManager = ({
     setBeforePlay,
     dispose,
     isEnabled,
+    getAudioElement,
   };
 };

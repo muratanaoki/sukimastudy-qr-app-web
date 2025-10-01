@@ -79,6 +79,8 @@ export const useSoundEffects = () => {
     [soundPlayers]
   );
 
+  const getAudioElement = useCallback((key: SoundKey) => manager.getAudioElement(key), [manager]);
+
   return {
     playCorrectSound,
     playIncorrectSound,
@@ -92,6 +94,7 @@ export const useSoundEffects = () => {
     setBeforePlay,
     notifyPlaybackFailure,
     setPlaybackFailureHandler,
+    getAudioElement,
   };
 };
 

@@ -5,15 +5,22 @@ import { shouldFlash } from '../../utils/domain/function';
 import { useFlashDisplay } from '../ui/useFlashDisplay';
 import { FLASH_DURATION_MS, JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
-import { createPlaybackRetrier } from '@/shared/utils/audio/playbackRetry';
+import {
+  createPlaybackAudibilityVerifier,
+  createPlaybackRetrier,
+} from '@/shared/utils/audio/playbackRetry';
+import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
 
 type AdvanceHandler = (isCorrect?: boolean) => void;
 
 const SOUND_SYNC_DELAY_MS = 60;
-
 type SoundEffectsForJudgement = Pick<
   UseSoundEffectsReturn,
-  'playCorrectSound' | 'playIncorrectSound' | 'enableAudio' | 'notifyPlaybackFailure'
+  | 'playCorrectSound'
+  | 'playIncorrectSound'
+  | 'enableAudio'
+  | 'notifyPlaybackFailure'
+  | 'getAudioElement'
 >;
 
 export const useJudgementHandler = (
@@ -24,7 +31,13 @@ export const useJudgementHandler = (
 ) => {
   const [selectedJudgement, setSelectedJudgement] = useState<JudgementButtonType | null>(null);
   const { isFlashing, startFlash, cancelFlash: cancelFlashInternal } = useFlashDisplay();
-  const { playCorrectSound, playIncorrectSound, enableAudio, notifyPlaybackFailure } = soundEffects;
+  const {
+    playCorrectSound,
+    playIncorrectSound,
+    enableAudio,
+    notifyPlaybackFailure,
+    getAudioElement,
+  } = soundEffects;
   const advanceTimerRef = useRef<number | null>(null);
   const fallbackTimerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);
@@ -45,6 +58,7 @@ export const useJudgementHandler = (
         isCorrect: boolean;
         playSound: () => Promise<boolean>;
         failureContext: string;
+        soundKey: SoundKey;
       }
     >
   >(
@@ -53,11 +67,13 @@ export const useJudgementHandler = (
         isCorrect: true,
         playSound: () => playCorrectSound(),
         failureContext: '正解',
+        soundKey: 'correct',
       },
       [JUDGEMENT_BUTTON_TYPE.DONT_KNOW]: {
         isCorrect: false,
         playSound: () => playIncorrectSound(),
         failureContext: '不正解',
+        soundKey: 'incorrect',
       },
     }),
     [playCorrectSound, playIncorrectSound]
@@ -97,14 +113,17 @@ export const useJudgementHandler = (
   );
 
   const playJudgementSound = useCallback(
-    (playFn: () => Promise<boolean>, failureContext: string) => {
+    (playFn: () => Promise<boolean>, failureContext: string, soundKey: SoundKey) => {
       void playbackRetrier({
         play: playFn,
         failureContext,
         logLabel: 'Judgement',
+        verify: createPlaybackAudibilityVerifier({
+          getAudioElement: () => getAudioElement(soundKey),
+        }),
       });
     },
-    [playbackRetrier]
+    [playbackRetrier, getAudioElement]
   );
 
   const handleJudgementAnswer = useCallback(
@@ -118,7 +137,7 @@ export const useJudgementHandler = (
       setSelectedJudgement(buttonType);
 
       if (!cancelledRef.current) {
-        playJudgementSound(meta.playSound, meta.failureContext);
+        playJudgementSound(meta.playSound, meta.failureContext, meta.soundKey);
       }
 
       if (shouldFlash(choiceView)) {
