@@ -5,14 +5,21 @@ import { useOrderedItems } from '../gameplay/useOrderedItems';
 import { useAnswerFeedback } from '../gameplay/useAnswerFeedback';
 import { useTestDisplay } from '../gameplay/useTestDisplay';
 import type { PronounGroup } from '../../utils/domain/type';
+import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 
 type UseTestDialogStateParams = {
   open: boolean;
   group: PronounGroup;
   paused?: boolean;
+  soundEffects: UseSoundEffectsReturn;
 };
 
-export const useTestDialogState = ({ open, group, paused = false }: UseTestDialogStateParams) => {
+export const useTestDialogState = ({
+  open,
+  group,
+  paused = false,
+  soundEffects,
+}: UseTestDialogStateParams) => {
   const { choiceView, questionOrder, answerMode } = useTestSettings();
   const orderedItems = useOrderedItems(open, group.items, questionOrder);
   const { state, goNext, hasItems, reset } = useTestRunner(open, orderedItems, paused);
@@ -55,6 +62,7 @@ export const useTestDialogState = ({ open, group, paused = false }: UseTestDialo
     correctIndex: correctIndex >= 0 ? correctIndex : undefined,
     choiceIds,
     currentKey: questionKey,
+    soundEffects,
   });
 
   const display = useTestDisplay({

@@ -5,6 +5,7 @@ import { shouldFlash } from '../../utils/domain/function';
 import { useFlashDisplay } from '../ui/useFlashDisplay';
 import { FLASH_DURATION_MS, JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
+import { createPlaybackRetrier } from '@/shared/utils/audio/playbackRetry';
 
 type AdvanceHandler = (isCorrect?: boolean) => void;
 
@@ -27,6 +28,15 @@ export const useJudgementHandler = (
   const advanceTimerRef = useRef<number | null>(null);
   const fallbackTimerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);
+
+  const playbackRetrier = useMemo(
+    () =>
+      createPlaybackRetrier({
+        enableAudio,
+        notifyPlaybackFailure,
+      }),
+    [enableAudio, notifyPlaybackFailure]
+  );
 
   const judgementMeta = useMemo<
     Record<
@@ -88,19 +98,13 @@ export const useJudgementHandler = (
 
   const playJudgementSound = useCallback(
     (playFn: () => Promise<boolean>, failureContext: string) => {
-      void (async () => {
-        await enableAudio();
-        let played = await playFn();
-        if (played) return;
-
-        played = await playFn();
-        if (!played) {
-          console.warn('Judgement sound failed to play');
-          notifyPlaybackFailure(failureContext);
-        }
-      })();
+      void playbackRetrier({
+        play: playFn,
+        failureContext,
+        logLabel: 'Judgement',
+      });
     },
-    [enableAudio, notifyPlaybackFailure]
+    [playbackRetrier]
   );
 
   const handleJudgementAnswer = useCallback(

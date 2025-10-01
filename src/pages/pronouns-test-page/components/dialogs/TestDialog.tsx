@@ -66,11 +66,14 @@ export const TestDialog = ({
     removeReason,
   });
 
+  const soundEffects = useSoundEffects();
+
   const { settings, progress, results, choices, meta, actions, feedback, display } =
     useTestDialogState({
       open,
       group,
       paused: isPaused,
+      soundEffects,
     });
 
   const { choiceView, answerMode } = settings;
@@ -87,7 +90,8 @@ export const TestDialog = ({
     playResultSound,
     setBeforePlay,
     notifyPlaybackFailure,
-  } = useSoundEffects();
+    setPlaybackFailureHandler,
+  } = soundEffects;
 
   const beforePlay = useCallback(() => {
     try {
@@ -99,10 +103,12 @@ export const TestDialog = ({
 
   useEffect(() => {
     setBeforePlay(beforePlay);
+    setPlaybackFailureHandler(null);
     return () => {
       setBeforePlay(null);
+      setPlaybackFailureHandler(null);
     };
-  }, [beforePlay, setBeforePlay]);
+  }, [beforePlay, setBeforePlay, setPlaybackFailureHandler]);
 
   const judgementSoundEffects = useMemo(
     () => ({

@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
+import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
+import {
+  DEFAULT_PLAYBACK_ATTEMPTS,
+  PlaybackRetrierLogger,
+  createPlaybackRetrier,
+} from '@/shared/utils/audio/playbackRetry';
 
 export type AnswerFeedbackConfig = {
   isCorrect: (choiceId: string) => boolean;
@@ -9,44 +14,43 @@ export type AnswerFeedbackConfig = {
   choiceIds?: string[]; // 現在の選択肢ID（index ベース評価用）
   correctIndex?: number; // 正解のインデックス（index ベース評価用）
   currentKey?: string | number; // 問題が切り替わった時のリセット用キー
+  soundEffects: SoundEffectControls;
 };
 
 type SoundEffectControls = Pick<
-  ReturnType<typeof useSoundEffects>,
+  UseSoundEffectsReturn,
   'enableAudio' | 'playCorrectSound' | 'playIncorrectSound' | 'notifyPlaybackFailure'
 >;
 
-type SoundRetryLogger = Pick<Console, 'warn'>;
+type SoundRetryLogger = PlaybackRetrierLogger;
 
-const DEFAULT_RETRY = 2;
+const DEFAULT_RETRY = DEFAULT_PLAYBACK_ATTEMPTS;
 
 export const createFeedbackSoundPlayer = (
   { enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure }: SoundEffectControls,
   logger: SoundRetryLogger = console,
   retryCount = DEFAULT_RETRY
 ) => {
-  const playWithRetry = async (
-    play: () => Promise<boolean>,
-    label: 'Correct' | 'Incorrect'
-  ): Promise<boolean> => {
-    await enableAudio();
-
-    for (let attempt = 0; attempt < retryCount; attempt += 1) {
-      const played = await play();
-      if (played) {
-        return true;
-      }
-    }
-
-    logger.warn(`${label} sound failed to play`);
-    const contextLabel = label === 'Correct' ? '正解' : '不正解';
-    notifyPlaybackFailure(contextLabel);
-    return false;
-  };
+  const playWithRetry = createPlaybackRetrier({
+    enableAudio,
+    notifyPlaybackFailure,
+    logger,
+    defaultAttempts: retryCount,
+  });
 
   return {
-    playCorrect: () => playWithRetry(playCorrectSound, 'Correct'),
-    playIncorrect: () => playWithRetry(playIncorrectSound, 'Incorrect'),
+    playCorrect: () =>
+      playWithRetry({
+        play: playCorrectSound,
+        failureContext: '正解',
+        logLabel: 'Correct',
+      }),
+    playIncorrect: () =>
+      playWithRetry({
+        play: playIncorrectSound,
+        failureContext: '不正解',
+        logLabel: 'Incorrect',
+      }),
   } as const;
 };
 
@@ -71,9 +75,9 @@ export const useAnswerFeedback = ({
   choiceIds,
   correctIndex,
   currentKey,
+  soundEffects,
 }: AnswerFeedbackConfig) => {
-  const { playCorrectSound, playIncorrectSound, enableAudio, notifyPlaybackFailure } =
-    useSoundEffects();
+  const { playCorrectSound, playIncorrectSound, enableAudio, notifyPlaybackFailure } = soundEffects;
   const soundPlayer = useMemo(
     () =>
       createFeedbackSoundPlayer({
