@@ -72,7 +72,7 @@ export const TestDialog = ({
   startupAudioPreplayed,
 }: TestDialogProps) => {
   // Web Speech API の呼び出しをラップ。単語読み上げとキャンセルを提供
-  const { speakWord, cancel } = useSpeech();
+  const { speakWord, cancel, waitForIdle } = useSpeech();
   // 一時停止の原因を積み上げ式で管理して UI に反映
   const { isPaused, addReason, removeReason } = usePauseManager();
   const {
@@ -143,13 +143,13 @@ export const TestDialog = ({
   } | null>(null);
 
   // 効果音再生前に読み上げをキャンセルして音が重ならないようにする
-  const beforePlay = useCallback(() => {
+  const beforePlay = useCallback(async () => {
     try {
-      cancel();
+      await waitForIdle({ forceCancel: true, timeoutMs: 480 });
     } catch (error) {
-      console.warn('Failed to cancel speech before sound effect', error);
+      console.warn('Failed to settle speech before sound effect', error);
     }
-  }, [cancel]);
+  }, [waitForIdle]);
 
   // 効果音再生失敗時に情報を格納し、後続でダイアログ表示する
   const handlePlaybackFailure = useCallback((context: string, info?: PlaybackFailureInfo) => {

@@ -23,7 +23,7 @@ const SOUND_KEYS = Object.keys(SOUND_SOURCES) as SoundKey[];
 
 export type PlaybackFailureHandler = (context: string, info?: PlaybackFailureInfo) => void;
 
-type BeforePlayListener = () => void;
+type BeforePlayListener = () => void | Promise<void>;
 
 type AlertCapableWindow = Pick<Window, 'alert'>;
 
@@ -130,10 +130,10 @@ export const createSoundEffectManager = ({
     }
   };
 
-  const invokeBeforePlay = () => {
+  const invokeBeforePlay = async () => {
     if (!beforePlay) return;
     try {
-      beforePlay();
+      await beforePlay();
     } catch (error) {
       console.warn('beforePlay handler threw', error);
     }
@@ -143,7 +143,7 @@ export const createSoundEffectManager = ({
     const handle = handles.get(key);
     if (!handle) return false;
 
-    invokeBeforePlay();
+    await invokeBeforePlay();
     return handle.playFromStart();
   };
 

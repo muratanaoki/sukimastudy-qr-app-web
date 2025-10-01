@@ -60,6 +60,11 @@ export type UseSpeechOptions = {
   pitch?: number; // 共通ピッチ
 };
 
+export type WaitForSpeechIdleOptions = {
+  forceCancel?: boolean;
+  timeoutMs?: number;
+};
+
 const buildDefaultOptions = (): Required<UseSpeechOptions> => ({
   defaultLang: 'en-US',
   preferredVoiceNames: resolvePreferredVoiceNames(),
@@ -204,6 +209,50 @@ export function useSpeech(options?: UseSpeechOptions) {
     }
   }, []);
 
+  const waitForIdle = useCallback(
+    async ({ forceCancel = false, timeoutMs = 400 }: WaitForSpeechIdleOptions = {}) => {
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+      const synth = window.speechSynthesis;
+      if (!synth.speaking) {
+        setSpeaking(false);
+        return;
+      }
+
+      if (forceCancel) {
+        try {
+          synth.cancel();
+        } catch {
+          /* ignore */
+        }
+      }
+
+      await new Promise<void>((resolve) => {
+        let rafId: number | null = null;
+        const cleanup = () => {
+          if (rafId !== null) {
+            window.cancelAnimationFrame(rafId);
+          }
+          window.clearTimeout(timeoutId);
+          resolve();
+        };
+
+        const check = () => {
+          if (!synth.speaking) {
+            cleanup();
+            return;
+          }
+          rafId = window.requestAnimationFrame(check);
+        };
+
+        const timeoutId = window.setTimeout(cleanup, timeoutMs);
+        check();
+      });
+
+      setSpeaking(false);
+    },
+    []
+  );
+
   const api = useMemo(
     () =>
       ({
@@ -213,9 +262,19 @@ export function useSpeech(options?: UseSpeechOptions) {
         speakWord,
         speakSentence,
         cancel,
+        waitForIdle,
         setSelectedVoiceName,
       }) as const,
-    [supported, speaking, speak, speakWord, speakSentence, cancel, setSelectedVoiceName]
+    [
+      supported,
+      speaking,
+      speak,
+      speakWord,
+      speakSentence,
+      cancel,
+      waitForIdle,
+      setSelectedVoiceName,
+    ]
   );
 
   return api;

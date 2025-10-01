@@ -63,7 +63,7 @@ export const useSoundEffects = () => {
   } = soundPlayers;
 
   const setBeforePlay = useCallback(
-    (callback: (() => void) | null) => {
+    (callback: (() => void | Promise<void>) | null) => {
       manager.setBeforePlay(callback);
     },
     [manager]
