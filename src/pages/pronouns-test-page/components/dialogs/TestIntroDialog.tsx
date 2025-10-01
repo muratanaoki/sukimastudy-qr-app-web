@@ -150,10 +150,14 @@ export const TestIntroDialog = ({
     [onSelectRange, startupSoundHandle]
   );
 
-  const handleStart = useCallback(() => {
+  const handleStart = useCallback(async () => {
     if (!selectedSegment || !selectedRange) return;
     unlockSpeechSynthesis();
-    void startupSoundHandle?.playFromStart({ fadeInDurationMs: STARTUP_AUDIO_FADE_MS });
+
+    if (startupSoundHandle) {
+      await startupSoundHandle.playFromStart({ fadeInDurationMs: STARTUP_AUDIO_FADE_MS });
+    }
+
     onStart?.({
       groupNo: selectedRange.groupNo,
       start: selectedSegment.start,
