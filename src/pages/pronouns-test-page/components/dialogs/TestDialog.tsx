@@ -23,7 +23,7 @@ import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogC
 import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 
-const RESULT_TRANSITION_DELAY_MS = 500;
+const RESULT_TRANSITION_DELAY_MS = 0;
 const CLOSE_ANIMATION_DURATION_MS = 450;
 
 export type TestDialogProps = {

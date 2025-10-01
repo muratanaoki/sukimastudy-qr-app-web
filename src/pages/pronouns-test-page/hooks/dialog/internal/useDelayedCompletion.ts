@@ -37,6 +37,16 @@ export const useDelayedCompletion = ({
       return;
     }
 
+    if (delayRef.current <= 0) {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      setIsCompleted(true);
+      setIsTransitioning(false);
+      return;
+    }
+
     setIsTransitioning(true);
 
     if (timerRef.current) return;
