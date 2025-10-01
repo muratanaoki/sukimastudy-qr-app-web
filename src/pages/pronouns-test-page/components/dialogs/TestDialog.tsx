@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import type { PosGroup, PronounGroup } from '../../utils/domain/type';
 import { useSpeech } from '../../hooks/audio/useSpeech';
@@ -80,16 +80,38 @@ export const TestDialog = ({
   const { questionKey } = meta;
   const { advance, reset } = actions;
 
-  const soundEffects = useSoundEffects();
-  const { playCorrectSound, playIncorrectSound, enableAudio, playResultSound } = soundEffects;
+  const {
+    playCorrectSound,
+    playIncorrectSound,
+    enableAudio,
+    playResultSound,
+    setBeforePlay,
+    notifyPlaybackFailure,
+  } = useSoundEffects();
+
+  const beforePlay = useCallback(() => {
+    try {
+      cancel();
+    } catch (error) {
+      console.warn('Failed to cancel speech before sound effect', error);
+    }
+  }, [cancel]);
+
+  useEffect(() => {
+    setBeforePlay(beforePlay);
+    return () => {
+      setBeforePlay(null);
+    };
+  }, [beforePlay, setBeforePlay]);
 
   const judgementSoundEffects = useMemo(
     () => ({
       playCorrectSound,
       playIncorrectSound,
       enableAudio,
+      notifyPlaybackFailure,
     }),
-    [enableAudio, playCorrectSound, playIncorrectSound]
+    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure]
   );
 
   const isResultDisplayed = isCompleted;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 
 export type AnswerFeedbackConfig = {
@@ -11,6 +11,58 @@ export type AnswerFeedbackConfig = {
   currentKey?: string | number; // 問題が切り替わった時のリセット用キー
 };
 
+type SoundEffectControls = Pick<
+  ReturnType<typeof useSoundEffects>,
+  'enableAudio' | 'playCorrectSound' | 'playIncorrectSound' | 'notifyPlaybackFailure'
+>;
+
+type SoundRetryLogger = Pick<Console, 'warn'>;
+
+const DEFAULT_RETRY = 2;
+
+export const createFeedbackSoundPlayer = (
+  { enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure }: SoundEffectControls,
+  logger: SoundRetryLogger = console,
+  retryCount = DEFAULT_RETRY
+) => {
+  const playWithRetry = async (
+    play: () => Promise<boolean>,
+    label: 'Correct' | 'Incorrect'
+  ): Promise<boolean> => {
+    await enableAudio();
+
+    for (let attempt = 0; attempt < retryCount; attempt += 1) {
+      const played = await play();
+      if (played) {
+        return true;
+      }
+    }
+
+    logger.warn(`${label} sound failed to play`);
+    const contextLabel = label === 'Correct' ? '正解' : '不正解';
+    notifyPlaybackFailure(contextLabel);
+    return false;
+  };
+
+  return {
+    playCorrect: () => playWithRetry(playCorrectSound, 'Correct'),
+    playIncorrect: () => playWithRetry(playIncorrectSound, 'Incorrect'),
+  } as const;
+};
+
+export const resolveCorrectChoiceIndex = (
+  explicitIndex: number | undefined,
+  choiceIds: string[],
+  judge: (choiceId: string) => boolean
+): number | null => {
+  if (typeof explicitIndex === 'number') {
+    return explicitIndex;
+  }
+
+  const resolved = choiceIds.findIndex((id) => judge(id));
+  return resolved >= 0 ? resolved : null;
+};
+
 export const useAnswerFeedback = ({
   isCorrect,
   onNext,
@@ -20,7 +72,18 @@ export const useAnswerFeedback = ({
   correctIndex,
   currentKey,
 }: AnswerFeedbackConfig) => {
-  const { playCorrectSound, playIncorrectSound } = useSoundEffects();
+  const { playCorrectSound, playIncorrectSound, enableAudio, notifyPlaybackFailure } =
+    useSoundEffects();
+  const soundPlayer = useMemo(
+    () =>
+      createFeedbackSoundPlayer({
+        enableAudio,
+        playCorrectSound,
+        playIncorrectSound,
+        notifyPlaybackFailure,
+      }),
+    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure]
+  );
   const [good, setGood] = useState(false);
   const [wrong, setWrong] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
@@ -81,7 +144,7 @@ export const useAnswerFeedback = ({
 
       // 正解音を再生（スキップ時は音を出さない）
       if (!isSkipped) {
-        playCorrectSound();
+        void soundPlayer.playCorrect();
       }
 
       schedule(() => {
@@ -92,7 +155,7 @@ export const useAnswerFeedback = ({
         onNext(isSkipped ? false : true);
       }, goodDurationMs);
     },
-    [correctIndex, goodDurationMs, onNext, schedule, playCorrectSound]
+    [correctIndex, goodDurationMs, onNext, schedule, soundPlayer]
   );
 
   const startWrong = useCallback(
@@ -102,7 +165,7 @@ export const useAnswerFeedback = ({
       setCorrectIdx(resolvedCorrectIdx);
 
       // 不正解音を再生
-      playIncorrectSound();
+      void soundPlayer.playIncorrect();
 
       schedule(() => {
         setWrong(false);
@@ -111,7 +174,7 @@ export const useAnswerFeedback = ({
         onNext(false);
       }, wrongDurationMs);
     },
-    [onNext, schedule, wrongDurationMs, playIncorrectSound]
+    [onNext, schedule, wrongDurationMs, soundPlayer]
   );
 
   const handleAnswer = useCallback(
@@ -123,14 +186,11 @@ export const useAnswerFeedback = ({
       }
 
       // 正解インデックスの解決: props の correctIndex が優先、なければ choiceIds から算出
-      let resolved: number | null = null;
-      if (typeof correctIndex === 'number') {
-        resolved = correctIndex;
-      } else {
-        const ids = choiceIdsRef.current;
-        const resolvedIndex = ids.findIndex((id) => isCorrect(id));
-        resolved = resolvedIndex >= 0 ? resolvedIndex : null;
-      }
+      const resolved = resolveCorrectChoiceIndex(
+        typeof correctIndex === 'number' ? correctIndex : undefined,
+        choiceIdsRef.current,
+        isCorrect
+      );
 
       startWrong(index, resolved);
     },

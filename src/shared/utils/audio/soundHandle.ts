@@ -63,33 +63,66 @@ export const createSoundHandle = (
   let currentVolume = initialVolume;
   let loadPromise: Promise<HTMLAudioElement> | null = null;
 
-  const ensureLoaded = async (): Promise<HTMLAudioElement | null> => {
-    if (audio && audio.readyState >= 2) {
-      return audio;
+  // Audio 要素を lazily 生成し、同一インスタンスを再利用する。
+  const ensureAudioElement = (): HTMLAudioElement => {
+    if (!audio) {
+      audio = createAudioElement(src, currentVolume);
+    }
+    return audio;
+  };
+
+  // canplay が発火するまでのプリロードを並列で進める。
+  const primeLoad = () => {
+    const element = ensureAudioElement();
+    if (element.readyState >= 2) {
+      return null;
     }
 
     if (!loadPromise) {
-      const element = createAudioElement(src, currentVolume);
-      loadPromise = waitForReady(element).then((readyAudio) => {
-        audio = readyAudio;
-        return readyAudio;
-      });
+      loadPromise = waitForReady(element)
+        .then((readyAudio) => {
+          audio = readyAudio;
+          return readyAudio;
+        })
+        .catch((error) => {
+          console.warn('音声読み込み待機中にエラー:', error);
+          return element;
+        })
+        .finally(() => {
+          loadPromise = null;
+        });
+    }
+
+    return loadPromise;
+  };
+
+  const ensureLoaded = async (): Promise<HTMLAudioElement | null> => {
+    const element = ensureAudioElement();
+    if (element.readyState >= 2) {
+      return element;
+    }
+
+    const promise = primeLoad();
+    if (!promise) {
+      return element;
     }
 
     try {
-      await loadPromise;
+      await promise;
     } catch (error) {
       console.warn('音声読み込み待機中にエラー:', error);
-    } finally {
-      loadPromise = null;
     }
 
     return audio;
   };
 
   const playFromStart = async (options: PlayOptions = {}): Promise<boolean> => {
-    const element = await ensureLoaded();
+    const element = ensureAudioElement();
     if (!element) return false;
+
+    if (element.readyState < 2) {
+      primeLoad();
+    }
 
     const previousVolume = element.volume;
     const { volume, startTime = 0, fadeInDurationMs } = options;
@@ -102,19 +135,53 @@ export const createSoundHandle = (
     });
     const shouldFade = fadeController.enabled;
 
-    try {
-      if (!element.paused) element.pause();
-      element.currentTime = startTime;
+    if (!element.paused) {
+      element.pause();
+    }
 
-      if (shouldFade) {
-        fadeController.prime();
-      } else if (typeof targetVolume === 'number') {
-        element.volume = targetVolume;
+    let seekScheduled = false;
+    try {
+      element.currentTime = startTime;
+    } catch {
+      seekScheduled = true;
+    }
+
+    if (shouldFade) {
+      fadeController.prime();
+    } else if (typeof targetVolume === 'number') {
+      element.volume = targetVolume;
+    }
+
+    const handleCanPlay = () => {
+      if (seekScheduled) {
+        try {
+          element.currentTime = startTime;
+        } catch {
+          /* seek失敗時は諦める */
+        }
       }
 
+      if (shouldFade) {
+        fadeController.start();
+      }
+
+      element.removeEventListener('canplay', handleCanPlay);
+      element.removeEventListener('canplaythrough', handleCanPlay);
+    };
+
+    if (seekScheduled || shouldFade) {
+      element.addEventListener('canplay', handleCanPlay);
+      element.addEventListener('canplaythrough', handleCanPlay);
+
+      if (element.readyState >= 2) {
+        handleCanPlay();
+      }
+    }
+
+    try {
       const playPromise = element.play();
 
-      if (shouldFade) {
+      if (!seekScheduled && shouldFade) {
         fadeController.start();
       }
 
@@ -128,6 +195,9 @@ export const createSoundHandle = (
       console.warn('音声再生エラー:', error);
       return false;
     } finally {
+      element.removeEventListener('canplay', handleCanPlay);
+      element.removeEventListener('canplaythrough', handleCanPlay);
+
       if (!shouldFade && typeof volume === 'number') {
         element.volume = previousVolume;
       } else if (shouldFade && typeof volume === 'number') {

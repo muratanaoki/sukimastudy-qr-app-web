@@ -12,7 +12,7 @@ const SOUND_SYNC_DELAY_MS = 60;
 
 type SoundEffectsForJudgement = Pick<
   UseSoundEffectsReturn,
-  'playCorrectSound' | 'playIncorrectSound' | 'enableAudio'
+  'playCorrectSound' | 'playIncorrectSound' | 'enableAudio' | 'notifyPlaybackFailure'
 >;
 
 export const useJudgementHandler = (
@@ -23,22 +23,31 @@ export const useJudgementHandler = (
 ) => {
   const [selectedJudgement, setSelectedJudgement] = useState<JudgementButtonType | null>(null);
   const { isFlashing, startFlash, cancelFlash: cancelFlashInternal } = useFlashDisplay();
-  const { playCorrectSound, playIncorrectSound, enableAudio } = soundEffects;
+  const { playCorrectSound, playIncorrectSound, enableAudio, notifyPlaybackFailure } = soundEffects;
   const advanceTimerRef = useRef<number | null>(null);
   const fallbackTimerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);
 
   const judgementMeta = useMemo<
-    Record<JudgementButtonType, { isCorrect: boolean; playSound: () => void }>
+    Record<
+      JudgementButtonType,
+      {
+        isCorrect: boolean;
+        playSound: () => Promise<boolean>;
+        failureContext: string;
+      }
+    >
   >(
     () => ({
       [JUDGEMENT_BUTTON_TYPE.KNOW]: {
         isCorrect: true,
-        playSound: playCorrectSound,
+        playSound: () => playCorrectSound(),
+        failureContext: '正解',
       },
       [JUDGEMENT_BUTTON_TYPE.DONT_KNOW]: {
         isCorrect: false,
-        playSound: playIncorrectSound,
+        playSound: () => playIncorrectSound(),
+        failureContext: '不正解',
       },
     }),
     [playCorrectSound, playIncorrectSound]
@@ -77,6 +86,23 @@ export const useJudgementHandler = (
     [scheduleAdvance]
   );
 
+  const playJudgementSound = useCallback(
+    (playFn: () => Promise<boolean>, failureContext: string) => {
+      void (async () => {
+        await enableAudio();
+        let played = await playFn();
+        if (played) return;
+
+        played = await playFn();
+        if (!played) {
+          console.warn('Judgement sound failed to play');
+          notifyPlaybackFailure(failureContext);
+        }
+      })();
+    },
+    [enableAudio, notifyPlaybackFailure]
+  );
+
   const handleJudgementAnswer = useCallback(
     (buttonType: JudgementButtonType) => {
       const meta = judgementMeta[buttonType];
@@ -88,12 +114,8 @@ export const useJudgementHandler = (
       setSelectedJudgement(buttonType);
 
       if (!cancelledRef.current) {
-        meta.playSound();
+        playJudgementSound(meta.playSound, meta.failureContext);
       }
-
-      void enableAudio().catch(() => {
-        /* unlock失敗時もサウンド再生は試行 */
-      });
 
       if (shouldFlash(choiceView)) {
         fallbackTimerRef.current = window.setTimeout(() => {
@@ -114,7 +136,7 @@ export const useJudgementHandler = (
       clearAdvanceTimer,
       clearFallbackTimer,
       finalizeJudgement,
-      enableAudio,
+      playJudgementSound,
       judgementMeta,
     ]
   );
