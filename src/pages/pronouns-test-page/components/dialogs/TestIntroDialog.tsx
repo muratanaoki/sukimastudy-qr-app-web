@@ -1,7 +1,7 @@
 import styles from './testIntroDialog.module.css';
 import { Check, Settings } from 'lucide-react';
 import type { PronounGroup, Segment } from '../../utils/domain/type';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import { segmentItems } from '../../utils/domain/function';
 import clsx from 'clsx';
@@ -10,10 +10,39 @@ import { useInitialSelect } from '../../hooks/gameplay/useInitialSelect';
 import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
 import { DialogCard } from '@/shared/components/dialog/DialogCard';
 import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
+import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
+import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
+import { getStartupSoundHandle } from '../../utils/audio/startupSoundHandle';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
-type RangeSelectionPayload = { groupNo: number } & Segment;
+type RangeSelectionPayload = ({ groupNo: number } & Segment) & {
+  soundHandle?: SoundHandle;
+  preplayed?: boolean;
+};
+
+const useStartupSoundHandle = (src?: string): SoundHandle | null => {
+  const handle = useMemo(() => {
+    if (!src) return null;
+    return getStartupSoundHandle();
+  }, [src]);
+
+  useEffect(() => {
+    if (!handle) return;
+    handle
+      .ensureLoaded()
+      .then((audio) => {
+        if (!audio) return;
+        audio.pause();
+        audio.currentTime = 0;
+      })
+      .catch((error) => {
+        console.warn('スタート音声の事前読み込みに失敗しました:', error);
+      });
+  }, [handle]);
+
+  return handle;
+};
 
 export type TestIntroDialogProps = {
   item: PronounGroup; // 単一グループに変更
@@ -100,6 +129,7 @@ export const TestIntroDialog = ({
   onOpenSettings,
 }: TestIntroDialogProps) => {
   useEscapeKey(onClose, true);
+  const startupSoundHandle = useStartupSoundHandle(STARTUP_AUDIO_SRC);
 
   // Data derivations
   const groupWithSegments = useGroupWithSegments(item, segmentSize);
@@ -115,20 +145,24 @@ export const TestIntroDialog = ({
         start: seg.start,
         end: seg.end,
         items: seg.items,
+        soundHandle: startupSoundHandle ?? undefined,
       }),
-    [onSelectRange]
+    [onSelectRange, startupSoundHandle]
   );
 
   const handleStart = useCallback(() => {
     if (!selectedSegment || !selectedRange) return;
     unlockSpeechSynthesis();
+    void startupSoundHandle?.playFromStart();
     onStart?.({
       groupNo: selectedRange.groupNo,
       start: selectedSegment.start,
       end: selectedSegment.end,
       items: selectedSegment.items,
+      soundHandle: startupSoundHandle ?? undefined,
+      preplayed: !!startupSoundHandle,
     });
-  }, [onStart, selectedRange, selectedSegment]);
+  }, [onStart, selectedRange, selectedSegment, startupSoundHandle]);
 
   return (
     <DialogCard

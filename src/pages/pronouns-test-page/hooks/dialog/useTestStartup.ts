@@ -1,10 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
+import {
+  createStartupAudioController,
+  type StartupAudioController,
+  type StartupAudioControllerOptions,
+} from '../../utils/audio/startupAudioController';
 
 type Params = {
   open: boolean;
   audioSrc?: string;
   onComplete?: () => void;
   createAudio?: (src: string) => HTMLAudioElement;
+  soundHandle?: SoundHandle;
+  startupAudioPreplayed?: boolean;
+  controllerFactory?: (options: StartupAudioControllerOptions) => StartupAudioController;
 };
 
 type UseTestStartupResult = {
@@ -12,13 +21,18 @@ type UseTestStartupResult = {
 };
 
 const defaultCreateAudio = (src: string) => new Audio(src);
+const defaultControllerFactory = createStartupAudioController;
 
 export const useTestStartup = ({
   open,
   audioSrc,
   onComplete,
   createAudio = defaultCreateAudio,
+  soundHandle,
+  startupAudioPreplayed = false,
+  controllerFactory = defaultControllerFactory,
 }: Params): UseTestStartupResult => {
+  const controllerRef = useRef<StartupAudioController | null>(null);
   const completedRef = useRef(false);
   const [isStartupComplete, setIsStartupComplete] = useState(false);
 
@@ -30,49 +44,64 @@ export const useTestStartup = ({
   }, [onComplete]);
 
   useEffect(() => {
-    completedRef.current = false;
-    setIsStartupComplete(false);
-  }, [open]);
+    controllerRef.current?.dispose();
+
+    controllerRef.current = controllerFactory({
+      audioSrc,
+      soundHandle,
+      createAudio,
+      onFinish: finish,
+    });
+
+    return () => {
+      controllerRef.current?.dispose();
+      controllerRef.current = null;
+    };
+  }, [audioSrc, soundHandle, createAudio, controllerFactory, finish]);
 
   useEffect(() => {
-    if (!open) return;
+    const controller = controllerRef.current;
 
-    if (!audioSrc) {
+    if (!open) {
+      controller?.stop();
+      completedRef.current = false;
+      setIsStartupComplete(false);
+      return;
+    }
+
+    completedRef.current = false;
+    setIsStartupComplete(false);
+
+    if (!controller) {
       finish();
       return;
     }
 
-    const audio = createAudio(audioSrc);
-    audio.preload = 'auto';
+    const alreadyAdopted = startupAudioPreplayed && controller.adoptExistingPlayback();
+    if (alreadyAdopted) {
+      return;
+    }
+
     let cancelled = false;
 
-    const handleComplete = () => {
-      if (cancelled) return;
-      finish();
-    };
-
-    audio.addEventListener('ended', handleComplete);
-    audio.addEventListener('error', handleComplete);
-
-    const playAudio = async () => {
-      try {
-        await audio.play();
-      } catch (error) {
-        console.warn('Failed to play startup audio', error);
-        handleComplete();
-      }
-    };
-
-    void playAudio();
+    controller
+      .play()
+      .then((handled) => {
+        if (cancelled) return;
+        if (!handled) {
+          finish();
+        }
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        console.warn('Failed to initialise startup audio', error);
+        finish();
+      });
 
     return () => {
       cancelled = true;
-      audio.removeEventListener('ended', handleComplete);
-      audio.removeEventListener('error', handleComplete);
-      audio.pause();
-      audio.currentTime = 0;
     };
-  }, [open, audioSrc, finish, createAudio]);
+  }, [open, audioSrc, soundHandle, createAudio, controllerFactory, finish, startupAudioPreplayed]);
 
   return { isStartupComplete };
 };

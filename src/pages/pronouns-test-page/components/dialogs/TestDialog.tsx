@@ -20,8 +20,9 @@ import { PauseReason } from '../../hooks/gameplay/usePauseManager';
 import { deriveControlState } from '../../utils/dialog/controlState';
 import { TestDialogContent } from './internal/TestDialogContent';
 import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogCloseController';
+import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
+import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 
-const STARTUP_AUDIO_SRC = '/sounds/startTest.wav';
 const RESULT_TRANSITION_DELAY_MS = 500;
 const CLOSE_ANIMATION_DURATION_MS = 450;
 
@@ -30,9 +31,18 @@ export type TestDialogProps = {
   onClose: () => void;
   pos: PosGroup; // 上位の品詞グループ（単数）
   group: PronounGroup; // 現在テスト中の下位グループ
+  startupSoundHandle?: SoundHandle | null;
+  startupAudioPreplayed?: boolean;
 };
 
-export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
+export const TestDialog = ({
+  open,
+  onClose,
+  pos,
+  group,
+  startupSoundHandle,
+  startupAudioPreplayed,
+}: TestDialogProps) => {
   const { speakWord, cancel } = useSpeech();
   const { isPaused, addReason, removeReason } = usePauseManager();
   const {
@@ -44,7 +54,12 @@ export const TestDialog = ({ open, onClose, pos, group }: TestDialogProps) => {
     removePauseReason: removeReason,
   });
 
-  const { isStartupComplete } = useTestStartup({ open, audioSrc: STARTUP_AUDIO_SRC });
+  const { isStartupComplete } = useTestStartup({
+    open,
+    audioSrc: STARTUP_AUDIO_SRC,
+    soundHandle: startupSoundHandle ?? undefined,
+    startupAudioPreplayed,
+  });
 
   usePauseReasonEffect({
     active: open && !isStartupComplete,

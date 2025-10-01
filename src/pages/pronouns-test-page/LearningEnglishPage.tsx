@@ -32,6 +32,8 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
     showSettings,
     testItems,
     selectedRange,
+    startupSoundHandle,
+    startupAudioPreplayed,
     openTest,
     closeTest,
     closeFullTest,
@@ -98,7 +100,11 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
             }}
             onStart={(seg) => {
               console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
-              startTest(seg.items);
+              startTest({
+                items: seg.items,
+                soundHandle: seg.soundHandle ?? undefined,
+                preplayed: seg.preplayed ?? false,
+              });
             }}
             onOpenSettings={openSettings}
           />
@@ -118,7 +124,14 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
               items: testItems,
             };
             return (
-              <TestDialog open={showFullTest} onClose={closeFullTest} pos={pos} group={group} />
+              <TestDialog
+                open={showFullTest}
+                onClose={closeFullTest}
+                pos={pos}
+                group={group}
+                startupSoundHandle={startupSoundHandle}
+                startupAudioPreplayed={startupAudioPreplayed}
+              />
             );
           })()}
         {showSettings && <SettingDialog onClose={closeSettings} />}
