@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { MedalRank } from './enum';
 
 /**
  * Pronouns テストで利用するドメインモデル群。
@@ -53,8 +54,6 @@ export type RawPronounItem = {
 };
 
 export type Segment = { start: number; end: number; items: PronounItem[] };
-
-export type MedalRank = 'gold' | 'silver' | 'bronze';
 
 export type MedalStoreState = {
   version: number;

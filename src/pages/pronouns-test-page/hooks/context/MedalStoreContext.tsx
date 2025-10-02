@@ -1,11 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import type { MedalRank, MedalStoreState } from '../../utils/type';
+import type { MedalStoreState } from '../../utils/type';
 import {
   createDefaultMedalStore,
   loadMedalStore,
   saveMedalStore,
   upsertMedalInStore,
 } from '../../utils/functions/storage/medalStore';
+import { MedalRank } from '../../utils/enum';
 
 export type MedalStoreContextValue = {
   medals: Record<string, MedalRank>;

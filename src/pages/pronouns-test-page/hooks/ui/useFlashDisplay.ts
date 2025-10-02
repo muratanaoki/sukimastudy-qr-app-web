@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { FLASH_DURATION_MS } from '../../utils/constants/pronounData';
+import { FLASH_DURATION_MS } from '../../utils/constants/const';
 
 /**
  * 一瞬表示機能を管理するフック

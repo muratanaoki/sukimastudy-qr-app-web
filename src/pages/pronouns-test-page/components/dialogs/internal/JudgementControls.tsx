@@ -6,7 +6,7 @@ import type { JudgementButtonType } from '../../../utils/type';
 import {
   BUTTON_LABELS,
   JUDGEMENT_BUTTON_TYPE,
-} from '@/pages/pronouns-test-page/utils/constants/pronounData';
+} from '@/pages/pronouns-test-page/utils/constants/const';
 
 export type JudgementControlsProps = {
   showTranslation: boolean;

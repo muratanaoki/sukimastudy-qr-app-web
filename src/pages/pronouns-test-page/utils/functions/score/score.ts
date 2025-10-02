@@ -1,6 +1,7 @@
 import { RESULT_TIERS } from '@/shared/constants/resultTier';
-import type { MedalRank } from '../../type';
-import { ResultTier } from '../../enum';
+
+import { MedalRank, ResultTier } from '../../enum';
+import { MEDAL_RANKS } from '../../constants/const';
 
 export type ScoreMeta = {
   /** UI 表示用の評価ラベル。 */
@@ -25,19 +26,19 @@ const SCORE_DEFINITION_CONFIG = {
   [RESULT_TIERS[0]]: {
     minPercentage: 100,
     rating: 'Perfect!',
-    medalRank: 'gold' as const,
+    medalRank: MedalRank.Gold,
     priority: 3,
   },
   [RESULT_TIERS[1]]: {
     minPercentage: 60,
     rating: 'Great!',
-    medalRank: 'silver' as const,
+    medalRank: MedalRank.Silver,
     priority: 2,
   },
   [RESULT_TIERS[2]]: {
     minPercentage: 0,
     rating: 'Nice!',
-    medalRank: 'bronze' as const,
+    medalRank: MedalRank.Bronze,
     priority: 1,
   },
 } satisfies Record<ResultTier, Omit<ScoreDefinition, 'tier'>>;
@@ -60,11 +61,13 @@ const MEDAL_PRIORITY: Record<MedalRank, number> = SCORE_DEFINITIONS.reduce(
     table[medalRank] = priority;
     return table;
   },
-  {
-    gold: 0,
-    silver: 0,
-    bronze: 0,
-  }
+  MEDAL_RANKS.reduce<Record<MedalRank, number>>(
+    (acc, rank) => {
+      acc[rank] = 0;
+      return acc;
+    },
+    {} as Record<MedalRank, number>
+  )
 );
 
 /**

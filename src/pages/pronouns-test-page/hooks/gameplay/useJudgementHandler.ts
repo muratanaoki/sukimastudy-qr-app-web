@@ -9,7 +9,7 @@ import {
 } from '@/shared/utils/audio/playbackRetry';
 import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
 import { createPlaybackDiagnostics } from '@/shared/utils/audio/playbackDiagnostics';
-import { FLASH_DURATION_MS, JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
+import { FLASH_DURATION_MS, JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import { ChoiceView } from '../../utils/enum';
 
 /**

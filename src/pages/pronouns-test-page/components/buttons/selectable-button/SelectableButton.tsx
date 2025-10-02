@@ -1,13 +1,14 @@
 import clsx from 'clsx';
 import styles from './selectableButton.module.css';
 import { forwardRef, ReactNode, MouseEventHandler } from 'react';
-import type { MedalRank } from '@/pages/pronouns-test-page/utils/type';
+
 import { PrizeIcon } from './PrizeIcon';
+import { MedalRank } from '@/pages/pronouns-test-page/utils/enum';
 
 const MEDAL_COLOR_MAP: Record<MedalRank, string> = {
-  gold: 'var(--medal-gold-color)',
-  silver: 'var(--medal-silver-color)',
-  bronze: 'var(--medal-bronze-color)',
+  [MedalRank.Gold]: 'var(--medal-gold-color)',
+  [MedalRank.Silver]: 'var(--medal-silver-color)',
+  [MedalRank.Bronze]: 'var(--medal-bronze-color)',
 };
 
 export type SelectableButtonProps = {

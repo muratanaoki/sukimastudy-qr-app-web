@@ -1,4 +1,4 @@
-import { BUTTON_LABELS } from '../../constants/pronounData';
+import { BUTTON_LABELS } from '../../constants/const';
 import { AnswerMode, ChoiceView } from '../../enum';
 import { PronounItem, ExampleEntry, Segment } from '../../type';
 

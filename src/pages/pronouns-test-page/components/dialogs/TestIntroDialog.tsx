@@ -1,6 +1,6 @@
 import styles from './testIntroDialog.module.css';
 import { Check, Settings } from 'lucide-react';
-import type { MedalRank, PosGroup, PronounGroup, Segment } from '../../utils/type';
+import type { PosGroup, PronounGroup, Segment } from '../../utils/type';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import { segmentItems } from '../../utils/functions/domain/function';
@@ -15,6 +15,7 @@ import { getStartupSoundHandle } from '../../utils/functions/audio/startupSoundH
 import DialogCard from './DialogCard';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
 import { buildSegmentId } from '../../utils/functions/domain/medal';
+import { MedalRank } from '../../utils/enum';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;

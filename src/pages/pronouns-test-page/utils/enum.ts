@@ -4,7 +4,6 @@ export enum TestDialogPhase {
   Completed = 'completed',
 }
 
-// ===== Settings types (Pronouns Test) =====
 export enum ChoiceView {
   Bottom4 = 'bottom4',
   None = 'none',
@@ -24,4 +23,10 @@ export enum ResultTier {
   Perfect = 'perfect',
   Great = 'great',
   Nice = 'nice',
+}
+
+export enum MedalRank {
+  Gold = 'gold',
+  Silver = 'silver',
+  Bronze = 'bronze',
 }

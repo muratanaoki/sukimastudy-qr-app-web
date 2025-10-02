@@ -1,4 +1,6 @@
-import type { MedalRank, MedalStoreState } from '../../type';
+import { MEDAL_RANKS } from '../../constants/const';
+import { MedalRank } from '../../enum';
+import { type MedalStoreState } from '../../type';
 
 const STORAGE_KEY = 'pronoun_test_medals_v1';
 const STORAGE_VERSION = 1;
@@ -12,8 +14,10 @@ const resolveStorage = (storage?: StorageLike | null): StorageLike | null => {
   return window.localStorage;
 };
 
+const MEDAL_RANK_SET = new Set<MedalRank>(MEDAL_RANKS);
+
 const isMedalRank = (value: unknown): value is MedalRank =>
-  value === 'gold' || value === 'silver' || value === 'bronze';
+  typeof value === 'string' && MEDAL_RANK_SET.has(value as MedalRank);
 
 const reviveStore = (raw: unknown): MedalStoreState | null => {
   if (!raw || typeof raw !== 'object') return null;

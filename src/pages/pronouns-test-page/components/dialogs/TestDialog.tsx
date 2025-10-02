@@ -48,7 +48,7 @@ import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 // 効果音再生失敗時に表示するフォールバックダイアログ
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
-import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
+import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
 import {
   getMedalRank,
