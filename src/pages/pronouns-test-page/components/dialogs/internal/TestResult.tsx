@@ -6,7 +6,7 @@ import { ResultWordSections, useResultSections } from './test-result/ResultWordS
 import type { AnswerRecord } from '../../../hooks/gameplay/useTestRunner';
 import { useSpeech } from '../../../hooks/audio/useSpeech';
 import { useCallback, useEffect, useState } from 'react';
-import { getScoreMeta } from '../../../utils/score/score';
+import { getScoreMeta } from '../../../utils/functions/score/score';
 
 type TestResultProps = {
   total: number;

@@ -1,4 +1,4 @@
-import type { MedalRank } from '../domain/type';
+import type { MedalRank } from '../../domain/type';
 
 export type ScoreTier = 'perfect' | 'great' | 'nice';
 

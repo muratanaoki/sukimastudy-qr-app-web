@@ -1,10 +1,22 @@
-import { getMedalPriority, getScoreMeta } from '../score/score';
+import { getMedalPriority, getScoreMeta } from '../functions/score/score';
 import type { MedalRank, PosGroup, PronounGroup } from './type';
 
 /** 採点セグメントのデフォルト幅（語数）。 */
 export const DEFAULT_SEGMENT_SIZE = 10;
 
 const padIndex = (value: number) => String(value).padStart(3, '0');
+
+export const buildSegmentId = (
+  pos: PosGroup,
+  group: PronounGroup,
+  start: number,
+  end: number
+): string => {
+  const normalizedStart = Math.min(start, end);
+  const normalizedEnd = Math.max(start, end);
+  const rangeToken = `${padIndex(normalizedStart)}-${padIndex(normalizedEnd)}`;
+  return `${pos.pos}-${group.id}-${rangeToken}`;
+};
 
 /**
  * 正答率からメダルランクを算出する純粋関数。
@@ -54,12 +66,11 @@ export const resolveSegmentMeta = (
   }
 
   const segmentIndex = Math.floor((minIndex - 1) / effectiveSegmentSize);
-  const rangeToken = `${padIndex(minIndex)}-${padIndex(maxIndex)}`;
 
   return {
     start: minIndex,
     end: maxIndex,
     segmentIndex,
-    segmentId: `${pos.pos}-${group.id}-${rangeToken}`,
+    segmentId: buildSegmentId(pos, group, minIndex, maxIndex),
   };
 };

@@ -1,6 +1,6 @@
 import styles from './testIntroDialog.module.css';
 import { Check, Settings } from 'lucide-react';
-import type { PronounGroup, Segment } from '../../utils/domain/type';
+import type { MedalRank, PosGroup, PronounGroup, Segment } from '../../utils/domain/type';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import { segmentItems } from '../../utils/domain/function';
@@ -11,8 +11,10 @@ import { SelectableButton } from '@/pages/pronouns-test-page/components/buttons/
 import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { STARTUP_AUDIO_FADE_MS, STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
-import { getStartupSoundHandle } from '../../utils/audio/startupSoundHandle';
+import { getStartupSoundHandle } from '../../utils/functions/audio/startupSoundHandle';
 import DialogCard from './DialogCard';
+import { useMedalStore } from '../../hooks/context/MedalStoreContext';
+import { buildSegmentId } from '../../utils/domain/medal';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
@@ -20,6 +22,8 @@ type RangeSelectionPayload = ({ groupNo: number } & Segment) & {
   soundHandle?: SoundHandle;
   preplayed?: boolean;
 };
+
+type SegmentWithMedal = Segment & { medal: MedalRank | null };
 
 const useStartupSoundHandle = (src?: string): SoundHandle | null => {
   const handle = useMemo(() => {
@@ -45,6 +49,7 @@ const useStartupSoundHandle = (src?: string): SoundHandle | null => {
 };
 
 export type TestIntroDialogProps = {
+  pos: PosGroup;
   item: PronounGroup; // 単一グループに変更
   onClose: () => void;
   onSelectRange?: (range: RangeSelectionPayload) => void;
@@ -62,12 +67,12 @@ const RangeGrid = ({
   onSelectRange,
 }: {
   groupNo: number;
-  segments: Segment[];
+  segments: SegmentWithMedal[];
   selectedRange: SelectedRange;
   onSelectRange?: (payload: RangeSelectionPayload) => void;
 }) => {
   const isSelected = useCallback(
-    (seg: Segment) =>
+    (seg: SegmentWithMedal) =>
       !!selectedRange &&
       groupNo === selectedRange.groupNo &&
       seg.start === selectedRange.start &&
@@ -81,9 +86,16 @@ const RangeGrid = ({
         <SelectableButton
           key={`${seg.start}-${seg.end}`}
           className={clsx(isSelected(seg) && styles.testRangeButtonSelected)}
-          onClick={() => onSelectRange?.({ groupNo, ...seg })}
+          onClick={() =>
+            onSelectRange?.({
+              groupNo,
+              start: seg.start,
+              end: seg.end,
+              items: seg.items,
+            })
+          }
         >
-          {seg.start}~{seg.end}語
+          {seg.start}~{seg.end}語 {seg.medal ?? '-'}
         </SelectableButton>
       ))}
     </div>
@@ -120,6 +132,7 @@ const useSelectedSegment = (
   }, [groupWithSegments, selectedRange]);
 
 export const TestIntroDialog = ({
+  pos,
   item,
   onClose,
   onSelectRange,
@@ -130,9 +143,19 @@ export const TestIntroDialog = ({
 }: TestIntroDialogProps) => {
   useEscapeKey(onClose, true);
   const startupSoundHandle = useStartupSoundHandle(STARTUP_AUDIO_SRC);
+  const { getMedal } = useMedalStore();
 
   // Data derivations
   const groupWithSegments = useGroupWithSegments(item, segmentSize);
+  const segmentsWithMedal = useMemo<SegmentWithMedal[]>(() => {
+    return groupWithSegments.segments.map((seg) => {
+      const segmentId = buildSegmentId(pos, item, seg.start, seg.end);
+      return {
+        ...seg,
+        medal: getMedal(segmentId) ?? null,
+      };
+    });
+  }, [groupWithSegments.segments, pos, item, getMedal]);
   const selectedSegment = useSelectedSegment(groupWithSegments, selectedRange);
   // 初期選択（最初のボタンを選択）
   useInitialSelect(groupWithSegments, selectedRange, onSelectRange);
@@ -203,7 +226,7 @@ export const TestIntroDialog = ({
       <div key={groupWithSegments.groupNo}>
         <RangeGrid
           groupNo={groupWithSegments.groupNo}
-          segments={groupWithSegments.segments}
+          segments={segmentsWithMedal}
           selectedRange={selectedRange}
           onSelectRange={handleSelectRange}
         />

@@ -1,6 +1,6 @@
 import { createSoundHandle } from '@/shared/utils/audio/soundHandle';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
-import { STARTUP_AUDIO_SRC } from '../constants/audio';
+import { STARTUP_AUDIO_SRC } from '../../constants/audio';
 
 let startupSoundHandle: SoundHandle | null = null;
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
-import { resolveScoreTier } from '../../../utils/score/score';
+import { resolveScoreTier } from '../../../utils/functions/score/score';
 
 /**
  * テスト完了時に結果サウンドを再生する副作用フック。

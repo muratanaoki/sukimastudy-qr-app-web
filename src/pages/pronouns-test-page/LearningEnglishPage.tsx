@@ -95,6 +95,7 @@ export default function LearningEnglishPage({ posGroup }: LearningEnglishPagePro
           <TestFabButton hidden={hideFab} onClick={openTest} />
           {showTest && (
             <TestIntroDialog
+              pos={posGroup}
               item={data.find((g) => g.groupNo === activeGroupNo) ?? data[0]}
               onClose={closeTest}
               selectedRange={selectedRange}

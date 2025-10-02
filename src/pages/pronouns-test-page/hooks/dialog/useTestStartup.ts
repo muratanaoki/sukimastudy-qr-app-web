@@ -4,7 +4,7 @@ import {
   createStartupAudioController,
   type StartupAudioController,
   type StartupAudioControllerOptions,
-} from '../../utils/audio/startupAudioController';
+} from '../../utils/functions/audio/startupAudioController';
 import { STARTUP_AUDIO_FADE_MS } from '../../utils/constants/audio';
 
 /**
