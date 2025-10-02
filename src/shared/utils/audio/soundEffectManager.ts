@@ -1,6 +1,6 @@
-import { RESULT_TIERS, ResultTier } from '@/shared/constants/resultTier';
 import { createSoundHandle } from './soundHandle';
 import type { PlaybackFailureInfo } from './playbackDiagnostics';
+import { ResultTier } from '@/pages/pronouns-test-page/utils/enum';
 
 export const SOUND_SOURCES = {
   correct: '/sounds/maru.mp3',
@@ -17,8 +17,6 @@ export const RESULT_TIER_TO_SOUND_KEY: Record<ResultTier, SoundKey> = {
   [ResultTier.Great]: 'middle',
   [ResultTier.Nice]: 'low',
 };
-
-export { RESULT_TIERS, ResultTier };
 
 const SOUND_KEYS = Object.keys(SOUND_SOURCES) as SoundKey[];
 

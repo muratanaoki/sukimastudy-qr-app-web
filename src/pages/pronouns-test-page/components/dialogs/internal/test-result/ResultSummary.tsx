@@ -5,7 +5,7 @@ import prizePinchIcon from '@/shared/loadicon/prizePinch.json';
 import prizeRevealIcon from '@/shared/loadicon/prizeReveal.json';
 
 import styles from './resultSummary.module.css';
-import { ResultTier } from '@/shared/constants/resultTier';
+import { ResultTier } from '@/pages/pronouns-test-page/utils/enum';
 
 type IconAsset = typeof prizePinchIcon | typeof prizeRevealIcon;
 

@@ -1,5 +1,6 @@
-import { RESULT_TIERS, ResultTier } from '@/shared/constants/resultTier';
+import { RESULT_TIERS } from '@/shared/constants/resultTier';
 import type { MedalRank } from '../../type';
+import { ResultTier } from '../../enum';
 
 export type ScoreMeta = {
   /** UI 表示用の評価ラベル。 */

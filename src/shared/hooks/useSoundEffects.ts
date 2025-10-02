@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   PlaybackFailureHandler,
   RESULT_TIER_TO_SOUND_KEY,
-  ResultTier,
   SoundEffectManager,
   SoundKey,
   createAlertPlaybackFailureHandler,
@@ -10,6 +9,7 @@ import {
   createSoundPlayerMap,
 } from '@/shared/utils/audio/soundEffectManager';
 import type { PlaybackFailureInfo } from '@/shared/utils/audio/playbackDiagnostics';
+import { ResultTier } from '@/pages/pronouns-test-page/utils/enum';
 
 /**
  * 効果音の再生・初期化・失敗ハンドリングを集約するアプリ全体向けフック。

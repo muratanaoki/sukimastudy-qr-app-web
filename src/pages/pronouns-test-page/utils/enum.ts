@@ -19,3 +19,9 @@ export enum AnswerMode {
   Normal = 'normal',
   Listening = 'listening',
 }
+
+export enum ResultTier {
+  Perfect = 'perfect',
+  Great = 'great',
+  Nice = 'nice',
+}
