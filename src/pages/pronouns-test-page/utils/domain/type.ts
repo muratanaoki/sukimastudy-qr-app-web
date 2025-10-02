@@ -34,6 +34,7 @@ export type ExampleEntry = { en?: string; jp?: string; level?: 1 | 2 | 3 };
 
 // 単一グループ
 export type PronounGroup = {
+  id: string; // 安定した識別子
   groupNo: number; // 連番（将来複数化してもよい）
   title: string; // 日本語タイトル
   abbr: string; // タブ用の短い表示（2文字程度）
@@ -52,6 +53,14 @@ export type RawPronounItem = {
 };
 
 export type Segment = { start: number; end: number; items: PronounItem[] };
+
+export type MedalRank = 'gold' | 'silver' | 'bronze';
+
+export type MedalStoreState = {
+  version: number;
+  updatedAt: string;
+  medals: Record<string, MedalRank>;
+};
 
 // 上位の品詞レベル（将来拡張を見越してユニオンで定義）
 export type PartOfSpeech = 'pronouns' | 'others';

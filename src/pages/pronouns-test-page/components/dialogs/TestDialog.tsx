@@ -3,7 +3,7 @@
  * - 各種カスタムフックを組み合わせて、出題ロジック・効果音・UI状態を統括的に制御する。
  * - 依存するフックが多いため、どの責務を担っているのかをコメントで明示している。
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // ESCキーでダイアログを閉じるためのキーボードショートカット管理
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 // 品詞グループや代名詞グループの型定義
@@ -49,6 +49,8 @@ import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 // 効果音再生失敗時に表示するフォールバックダイアログ
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
+import { useMedalStore } from '../../hooks/context/MedalStoreContext';
+import { getMedalRank, resolveSegmentMeta, selectHigherMedal } from '../../utils/domain/medal';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;
 // Web Speech API のキャンセルを待機する上限時間（ms）
@@ -120,6 +122,9 @@ export const TestDialog = ({
   startupSoundHandle,
   startupAudioPreplayed,
 }: TestDialogProps) => {
+  const { getMedal, upsertMedal } = useMedalStore();
+  const medalSavedRef = useRef(false);
+  const segmentMeta = useMemo(() => resolveSegmentMeta(pos, group), [pos, group]);
   // Web Speech API の呼び出しをラップ。単語読み上げとキャンセルを提供
   const { speakWord, cancel, waitForIdle } = useSpeech();
   // 一時停止の原因を積み上げ式で管理して UI に反映
@@ -217,6 +222,31 @@ export const TestDialog = ({
   );
 
   const isResultDisplayed = isCompleted;
+  const attemptMedal = useMemo(
+    () => (segmentMeta ? getMedalRank(scorePercentage) : null),
+    [segmentMeta, scorePercentage]
+  );
+
+  useEffect(() => {
+    if (!open) {
+      medalSavedRef.current = false;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!isResultDisplayed) {
+      medalSavedRef.current = false;
+      return;
+    }
+
+    if (!hasItems || !segmentMeta || !attemptMedal) return;
+    if (medalSavedRef.current) return;
+
+    const existing = getMedal(segmentMeta.segmentId);
+    const finalMedal = selectHigherMedal(existing, attemptMedal);
+    upsertMedal(segmentMeta.segmentId, finalMedal);
+    medalSavedRef.current = true;
+  }, [isResultDisplayed, hasItems, segmentMeta, attemptMedal, getMedal, upsertMedal]);
 
   // 結果表示に切り替わった際に結果用のサウンドを再生
   useResultSoundEffect({

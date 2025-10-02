@@ -1,33 +1,108 @@
+import type { MedalRank } from '../domain/type';
+
 export type ScoreTier = 'perfect' | 'great' | 'nice';
 
-const SCORE_META: Record<ScoreTier, { rating: string; medalColor: string }> = {
-  perfect: {
+export type ScoreMeta = {
+  /** UI 表示用の評価ラベル。 */
+  rating: string;
+  /** ラベル装飾に利用するテーマカラー。 */
+  medalColor: string;
+  /** 永続化・比較に使うメダルランク。 */
+  medalRank: MedalRank;
+  /** メダル同士を比較するための優先度（大きいほど高ランク）。 */
+  priority: number;
+};
+
+type ScoreDefinition = ScoreMeta & {
+  /** 該当ティアとなるスコアの下限（パーセント）。 */
+  minPercentage: number;
+  tier: ScoreTier;
+};
+
+/**
+ * スコアレンジと見た目/メダルをまとめた定義。
+ * 先頭のエントリほど高いスコア帯になるようソートしている。
+ */
+const SCORE_DEFINITIONS: readonly ScoreDefinition[] = [
+  {
+    tier: 'perfect',
+    minPercentage: 100,
     rating: 'Perfect!',
     medalColor: 'var(--medal-gold-color)',
+    medalRank: 'gold',
+    priority: 3,
   },
-  great: {
+  {
+    tier: 'great',
+    minPercentage: 60,
     rating: 'Great!',
     medalColor: 'var(--medal-silver-color)',
+    medalRank: 'silver',
+    priority: 2,
   },
-  nice: {
+  {
+    tier: 'nice',
+    minPercentage: 0,
     rating: 'Nice!',
     medalColor: 'var(--medal-bronze-color)',
+    medalRank: 'bronze',
+    priority: 1,
   },
-};
+] as const;
 
+const SCORE_META_BY_TIER: Record<ScoreTier, ScoreMeta> = SCORE_DEFINITIONS.reduce(
+  (table, { tier, rating, medalColor, medalRank, priority }) => {
+    table[tier] = { rating, medalColor, medalRank, priority };
+    return table;
+  },
+  {} as Record<ScoreTier, ScoreMeta>
+);
+
+const MEDAL_PRIORITY: Record<MedalRank, number> = SCORE_DEFINITIONS.reduce(
+  (table, { medalRank, priority }) => {
+    table[medalRank] = priority;
+    return table;
+  },
+  {
+    gold: 0,
+    silver: 0,
+    bronze: 0,
+  }
+);
+
+/**
+ * メダルランク同士を比較する際の優先度を返す。
+ */
+export const getMedalPriority = (rank: MedalRank): number => MEDAL_PRIORITY[rank];
+
+/**
+ * 与えられた正答率からスコアティアを決定する。
+ */
 export const resolveScoreTier = (percentage: number): ScoreTier => {
-  if (percentage === 100) return 'perfect';
-  if (percentage >= 60) return 'great';
-  return 'nice';
+  for (const { tier, minPercentage } of SCORE_DEFINITIONS) {
+    if (percentage >= minPercentage) {
+      return tier;
+    }
+  }
+
+  // 範囲外になった場合は最下位ティアにフォールバック
+  return SCORE_DEFINITIONS[SCORE_DEFINITIONS.length - 1].tier;
 };
 
+/**
+ * スコアティアに紐づくメタ情報を返すヘルパー。
+ */
 export const getScoreMeta = (percentage: number) => {
   const tier = resolveScoreTier(percentage);
-  const { rating, medalColor } = SCORE_META[tier];
+  const { rating, medalColor, medalRank, priority } = SCORE_META_BY_TIER[tier];
 
   return {
     tier,
     rating,
     medalColor,
+    medalRank,
+    priority,
   };
 };
+
+export { SCORE_DEFINITIONS }; // テスト等での再利用を想定して公開

@@ -12,6 +12,7 @@ import { TestFabButton } from './components/buttons/testfab-button/TestFabButton
 import { useSwipeTabs } from './hooks/ui/useSwipeTabs';
 import { TestDialog } from './components/dialogs/TestDialog';
 import { TestSettingsProvider } from './hooks/context/TestSettingsContext';
+import { MedalStoreProvider } from './hooks/context/MedalStoreContext';
 import { useTabManager } from './hooks/ui/useTabManager';
 import { useDialogManager } from './hooks/dialog/useDialogManager';
 
@@ -56,82 +57,84 @@ export default function LearningEnglishPage({ posGroup }: LearningEnglishPagePro
   const swipeRef = useSwipeTabs<HTMLDivElement>(activeGroupNo, groupNos, changeTab);
 
   return (
-    <TestSettingsProvider>
-      <div className={styles.container}>
-        {/* タブバー */}
-        {data.length > 0 && (
-          <GroupTabs
-            items={data}
-            activeGroupNo={activeGroupNo}
-            onChange={changeTab}
-            ariaLabel="品詞グループ"
-          />
-        )}
-        <main ref={swipeRef}>
-          {data.map(({ groupNo, title, items, icon: IconComp }) => {
-            const isActive = groupNo === activeGroupNo;
-            return (
-              <section
-                key={groupNo}
-                id={`panel-${groupNo}`}
-                role="tabpanel"
-                aria-labelledby={`tab-${groupNo}`}
-                hidden={!isActive}
-                className={styles.section}
-              >
-                <div className={styles.sectionHeader}>
-                  <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
-                  <h1 className={styles.title}>{title}</h1>
-                  <IconComp className={styles.headerIcon} />
-                </div>
-                <EnglishWord items={items} speech={speech} />
-              </section>
-            );
-          })}
-        </main>
+    <MedalStoreProvider>
+      <TestSettingsProvider>
+        <div className={styles.container}>
+          {/* タブバー */}
+          {data.length > 0 && (
+            <GroupTabs
+              items={data}
+              activeGroupNo={activeGroupNo}
+              onChange={changeTab}
+              ariaLabel="品詞グループ"
+            />
+          )}
+          <main ref={swipeRef}>
+            {data.map(({ groupNo, title, items, icon: IconComp }) => {
+              const isActive = groupNo === activeGroupNo;
+              return (
+                <section
+                  key={groupNo}
+                  id={`panel-${groupNo}`}
+                  role="tabpanel"
+                  aria-labelledby={`tab-${groupNo}`}
+                  hidden={!isActive}
+                  className={styles.section}
+                >
+                  <div className={styles.sectionHeader}>
+                    <h1 className={styles.titleNumber}>{String(groupNo).padStart(2, '0')}.</h1>
+                    <h1 className={styles.title}>{title}</h1>
+                    <IconComp className={styles.headerIcon} />
+                  </div>
+                  <EnglishWord items={items} speech={speech} />
+                </section>
+              );
+            })}
+          </main>
 
-        <TestFabButton hidden={hideFab} onClick={openTest} />
-        {showTest && (
-          <TestIntroDialog
-            item={data.find((g) => g.groupNo === activeGroupNo) ?? data[0]}
-            onClose={closeTest}
-            selectedRange={selectedRange}
-            onSelectRange={(seg) => {
-              setSelectedRange({ groupNo: seg.groupNo, start: seg.start, end: seg.end });
-              console.log('Select range', seg.groupNo, seg.start, seg.end, seg.items.length);
-            }}
-            onStart={(seg) => {
-              console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
-              startTest({
-                items: seg.items,
-                soundHandle: seg.soundHandle ?? undefined,
-                preplayed: seg.preplayed ?? false,
-              });
-            }}
-            onOpenSettings={openSettings}
-          />
-        )}
-        {/* Full Test ダイアログ: pos は pronouns 固定、group はアクティブのグループ情報に testItems を差し替え */}
-        {showFullTest &&
-          (() => {
-            const activeGroup = data.find((g) => g.groupNo === activeGroupNo) ?? data[0];
-            const group = {
-              ...activeGroup,
-              items: testItems,
-            };
-            return (
-              <TestDialog
-                open={showFullTest}
-                onClose={closeFullTest}
-                pos={posGroup}
-                group={group}
-                startupSoundHandle={startupSoundHandle}
-                startupAudioPreplayed={startupAudioPreplayed}
-              />
-            );
-          })()}
-        {showSettings && <SettingDialog onClose={closeSettings} />}
-      </div>
-    </TestSettingsProvider>
+          <TestFabButton hidden={hideFab} onClick={openTest} />
+          {showTest && (
+            <TestIntroDialog
+              item={data.find((g) => g.groupNo === activeGroupNo) ?? data[0]}
+              onClose={closeTest}
+              selectedRange={selectedRange}
+              onSelectRange={(seg) => {
+                setSelectedRange({ groupNo: seg.groupNo, start: seg.start, end: seg.end });
+                console.log('Select range', seg.groupNo, seg.start, seg.end, seg.items.length);
+              }}
+              onStart={(seg) => {
+                console.log('Start test range', seg.groupNo, seg.start, seg.end, seg.items.length);
+                startTest({
+                  items: seg.items,
+                  soundHandle: seg.soundHandle ?? undefined,
+                  preplayed: seg.preplayed ?? false,
+                });
+              }}
+              onOpenSettings={openSettings}
+            />
+          )}
+          {/* Full Test ダイアログ: pos は pronouns 固定、group はアクティブのグループ情報に testItems を差し替え */}
+          {showFullTest &&
+            (() => {
+              const activeGroup = data.find((g) => g.groupNo === activeGroupNo) ?? data[0];
+              const group = {
+                ...activeGroup,
+                items: testItems,
+              };
+              return (
+                <TestDialog
+                  open={showFullTest}
+                  onClose={closeFullTest}
+                  pos={posGroup}
+                  group={group}
+                  startupSoundHandle={startupSoundHandle}
+                  startupAudioPreplayed={startupAudioPreplayed}
+                />
+              );
+            })()}
+          {showSettings && <SettingDialog onClose={closeSettings} />}
+        </div>
+      </TestSettingsProvider>
+    </MedalStoreProvider>
   );
 }

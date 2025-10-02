@@ -31,6 +31,7 @@ export const DATA_RAW4: RawPronounItem[] = DATA_RAW_SOURCE4;
 // 画面で使うグループ配列（現状は静的に定義。API 化する場合の元データとしても利用）
 export const DATA: PronounGroup[] = [
   {
+    id: 'personal-pronouns',
     groupNo: 1,
     title: '人称・所有・再帰代名詞',
     abbr: '人称',
@@ -39,6 +40,7 @@ export const DATA: PronounGroup[] = [
     items: withIndex(DATA_RAW1),
   },
   {
+    id: 'indefinite-people',
     groupNo: 2,
     title: '不定代名詞（人・物・事）',
     abbr: '不定',
@@ -47,6 +49,7 @@ export const DATA: PronounGroup[] = [
     items: withIndex(DATA_RAW2),
   },
   {
+    id: 'indefinite-quantity',
     groupNo: 3,
     title: '不定代名詞（数量・部分など）',
     abbr: '不定',
@@ -55,6 +58,7 @@ export const DATA: PronounGroup[] = [
     items: withIndex(DATA_RAW3),
   },
   {
+    id: 'demonstrative-others',
     groupNo: 4,
     title: '指示代名詞・その他',
     abbr: '指示',
