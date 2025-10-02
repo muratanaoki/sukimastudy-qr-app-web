@@ -12,7 +12,7 @@ import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { STARTUP_AUDIO_FADE_MS, STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import { getStartupSoundHandle } from '../../utils/audio/startupSoundHandle';
-import DialogCard from './dialog/DialogCard';
+import DialogCard from './DialogCard';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;

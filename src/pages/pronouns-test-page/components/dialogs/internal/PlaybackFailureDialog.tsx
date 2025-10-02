@@ -4,7 +4,7 @@ import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton'
 import { SecondaryButton } from '@/shared/components/secondary-button/SecondaryButton';
 import type { PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
 import styles from './playbackFailureDialog.module.css';
-import DialogCard from '../dialog/DialogCard';
+import DialogCard from '../DialogCard';
 
 /**
  * 効果音再生に繰り返し失敗した際にユーザーへ状況を通知し、診断情報のコピーを促すダイアログ。

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { createAutoPronounceController } from './internal/autoPronounceController';
+import { createAutoPronounceController } from './autoPronounceController';
 
 /**
  * 自動読み上げの発火タイミングと重複制御を管理するフック。

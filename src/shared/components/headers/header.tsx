@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './header.module.css';
-import { POS_GROUPS } from '@/pages/pronouns-test-page/utils/constants/const';
 import { SectionList } from './components/SectionList';
 import { HamburgerButton } from './components/HamburgerButton';
 import logoPng from '../../images/logo.png';
@@ -9,6 +8,7 @@ import { useHeaderHeightVar } from '../../hooks/useHeaderHeightVar';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import { useNoScrollClass } from '../../hooks/useNoScrollClass';
+import { POS_GROUPS } from '@/pages/pronouns-test-page/utils/constants/pronounData';
 
 export const Header = () => {
   const [open, setOpen] = useState(false);

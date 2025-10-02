@@ -4,7 +4,7 @@ import {
   createSpeechIdleWatcher,
   type SpeechIdleOptions,
   type SpeechIdleWatcher,
-} from './internal/speechIdleWatcher';
+} from './speechIdleWatcher';
 
 // =====================================================================================
 // Speech (Web Speech Synthesis) Hook

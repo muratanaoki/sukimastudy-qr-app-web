@@ -1,7 +1,7 @@
 import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { AlertTriangle } from 'lucide-react';
 import styles from './confirmCloseDialog.module.css';
-import DialogCard from '../dialog/DialogCard';
+import DialogCard from '../DialogCard';
 
 export type ConfirmCloseDialogProps = {
   open: boolean;

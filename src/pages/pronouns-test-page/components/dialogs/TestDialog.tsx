@@ -4,7 +4,6 @@
  * - 依存するフックが多いため、どの責務を担っているのかをコメントで明示している。
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
 // ESCキーでダイアログを閉じるためのキーボードショートカット管理
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 // 品詞グループや代名詞グループの型定義
@@ -13,8 +12,6 @@ import type { PosGroup, PronounGroup } from '../../utils/domain/type';
 import { useSpeech } from '../../hooks/audio/useSpeech';
 // 自動読み上げ制御（問題表示時に自動で発話するか）
 import { useAutoPronounce } from '../../hooks/audio/useAutoPronounce';
-// 「わかる／わからない」など判定ボタンの定数定義
-import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 // ダイアログ全体の状態（問題、残り時間、フィードバック等）を一括管理
 import { useTestDialogState } from '../../hooks/dialog/useTestDialogState';
 // 判定ボタンの選択・フラッシュ制御をまとめたフック
@@ -51,6 +48,7 @@ import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 // 効果音再生失敗時に表示するフォールバックダイアログ
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
+import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;
 // Web Speech API のキャンセルを待機する上限時間（ms）

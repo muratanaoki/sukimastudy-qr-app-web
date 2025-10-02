@@ -2,8 +2,11 @@ import { ThumbsUp, Eye, EyeOff } from 'lucide-react';
 import { useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import styles from './judgementControls.module.css';
-import { BUTTON_LABELS, JUDGEMENT_BUTTON_TYPE } from '../../../utils/constants/const';
 import type { JudgementButtonType } from '../../../utils/domain/type';
+import {
+  BUTTON_LABELS,
+  JUDGEMENT_BUTTON_TYPE,
+} from '@/pages/pronouns-test-page/utils/constants/pronounData';
 
 export type JudgementControlsProps = {
   showTranslation: boolean;
