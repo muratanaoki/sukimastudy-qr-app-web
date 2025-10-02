@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { PronounItem } from '../../utils/domain/type';
+import type { PronounItem } from '../../utils/type';
 import { QuestionOrder } from '../../utils/enum';
 
 export const useOrderedItems = (

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import styles from './sectionList.module.css';
-import type { PosGroup } from '@/pages/pronouns-test-page/utils/domain/type';
+import type { PosGroup } from '@/pages/pronouns-test-page/utils/type';
 import { usePosOpenMap } from '../hooks/usePosOpenMap';
 import { PosHeaderButton } from './internal/PosHeaderButton';
 import { GroupList } from './internal/GroupList';

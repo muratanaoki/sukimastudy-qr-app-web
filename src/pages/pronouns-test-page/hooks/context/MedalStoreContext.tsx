@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import type { MedalRank, MedalStoreState } from '../../utils/domain/type';
+import type { MedalRank, MedalStoreState } from '../../utils/type';
 import {
   createDefaultMedalStore,
   loadMedalStore,

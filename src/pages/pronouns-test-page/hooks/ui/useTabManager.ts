@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { PronounGroup } from '../../utils/domain/type';
+import type { PronounGroup } from '../../utils/type';
 
 export const useTabManager = (data: PronounGroup[]) => {
   const [searchParams, setSearchParams] = useSearchParams();

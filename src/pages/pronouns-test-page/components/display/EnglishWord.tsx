@@ -1,7 +1,7 @@
 import { memo, useMemo, useState, useId } from 'react';
 import styles from './englishWord.module.css';
 import { Volume2 } from 'lucide-react';
-import type { PronounItem } from '../../utils/domain/type';
+import type { PronounItem } from '../../utils/type';
 import gridStyles from '../../learningEnglishPage.module.css';
 import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../../hooks/audio/useSpeech';

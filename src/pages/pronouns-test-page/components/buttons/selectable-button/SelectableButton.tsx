@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import styles from './selectableButton.module.css';
 import { forwardRef, ReactNode, MouseEventHandler } from 'react';
-import type { MedalRank } from '@/pages/pronouns-test-page/utils/domain/type';
+import type { MedalRank } from '@/pages/pronouns-test-page/utils/type';
 import { PrizeIcon } from './PrizeIcon';
 
 const MEDAL_COLOR_MAP: Record<MedalRank, string> = {

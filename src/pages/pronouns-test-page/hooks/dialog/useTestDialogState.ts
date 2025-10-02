@@ -4,7 +4,7 @@ import { useTestRunner, useChoices } from '../gameplay/useTestRunner';
 import { useOrderedItems } from '../gameplay/useOrderedItems';
 import { useAnswerFeedback } from '../gameplay/useAnswerFeedback';
 import { useTestDisplay } from '../gameplay/useTestDisplay';
-import type { PronounGroup } from '../../utils/domain/type';
+import type { PronounGroup } from '../../utils/type';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
 
 /**

@@ -1,6 +1,6 @@
 import styles from './testIntroDialog.module.css';
 import { Check, Settings } from 'lucide-react';
-import type { MedalRank, PosGroup, PronounGroup, Segment } from '../../utils/domain/type';
+import type { MedalRank, PosGroup, PronounGroup, Segment } from '../../utils/type';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import { segmentItems } from '../../utils/domain/function';

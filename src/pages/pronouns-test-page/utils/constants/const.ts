@@ -1,4 +1,4 @@
-import { RawPronounItem } from '../domain/type';
+import { RawPronounItem } from '../type';
 
 /**
  * Pronouns テストで利用する静的定数集。

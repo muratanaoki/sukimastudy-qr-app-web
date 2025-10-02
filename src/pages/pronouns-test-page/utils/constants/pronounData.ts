@@ -1,10 +1,4 @@
-import {
-  PronounGroup,
-  PronounItem,
-  RawPronounItem,
-  PosGroup,
-  JudgementButtonType,
-} from '../domain/type';
+import { PronounGroup, PronounItem, RawPronounItem, PosGroup, JudgementButtonType } from '../type';
 import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
 import { DATA_RAW_SOURCE1, DATA_RAW_SOURCE2, DATA_RAW_SOURCE3, DATA_RAW_SOURCE4 } from './const';
 

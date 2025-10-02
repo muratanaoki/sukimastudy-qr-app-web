@@ -1,5 +1,5 @@
 import styles from './groupTabs.module.css';
-import type { PronounGroup } from '../../utils/domain/type';
+import type { PronounGroup } from '../../utils/type';
 import { useCallback } from 'react';
 import { Key } from '@/shared/utils/enum';
 

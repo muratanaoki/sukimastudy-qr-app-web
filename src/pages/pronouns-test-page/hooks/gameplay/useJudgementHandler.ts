@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { JudgementButtonType } from '../../utils/domain/type';
+import type { JudgementButtonType } from '../../utils/type';
 import { shouldFlash } from '../../utils/domain/function';
 import { useFlashDisplay } from '../ui/useFlashDisplay';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';

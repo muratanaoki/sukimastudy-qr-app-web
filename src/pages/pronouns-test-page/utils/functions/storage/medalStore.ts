@@ -1,4 +1,4 @@
-import type { MedalRank, MedalStoreState } from '../../domain/type';
+import type { MedalRank, MedalStoreState } from '../../type';
 
 const STORAGE_KEY = 'pronoun_test_medals_v1';
 const STORAGE_VERSION = 1;

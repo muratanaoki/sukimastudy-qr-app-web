@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // ESCキーでダイアログを閉じるためのキーボードショートカット管理
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 // 品詞グループや代名詞グループの型定義
-import type { PosGroup, PronounGroup } from '../../utils/domain/type';
+import type { PosGroup, PronounGroup } from '../../utils/type';
 // 単語読み上げ（Web Speech API ラッパー）
 import { useSpeech } from '../../hooks/audio/useSpeech';
 // 自動読み上げ制御（問題表示時に自動で発話するか）

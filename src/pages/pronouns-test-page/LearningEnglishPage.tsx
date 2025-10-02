@@ -1,7 +1,7 @@
 import styles from './learningEnglishPage.module.css';
 import { useSpeech } from './hooks/audio/useSpeech';
 import { EnglishWord } from './components/display/EnglishWord';
-import type { PosGroup } from './utils/domain/type';
+import type { PosGroup } from './utils/type';
 import { useFabHideOnBottom } from './hooks/ui/useFabHideOnBottom';
 import { useMemo } from 'react';
 import { useBodyScrollLock } from './hooks/ui/useBodyScrollLock';

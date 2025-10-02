@@ -2,7 +2,7 @@ import { ThumbsUp, Eye, EyeOff } from 'lucide-react';
 import { useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import styles from './judgementControls.module.css';
-import type { JudgementButtonType } from '../../../utils/domain/type';
+import type { JudgementButtonType } from '../../../utils/type';
 import {
   BUTTON_LABELS,
   JUDGEMENT_BUTTON_TYPE,

@@ -1,6 +1,6 @@
 import styles from './exampleList.module.css';
 import { Volume2 } from 'lucide-react';
-import type { ExampleEntry } from '../../utils/domain/type';
+import type { ExampleEntry } from '../../utils/type';
 
 export type ExampleListProps = {
   items: ExampleEntry[];

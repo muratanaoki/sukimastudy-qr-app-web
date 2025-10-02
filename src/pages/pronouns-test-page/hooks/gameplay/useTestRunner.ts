@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import type { PronounItem } from '../../utils/domain/type';
+import type { PronounItem } from '../../utils/type';
 import { useCountdown } from './useCountdown';
 
 export type AnswerRecord = {

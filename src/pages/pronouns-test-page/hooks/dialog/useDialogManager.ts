@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { PronounGroup } from '../../utils/domain/type';
+import type { PronounGroup } from '../../utils/type';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 
 export const useDialogManager = () => {

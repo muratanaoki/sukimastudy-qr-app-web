@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { Segment } from '../../utils/domain/type';
+import type { Segment } from '../../utils/type';
 
 type SelectedRangeLike = { groupNo: number; start: number; end: number } | null | undefined;
 
