@@ -57,7 +57,7 @@ export const TestResult = ({
   answerHistory,
   onClose,
 }: TestResultProps) => {
-  const { rating, medalColor } = getScoreMeta(scorePercentage);
+  const { rating, tier } = getScoreMeta(scorePercentage);
   const iconSize = useResponsiveRemSize(RESULT_ICON_SIZE_REM);
   const speech = useSpeech();
   const sections = useResultSections(answerHistory);
@@ -66,9 +66,9 @@ export const TestResult = ({
     <div className={styles.testResult}>
       <ResultSummary
         rating={rating}
-        medalColor={medalColor}
         iconSize={iconSize}
         scorePercentage={scorePercentage}
+        tier={tier}
       />
 
       <ResultStats total={total} correctAnswers={correctAnswers} />

@@ -5,22 +5,24 @@ import prizePinchIcon from '@/shared/loadicon/prizePinch.json';
 import prizeRevealIcon from '@/shared/loadicon/prizeReveal.json';
 
 import styles from './resultSummary.module.css';
+import type { ScoreTier } from '../../../../utils/score/score';
+
+const ICON_COLOR_BY_TIER: Record<ScoreTier, string> = {
+  perfect: 'var(--medal-gold-color)',
+  great: 'var(--medal-silver-color)',
+  nice: 'var(--medal-bronze-color)',
+};
 
 export type ResultSummaryProps = {
   rating: string;
-  medalColor: string;
   iconSize: number;
   scorePercentage: number;
+  tier: ScoreTier;
 };
 
-export const ResultSummary = ({
-  rating,
-  medalColor,
-  iconSize,
-  scorePercentage,
-}: ResultSummaryProps) => {
+export const ResultSummary = ({ rating, iconSize, scorePercentage, tier }: ResultSummaryProps) => {
   const playerRef = useRef<InstanceType<typeof LordiconPlayer> | null>(null);
-  const icon = medalColor === 'var(--medal-gold-color)' ? prizeRevealIcon : prizePinchIcon;
+  const icon = tier === 'perfect' ? prizeRevealIcon : prizePinchIcon;
   useEffect(() => {
     playerRef.current?.playFromBeginning();
   }, [scorePercentage]);
@@ -32,7 +34,7 @@ export const ResultSummary = ({
           ref={playerRef}
           icon={icon}
           size={iconSize}
-          colorize={medalColor}
+          colorize={ICON_COLOR_BY_TIER[tier]}
           renderMode="HARDWARE"
         />
       </div>

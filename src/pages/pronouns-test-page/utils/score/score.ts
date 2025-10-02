@@ -5,8 +5,6 @@ export type ScoreTier = 'perfect' | 'great' | 'nice';
 export type ScoreMeta = {
   /** UI 表示用の評価ラベル。 */
   rating: string;
-  /** ラベル装飾に利用するテーマカラー。 */
-  medalColor: string;
   /** 永続化・比較に使うメダルランク。 */
   medalRank: MedalRank;
   /** メダル同士を比較するための優先度（大きいほど高ランク）。 */
@@ -28,7 +26,6 @@ const SCORE_DEFINITIONS: readonly ScoreDefinition[] = [
     tier: 'perfect',
     minPercentage: 100,
     rating: 'Perfect!',
-    medalColor: 'var(--medal-gold-color)',
     medalRank: 'gold',
     priority: 3,
   },
@@ -36,7 +33,6 @@ const SCORE_DEFINITIONS: readonly ScoreDefinition[] = [
     tier: 'great',
     minPercentage: 60,
     rating: 'Great!',
-    medalColor: 'var(--medal-silver-color)',
     medalRank: 'silver',
     priority: 2,
   },
@@ -44,15 +40,14 @@ const SCORE_DEFINITIONS: readonly ScoreDefinition[] = [
     tier: 'nice',
     minPercentage: 0,
     rating: 'Nice!',
-    medalColor: 'var(--medal-bronze-color)',
     medalRank: 'bronze',
     priority: 1,
   },
 ] as const;
 
 const SCORE_META_BY_TIER: Record<ScoreTier, ScoreMeta> = SCORE_DEFINITIONS.reduce(
-  (table, { tier, rating, medalColor, medalRank, priority }) => {
-    table[tier] = { rating, medalColor, medalRank, priority };
+  (table, { tier, rating, medalRank, priority }) => {
+    table[tier] = { rating, medalRank, priority };
     return table;
   },
   {} as Record<ScoreTier, ScoreMeta>
@@ -94,12 +89,11 @@ export const resolveScoreTier = (percentage: number): ScoreTier => {
  */
 export const getScoreMeta = (percentage: number) => {
   const tier = resolveScoreTier(percentage);
-  const { rating, medalColor, medalRank, priority } = SCORE_META_BY_TIER[tier];
+  const { rating, medalRank, priority } = SCORE_META_BY_TIER[tier];
 
   return {
     tier,
     rating,
-    medalColor,
     medalRank,
     priority,
   };
