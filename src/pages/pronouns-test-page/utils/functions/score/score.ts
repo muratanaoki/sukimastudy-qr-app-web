@@ -1,6 +1,4 @@
-import type { MedalRank } from '../../type';
-
-export type ScoreTier = 'perfect' | 'great' | 'nice';
+import type { MedalRank, ScoreTier } from '../../type';
 
 export type ScoreMeta = {
   /** UI 表示用の評価ラベル。 */

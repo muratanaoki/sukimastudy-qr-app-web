@@ -70,7 +70,6 @@ export const DATA: PronounGroup[] = [
 export const POS_GROUPS: PosGroup[] = [
   {
     pos: 'pronouns',
-    url: '/pronouns',
     title: '代名詞',
     groups: DATA,
   },

@@ -5,7 +5,7 @@ import prizePinchIcon from '@/shared/loadicon/prizePinch.json';
 import prizeRevealIcon from '@/shared/loadicon/prizeReveal.json';
 
 import styles from './resultSummary.module.css';
-import type { ScoreTier } from '../../../../utils/functions/score/score';
+import { ScoreTier } from '@/pages/pronouns-test-page/utils/type';
 
 type IconAsset = typeof prizePinchIcon | typeof prizeRevealIcon;
 

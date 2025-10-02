@@ -68,9 +68,10 @@ export type PartOfSpeech = 'pronouns' | 'others';
 // 品詞グループ（上位）: URL と表示名、下位グループの配列
 export type PosGroup = {
   pos: PartOfSpeech;
-  url: string;
   title: string;
   groups: PronounGroup[];
 };
 
 export type JudgementButtonType = 'know' | 'dontKnow';
+
+export type ScoreTier = 'perfect' | 'great' | 'nice';
