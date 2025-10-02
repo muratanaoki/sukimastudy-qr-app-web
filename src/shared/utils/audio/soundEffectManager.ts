@@ -1,13 +1,18 @@
 import { createSoundHandle } from './soundHandle';
 import type { PlaybackFailureInfo } from './playbackDiagnostics';
 import { ResultTier } from '@/pages/pronouns-test-page/utils/enum';
+import batuSound from '@/shared/sounds/batu.mp3';
+import highScoreSound from '@/shared/sounds/highScore.mp3';
+import lowScoreSound from '@/shared/sounds/lowScore.mp3';
+import maruSound from '@/shared/sounds/maru.mp3';
+import middleScoreSound from '@/shared/sounds/middleScore.mp3';
 
 export const SOUND_SOURCES = {
-  correct: '/sounds/maru.mp3',
-  incorrect: '/sounds/batu.mp3',
-  high: '/sounds/highScore.mp3',
-  middle: '/sounds/middleScore.mp3',
-  low: '/sounds/lowScore.mp3',
+  correct: maruSound,
+  incorrect: batuSound,
+  high: highScoreSound,
+  middle: middleScoreSound,
+  low: lowScoreSound,
 } as const;
 
 export type SoundKey = keyof typeof SOUND_SOURCES;
