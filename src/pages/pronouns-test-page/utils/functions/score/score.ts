@@ -1,4 +1,5 @@
-import type { MedalRank, ScoreTier } from '../../type';
+import { RESULT_TIERS, ResultTier } from '@/shared/constants/resultTier';
+import type { MedalRank } from '../../type';
 
 export type ScoreMeta = {
   /** UI 表示用の評価ラベル。 */
@@ -12,43 +13,45 @@ export type ScoreMeta = {
 type ScoreDefinition = ScoreMeta & {
   /** 該当ティアとなるスコアの下限（パーセント）。 */
   minPercentage: number;
-  tier: ScoreTier;
+  tier: ResultTier;
 };
 
 /**
  * スコアレンジと見た目/メダルをまとめた定義。
  * 先頭のエントリほど高いスコア帯になるようソートしている。
  */
-const SCORE_DEFINITIONS: readonly ScoreDefinition[] = [
-  {
-    tier: 'perfect',
+const SCORE_DEFINITION_CONFIG = {
+  [RESULT_TIERS[0]]: {
     minPercentage: 100,
     rating: 'Perfect!',
-    medalRank: 'gold',
+    medalRank: 'gold' as const,
     priority: 3,
   },
-  {
-    tier: 'great',
+  [RESULT_TIERS[1]]: {
     minPercentage: 60,
     rating: 'Great!',
-    medalRank: 'silver',
+    medalRank: 'silver' as const,
     priority: 2,
   },
-  {
-    tier: 'nice',
+  [RESULT_TIERS[2]]: {
     minPercentage: 0,
     rating: 'Nice!',
-    medalRank: 'bronze',
+    medalRank: 'bronze' as const,
     priority: 1,
   },
-] as const;
+} satisfies Record<ResultTier, Omit<ScoreDefinition, 'tier'>>;
 
-const SCORE_META_BY_TIER: Record<ScoreTier, ScoreMeta> = SCORE_DEFINITIONS.reduce(
+const SCORE_DEFINITIONS: readonly ScoreDefinition[] = RESULT_TIERS.map((tier) => ({
+  tier,
+  ...SCORE_DEFINITION_CONFIG[tier],
+}));
+
+const SCORE_META_BY_TIER: Record<ResultTier, ScoreMeta> = SCORE_DEFINITIONS.reduce(
   (table, { tier, rating, medalRank, priority }) => {
     table[tier] = { rating, medalRank, priority };
     return table;
   },
-  {} as Record<ScoreTier, ScoreMeta>
+  {} as Record<ResultTier, ScoreMeta>
 );
 
 const MEDAL_PRIORITY: Record<MedalRank, number> = SCORE_DEFINITIONS.reduce(
@@ -71,7 +74,7 @@ export const getMedalPriority = (rank: MedalRank): number => MEDAL_PRIORITY[rank
 /**
  * 与えられた正答率からスコアティアを決定する。
  */
-export const resolveScoreTier = (percentage: number): ScoreTier => {
+export const resolveScoreTier = (percentage: number): ResultTier => {
   for (const { tier, minPercentage } of SCORE_DEFINITIONS) {
     if (percentage >= minPercentage) {
       return tier;
@@ -96,5 +99,3 @@ export const getScoreMeta = (percentage: number) => {
     priority,
   };
 };
-
-export { SCORE_DEFINITIONS }; // テスト等での再利用を想定して公開

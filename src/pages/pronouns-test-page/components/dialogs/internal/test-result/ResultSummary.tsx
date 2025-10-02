@@ -5,27 +5,27 @@ import prizePinchIcon from '@/shared/loadicon/prizePinch.json';
 import prizeRevealIcon from '@/shared/loadicon/prizeReveal.json';
 
 import styles from './resultSummary.module.css';
-import { ScoreTier } from '@/pages/pronouns-test-page/utils/type';
+import { ResultTier } from '@/shared/constants/resultTier';
 
 type IconAsset = typeof prizePinchIcon | typeof prizeRevealIcon;
 
-const ICON_BY_TIER: Record<ScoreTier, IconAsset> = {
-  perfect: prizeRevealIcon,
-  great: prizePinchIcon,
-  nice: prizePinchIcon,
+const ICON_BY_TIER: Record<ResultTier, IconAsset> = {
+  [ResultTier.Perfect]: prizeRevealIcon,
+  [ResultTier.Great]: prizePinchIcon,
+  [ResultTier.Nice]: prizePinchIcon,
 };
 
-const ICON_COLOR_BY_TIER: Record<ScoreTier, string> = {
-  perfect: 'var(--medal-gold-color)',
-  great: 'var(--medal-silver-color)',
-  nice: 'var(--medal-bronze-color)',
+const ICON_COLOR_BY_TIER: Record<ResultTier, string> = {
+  [ResultTier.Perfect]: 'var(--medal-gold-color)',
+  [ResultTier.Great]: 'var(--medal-silver-color)',
+  [ResultTier.Nice]: 'var(--medal-bronze-color)',
 };
 
 export type ResultSummaryProps = {
   rating: string;
   iconSize: number;
   scorePercentage: number;
-  tier: ScoreTier;
+  tier: ResultTier;
 };
 
 export const ResultSummary = ({ rating, iconSize, scorePercentage, tier }: ResultSummaryProps) => {

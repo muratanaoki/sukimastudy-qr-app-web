@@ -1,3 +1,4 @@
+import { RESULT_TIERS, ResultTier } from '@/shared/constants/resultTier';
 import { createSoundHandle } from './soundHandle';
 import type { PlaybackFailureInfo } from './playbackDiagnostics';
 
@@ -11,13 +12,13 @@ export const SOUND_SOURCES = {
 
 export type SoundKey = keyof typeof SOUND_SOURCES;
 
-export type ResultTier = 'perfect' | 'great' | 'nice';
-
 export const RESULT_TIER_TO_SOUND_KEY: Record<ResultTier, SoundKey> = {
-  perfect: 'high',
-  great: 'middle',
-  nice: 'low',
+  [ResultTier.Perfect]: 'high',
+  [ResultTier.Great]: 'middle',
+  [ResultTier.Nice]: 'low',
 };
+
+export { RESULT_TIERS, ResultTier };
 
 const SOUND_KEYS = Object.keys(SOUND_SOURCES) as SoundKey[];
 

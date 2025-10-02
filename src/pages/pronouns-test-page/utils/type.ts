@@ -73,5 +73,3 @@ export type PosGroup = {
 };
 
 export type JudgementButtonType = 'know' | 'dontKnow';
-
-export type ScoreTier = 'perfect' | 'great' | 'nice';
