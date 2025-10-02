@@ -1,3 +1,7 @@
+/**
+ * `speechSynthesis.speaking` が継続したままになっても待機し過ぎないためのデフォルト上限。
+ * iOS Safari では cancel() の完了が遅れるため、ある程度の猶予を与える。
+ */
 export const DEFAULT_SPEECH_IDLE_TIMEOUT_MS = 400;
 
 export type SpeechIdleOptions = {
@@ -5,6 +9,10 @@ export type SpeechIdleOptions = {
   timeoutMs?: number;
 };
 
+/**
+ * Web Speech をアイドル状態になるまで待機する非同期関数のインターフェース。
+ * 呼び出し元は `forceCancel` を指定して強制終了するか、単に speaking が終わるのを待つかを選べる。
+ */
 export type SpeechIdleWatcher = (options?: SpeechIdleOptions) => Promise<void>;
 
 export type SpeechIdleWatcherDeps = {
@@ -15,11 +23,18 @@ export type SpeechIdleWatcherDeps = {
   clearTimeout: (handle: number) => void;
 };
 
+/**
+ * オプションは全部任意なので、未指定の値に対して安全なデフォルトを割り当てる。
+ */
 const resolveOptions = (options: SpeechIdleOptions | undefined) => ({
   forceCancel: options?.forceCancel ?? false,
   timeoutMs: options?.timeoutMs ?? DEFAULT_SPEECH_IDLE_TIMEOUT_MS,
 });
 
+/**
+ * `speechSynthesis.speaking` が `false` になるまで requestAnimationFrame 相当で監視する。
+ * setTimeout のフォールバックも併用して、フレームイベントが発火しなくても確実に解放できるようにする。
+ */
 const pollSpeechSynthesis = async (
   deps: SpeechIdleWatcherDeps,
   timeoutMs: number
@@ -48,6 +63,10 @@ const pollSpeechSynthesis = async (
   });
 };
 
+/**
+ * `SpeechIdleWatcher` の具象実装。SpeechSynthesis が存在しない環境では即座に no-op で返す。
+ * speaking 中で無ければそのまま resolve し、必要に応じて cancel() を安全に呼び出してから監視を開始する。
+ */
 export const createSpeechIdleWatcher = (deps: SpeechIdleWatcherDeps): SpeechIdleWatcher => {
   return async (options?: SpeechIdleOptions) => {
     const synth = deps.getSynth();
