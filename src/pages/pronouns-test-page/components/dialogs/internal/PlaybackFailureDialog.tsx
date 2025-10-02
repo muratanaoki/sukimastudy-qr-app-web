@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
-import { SecondaryButton } from '@/pages/pronouns-test-page/components/buttons/secondary-button/SecondaryButton';
+import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
+import { SecondaryButton } from '@/shared/components/secondary-button/SecondaryButton';
 import type { PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
 import styles from './playbackFailureDialog.module.css';
 import DialogCard from '../dialog/DialogCard';

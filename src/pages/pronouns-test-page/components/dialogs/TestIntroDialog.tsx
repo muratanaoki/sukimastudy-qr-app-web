@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import { segmentItems } from '../../utils/domain/function';
 import clsx from 'clsx';
-import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
+import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { useInitialSelect } from '../../hooks/gameplay/useInitialSelect';
 import { SelectableButton } from '@/pages/pronouns-test-page/components/buttons/selectable-button/SelectableButton';
 import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';

@@ -1,6 +1,6 @@
 import { Languages, List, Settings, Shuffle } from 'lucide-react';
 import styles from './settingDialog.module.css';
-import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
+import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { SettingSection } from './SettingSection';
 import { useTestSettings } from '../../hooks/context/useTestSettings';
 import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/domain/type';
