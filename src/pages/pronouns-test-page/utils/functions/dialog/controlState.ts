@@ -1,4 +1,4 @@
-import type { JudgementButtonType } from '../domain/type';
+import type { JudgementButtonType } from '../../domain/type';
 
 /**
  * フィードバック状態や回答済み状態から、操作ボタンの活性/非活性を導出する純粋関数。

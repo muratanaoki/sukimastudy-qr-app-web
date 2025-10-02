@@ -1,4 +1,4 @@
-import { TestDialogPhase } from '../enum';
+import { TestDialogPhase } from '../../enum';
 
 /**
  * 現在の進捗状態からダイアログの表示フェーズを判定する。

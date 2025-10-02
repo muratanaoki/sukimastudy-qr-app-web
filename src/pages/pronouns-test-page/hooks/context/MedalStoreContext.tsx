@@ -5,7 +5,7 @@ import {
   loadMedalStore,
   saveMedalStore,
   upsertMedalInStore,
-} from '../../utils/storage/medalStore';
+} from '../../utils/functions/storage/medalStore';
 
 export type MedalStoreContextValue = {
   medals: Record<string, MedalRank>;

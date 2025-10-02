@@ -6,6 +6,10 @@ export type PrizeIconProps = {
   style?: CSSProperties;
 };
 
+/**
+ * React version of the prize SVG so that we can tint it via `currentColor`.
+ * `useId` is used to ensure the mask IDs stay unique even if multiple icons render on the same page.
+ */
 const PrizeIconComponent = ({
   className,
   'aria-hidden': ariaHidden = true,
@@ -26,6 +30,7 @@ const PrizeIconComponent = ({
       focusable="false"
       style={style}
     >
+      {/* The original asset uses two nested masks for the ribbons. Keep them but ensure unique IDs. */}
       <mask
         id={maskIdA}
         maskUnits="userSpaceOnUse"
@@ -43,7 +48,7 @@ const PrizeIconComponent = ({
       <g mask={`url(#${maskIdA})`}>
         <path
           stroke="currentColor"
-          strokeWidth="12"
+          strokeWidth="20"
           strokeLinecap="round"
           strokeLinejoin="round"
           d="m205 268.898 41.717-19.454L288.423 230l61.131 131.092-58.381-16.3L266.131 400z"
@@ -66,7 +71,7 @@ const PrizeIconComponent = ({
       <g mask={`url(#${maskIdB})`}>
         <path
           stroke="currentColor"
-          strokeWidth="12"
+          strokeWidth="20"
           strokeLinecap="round"
           strokeLinejoin="round"
           d="m224.554 268.908-41.706-19.454L141.131 230 80 361.102l58.381-16.31L163.423 400z"
@@ -74,21 +79,21 @@ const PrizeIconComponent = ({
       </g>
       <path
         stroke="currentColor"
-        strokeWidth="12"
+        strokeWidth="20"
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M357.913 164.399c9.439 8.264 9.439 22.95 0 31.213l-14.626 12.805a10.37 10.37 0 0 0-2.985 11.15l6.264 18.369c4.054 11.888-3.305 24.622-15.628 27.046l-19.046 3.747a10.37 10.37 0 0 0-8.173 8.174l-3.747 19.046c-2.425 12.323-15.159 19.681-27.047 15.628l-18.369-6.264a10.37 10.37 0 0 0-11.15 2.984l-12.805 14.626c-8.263 9.439-22.949 9.439-31.212 0l-12.806-14.627a10.37 10.37 0 0 0-11.148-2.985l-18.375 6.261c-11.886 4.05-24.617-3.307-27.041-15.629l-3.747-19.041a10.37 10.37 0 0 0-8.174-8.173l-19.046-3.747c-12.324-2.424-19.682-15.158-15.628-27.046l6.264-18.369a10.37 10.37 0 0 0-2.985-11.15l-14.626-12.805c-9.439-8.263-9.439-22.949 0-31.213l14.627-12.804a10.37 10.37 0 0 0 2.984-11.15l-6.264-18.37c-4.054-11.887 3.304-24.622 15.628-27.046l19.046-3.747a10.37 10.37 0 0 0 8.173-8.174l3.747-19.045c2.425-12.324 15.159-19.682 27.047-15.628l18.368 6.263a10.37 10.37 0 0 0 11.151-2.986l12.803-14.628c8.263-9.442 22.953-9.442 31.216 0l12.803 14.628a10.37 10.37 0 0 0 11.151 2.986l18.368-6.263c11.888-4.054 24.622 3.304 27.047 15.628l3.747 19.045a10.37 10.37 0 0 0 8.173 8.174l19.046 3.747c12.323 2.424 19.682 15.159 15.628 27.046l-6.264 18.37a10.37 10.37 0 0 0 2.985 11.15z"
       />
       <path
         stroke="currentColor"
-        strokeWidth="12"
+        strokeWidth="20"
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M215 280c55.228 0 100-44.771 100-100S270.228 80 215 80s-100 44.772-100 100 44.772 100 100 100"
       />
       <path
         stroke="currentColor"
-        strokeWidth="12"
+        strokeWidth="20"
         strokeLinecap="round"
         strokeLinejoin="round"
         d="m215 130.269-15.447 31.145L165 166.413l25.006 24.247-5.911 34.232L215 208.732l30.905 16.16-5.911-34.232L265 166.413l-34.553-4.999z"

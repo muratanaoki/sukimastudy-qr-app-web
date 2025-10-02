@@ -21,13 +21,13 @@ import { useTestDialogHandlers } from '../../hooks/dialog/useTestDialogHandlers'
 // 一時停止（タイマー停止）理由を積み上げ式で管理
 import { usePauseManager } from '../../hooks/gameplay/usePauseManager';
 // テストの進行段階（問題中／結果表示など）を計算するユーティリティ
-import { resolveDialogPhase } from '../../utils/dialog/dialogPhase';
+import { resolveDialogPhase } from '../../utils/functions/dialog/dialogPhase';
 // ダイアログ起動時のチュートリアル音など初期化処理を実行
 import { useTestStartup } from '../../hooks/dialog/useTestStartup';
 // 閉じる確認ダイアログの open/close 状態を管理
 import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmCloseState';
 // 現在の状態から UI に渡す表示用データを構築
-import { buildTestDialogView } from '../../utils/dialog/testDialogView';
+import { buildTestDialogView } from '../../utils/functions/dialog/testDialogView';
 // 効果音の共通フック（クリック音、正解音など）
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 import type { PlaybackFailureHandler, PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
@@ -38,7 +38,7 @@ import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReason
 // 一時停止理由の定義（スタートアップなど）
 import { PauseReason } from '../../hooks/gameplay/usePauseManager';
 // 表示中のフィードバック内容から UI の操作可否を導出
-import { deriveControlState } from '../../utils/dialog/controlState';
+import { deriveControlState } from '../../utils/functions/dialog/controlState';
 // 実際のダイアログ UI コンポーネント
 import { TestDialogContent } from './internal/TestDialogContent';
 // 閉じるアニメーションや requestClose を扱うコントローラ
