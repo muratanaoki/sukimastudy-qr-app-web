@@ -6,7 +6,7 @@ import QuestionContent from './QuestionContent';
 import TestControls from './TestControls';
 import TestResult from './TestResult';
 import { ConfirmCloseDialog } from './ConfirmCloseDialog';
-import type { TestDialogPhase } from '../../../utils/dialog/dialogPhase';
+import { TestDialogPhase } from '@/pages/pronouns-test-page/utils/enum';
 
 /**
  * テストダイアログの実際の構造を描画するコンテナコンポーネント。

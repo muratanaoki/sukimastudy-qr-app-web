@@ -1,9 +1,9 @@
-import { ChoiceView } from '../../../utils/domain/type';
 import { isJudgementMode } from '../../../utils/domain/function';
 import ChoiceArea from './ChoiceArea';
 import JudgementControls from './JudgementControls';
 import styles from '../testDialog.module.css';
 import type { ChoiceOption } from '../../../hooks/gameplay/useTestRunner';
+import { ChoiceView } from '@/pages/pronouns-test-page/utils/enum';
 
 interface TestControlsProps {
   choiceView: ChoiceView;

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { QuestionOrder } from '../../utils/domain/type';
 import type { PronounItem } from '../../utils/domain/type';
+import { QuestionOrder } from '../../utils/enum';
 
 export const useOrderedItems = (
   open: boolean,

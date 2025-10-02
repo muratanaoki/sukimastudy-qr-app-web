@@ -1,6 +1,5 @@
 import { getDisplayWord, getRevealButtonText, shouldShowTranslation } from '../domain/function';
-import { ChoiceView, AnswerMode } from '../domain/type';
-import { TestDialogPhase } from './dialogPhase';
+import { AnswerMode, ChoiceView, TestDialogPhase } from '../enum';
 
 /**
  * テストダイアログの描画可否をまとめて判定し、表示用プロパティを返す純関数。

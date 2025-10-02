@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { AnswerMode } from '../../utils/domain/type';
+import { AnswerMode } from '../../utils/enum';
 
 /**
  * ダイアログに渡す UI ハンドラ群をまとめて生成するフック。

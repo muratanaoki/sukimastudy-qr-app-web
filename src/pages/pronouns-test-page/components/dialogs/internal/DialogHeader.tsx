@@ -1,5 +1,5 @@
+import { TestDialogPhase } from '@/pages/pronouns-test-page/utils/enum';
 import styles from './dialogHeader.module.css';
-import { TestDialogPhase } from '../../../utils/dialog/dialogPhase';
 import TopBar from './TopBar';
 import { CloseButton } from '@/shared/components/close-button/CloseButton';
 

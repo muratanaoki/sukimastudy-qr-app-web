@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AnswerMode, ChoiceView } from '../../utils/domain/type';
 import { useListeningWordMask } from './useListeningWordMask';
+import { AnswerMode, ChoiceView } from '../../utils/enum';
 
 export type UseTestDisplayParams = {
   open: boolean;

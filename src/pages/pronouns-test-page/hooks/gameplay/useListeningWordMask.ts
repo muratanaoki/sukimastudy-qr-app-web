@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AnswerMode, ChoiceView } from '../../utils/domain/type';
+import { AnswerMode, ChoiceView } from '../../utils/enum';
 
 type Params = {
   answerMode: AnswerMode;
