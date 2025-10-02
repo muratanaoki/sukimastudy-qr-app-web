@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
-import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/domain/type';
+import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/enum';
 
 const STORAGE_KEY = 'testSettings';
 

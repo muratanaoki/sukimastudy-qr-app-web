@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/domain/type';
+import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/enum';
 import { useTestSettingsContext } from './TestSettingsContext';
 
 const STORAGE_KEY = 'testSettings';

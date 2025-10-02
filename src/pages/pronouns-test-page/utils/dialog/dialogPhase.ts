@@ -1,8 +1,4 @@
-export enum TestDialogPhase {
-  Empty = 'empty',
-  InProgress = 'in-progress',
-  Completed = 'completed',
-}
+import { TestDialogPhase } from '../enum';
 
 /**
  * 現在の進捗状態からダイアログの表示フェーズを判定する。

@@ -1,5 +1,6 @@
 import { BUTTON_LABELS } from '../constants/pronounData';
-import { PronounItem, ExampleEntry, Segment, ChoiceView, AnswerMode } from './type';
+import { AnswerMode, ChoiceView } from '../enum';
+import { PronounItem, ExampleEntry, Segment } from './type';
 
 // PronounItem から例文配列を生成（空のものは除外）
 export function buildExamples(item: PronounItem): ExampleEntry[] {

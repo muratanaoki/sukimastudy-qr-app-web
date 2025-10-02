@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { JudgementButtonType } from '../../utils/domain/type';
-import { ChoiceView } from '../../utils/domain/type';
 import { shouldFlash } from '../../utils/domain/function';
 import { useFlashDisplay } from '../ui/useFlashDisplay';
 import type { UseSoundEffectsReturn } from '@/shared/hooks/useSoundEffects';
@@ -11,6 +10,7 @@ import {
 import type { SoundKey } from '@/shared/utils/audio/soundEffectManager';
 import { createPlaybackDiagnostics } from '@/shared/utils/audio/playbackDiagnostics';
 import { FLASH_DURATION_MS, JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
+import { ChoiceView } from '../../utils/enum';
 
 /**
  * 「わかる/わからない」など判定ボタンの押下処理を一元化するフック。

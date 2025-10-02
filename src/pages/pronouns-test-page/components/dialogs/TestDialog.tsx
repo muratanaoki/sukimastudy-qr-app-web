@@ -21,7 +21,7 @@ import { useTestDialogHandlers } from '../../hooks/dialog/useTestDialogHandlers'
 // 一時停止（タイマー停止）理由を積み上げ式で管理
 import { usePauseManager } from '../../hooks/gameplay/usePauseManager';
 // テストの進行段階（問題中／結果表示など）を計算するユーティリティ
-import { resolveDialogPhase, TestDialogPhase } from '../../utils/dialog/dialogPhase';
+import { resolveDialogPhase } from '../../utils/dialog/dialogPhase';
 // ダイアログ起動時のチュートリアル音など初期化処理を実行
 import { useTestStartup } from '../../hooks/dialog/useTestStartup';
 // 閉じる確認ダイアログの open/close 状態を管理
@@ -51,6 +51,7 @@ import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
 import { getMedalRank, resolveSegmentMeta, selectHigherMedal } from '../../utils/domain/medal';
+import { TestDialogPhase } from '../../utils/enum';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;
 // Web Speech API のキャンセルを待機する上限時間（ms）

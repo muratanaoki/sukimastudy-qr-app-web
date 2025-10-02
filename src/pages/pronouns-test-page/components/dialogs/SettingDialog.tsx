@@ -3,8 +3,8 @@ import styles from './settingDialog.module.css';
 import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { SettingSection } from './SettingSection';
 import { useTestSettings } from '../../hooks/context/useTestSettings';
-import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/domain/type';
 import DialogCard from './DialogCard';
+import { AnswerMode, ChoiceView, QuestionOrder } from '../../utils/enum';
 
 export type SettingDialogProps = {
   onClose: () => void;
