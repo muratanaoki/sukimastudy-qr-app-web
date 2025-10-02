@@ -94,8 +94,9 @@ const RangeGrid = ({
               items: seg.items,
             })
           }
+          medalRank={seg.medal}
         >
-          {seg.start}~{seg.end}語 {seg.medal ?? '-'}
+          {seg.start}~{seg.end}語
         </SelectableButton>
       ))}
     </div>

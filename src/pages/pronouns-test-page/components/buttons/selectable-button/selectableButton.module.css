@@ -10,4 +10,21 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-075);
+  position: relative;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+}
+
+.icon {
+  position: absolute;
+  right: var(--space-050);
+  width: 2rem;
+  height: 2rem;
+  pointer-events: none;
+  color: var(--color-neutral-400);
+  flex-shrink: 0;
 }
