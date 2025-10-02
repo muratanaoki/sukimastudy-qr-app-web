@@ -1,7 +1,7 @@
-import { DialogCard } from '@/shared/components/dialog/DialogCard';
-import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
+import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
 import { AlertTriangle } from 'lucide-react';
 import styles from './confirmCloseDialog.module.css';
+import DialogCard from '../dialog/DialogCard';
 
 export type ConfirmCloseDialogProps = {
   open: boolean;

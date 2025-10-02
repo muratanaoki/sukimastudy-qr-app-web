@@ -8,7 +8,7 @@ import { useBodyScrollLock } from './hooks/ui/useBodyScrollLock';
 import { TestIntroDialog } from './components/dialogs/TestIntroDialog';
 import { SettingDialog } from './components/dialogs/SettingDialog';
 import { GroupTabs } from './components/display/GroupTabs';
-import { TestFabButton } from './components/buttons/TestFabButton';
+import { TestFabButton } from './components/buttons/testfab-button/TestFabButton';
 import { useSwipeTabs } from './hooks/ui/useSwipeTabs';
 import { TestDialog } from './components/dialogs/TestDialog';
 import { TestSettingsProvider } from './hooks/context/TestSettingsContext';

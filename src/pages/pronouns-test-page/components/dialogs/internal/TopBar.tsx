@@ -1,5 +1,5 @@
 import styles from './topBar.module.css';
-import { CloseButton } from '@/shared/components/close-button/CloseButton';
+import { CloseButton } from '@/pages/pronouns-test-page/components/buttons/close-button/CloseButton';
 import clsx from 'clsx';
 import { useProgressNoAnim } from '../../../hooks/gameplay/useProgressNoAnim';
 

@@ -1,4 +1,4 @@
-import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
+import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
 
 import styles from './resultActions.module.css';
 

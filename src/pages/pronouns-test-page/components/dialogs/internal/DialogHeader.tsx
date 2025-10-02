@@ -1,7 +1,7 @@
 import styles from './dialogHeader.module.css';
 import { TestDialogPhase } from '../../../utils/dialog/dialogPhase';
 import TopBar from './TopBar';
-import { CloseButton } from '@/shared/components/close-button/CloseButton';
+import { CloseButton } from '@/pages/pronouns-test-page/components/buttons/close-button/CloseButton';
 
 export type DialogHeaderProps = {
   phase: TestDialogPhase;

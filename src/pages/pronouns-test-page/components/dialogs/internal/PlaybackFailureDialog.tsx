@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
-import { DialogCard } from '@/shared/components/dialog/DialogCard';
-import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
-import { SecondaryButton } from '@/shared/components/secondary-button/SecondaryButton';
+
+import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
+import { SecondaryButton } from '@/pages/pronouns-test-page/components/buttons/secondary-button/SecondaryButton';
 import type { PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
 import styles from './playbackFailureDialog.module.css';
+import DialogCard from '../dialog/DialogCard';
 
 /**
  * 効果音再生に繰り返し失敗した際にユーザーへ状況を通知し、診断情報のコピーを促すダイアログ。

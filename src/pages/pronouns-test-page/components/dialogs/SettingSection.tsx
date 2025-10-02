@@ -1,4 +1,4 @@
-import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
+import { SelectableButton } from '@/pages/pronouns-test-page/components/buttons/selectable-button/SelectableButton';
 import styles from './settingDialog.module.css';
 import clsx from 'clsx';
 import type { LucideIcon } from 'lucide-react';

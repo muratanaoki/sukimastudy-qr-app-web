@@ -5,14 +5,14 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
 import { segmentItems } from '../../utils/domain/function';
 import clsx from 'clsx';
-import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
+import { PrimaryButton } from '@/pages/pronouns-test-page/components/buttons/primary-button/PrimaryButton';
 import { useInitialSelect } from '../../hooks/gameplay/useInitialSelect';
-import { SelectableButton } from '@/shared/components/selectable-button/SelectableButton';
-import { DialogCard } from '@/shared/components/dialog/DialogCard';
+import { SelectableButton } from '@/pages/pronouns-test-page/components/buttons/selectable-button/SelectableButton';
 import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { STARTUP_AUDIO_FADE_MS, STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
 import { getStartupSoundHandle } from '../../utils/audio/startupSoundHandle';
+import DialogCard from './dialog/DialogCard';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
