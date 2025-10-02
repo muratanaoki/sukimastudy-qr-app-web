@@ -1,7 +1,7 @@
 import styles from './learningEnglishPage.module.css';
 import { useSpeech } from './hooks/audio/useSpeech';
 import { EnglishWord } from './components/display/EnglishWord';
-import type { PronounGroup } from './utils/domain/type';
+import type { PosGroup } from './utils/domain/type';
 import { useFabHideOnBottom } from './hooks/ui/useFabHideOnBottom';
 import { useMemo } from 'react';
 import { useBodyScrollLock } from './hooks/ui/useBodyScrollLock';
@@ -16,11 +16,13 @@ import { useTabManager } from './hooks/ui/useTabManager';
 import { useDialogManager } from './hooks/dialog/useDialogManager';
 
 export type LearningEnglishPageProps = {
-  data: PronounGroup[]; // グループ一覧（ページ内表示は複数タブのまま）
+  posGroup: PosGroup;
 };
 
-export default function LearningEnglishPage({ data }: LearningEnglishPageProps) {
+export default function LearningEnglishPage({ posGroup }: LearningEnglishPageProps) {
   const speech = useSpeech();
+
+  const data = useMemo(() => posGroup?.groups ?? [], [posGroup]);
 
   // カスタムフックでタブ管理
   const { activeGroupNo, changeTab } = useTabManager(data);
@@ -113,12 +115,6 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
         {showFullTest &&
           (() => {
             const activeGroup = data.find((g) => g.groupNo === activeGroupNo) ?? data[0];
-            const pos: { pos: 'pronouns'; url: string; title: string; groups: PronounGroup[] } = {
-              pos: 'pronouns',
-              url: '/pronouns',
-              title: '代名詞',
-              groups: [],
-            };
             const group = {
               ...activeGroup,
               items: testItems,
@@ -127,7 +123,7 @@ export default function LearningEnglishPage({ data }: LearningEnglishPageProps) 
               <TestDialog
                 open={showFullTest}
                 onClose={closeFullTest}
-                pos={pos}
+                pos={posGroup}
                 group={group}
                 startupSoundHandle={startupSoundHandle}
                 startupAudioPreplayed={startupAudioPreplayed}
