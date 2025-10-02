@@ -1,4 +1,4 @@
-import { isJudgementMode } from '../../../utils/domain/function';
+import { isJudgementMode } from '../../../utils/functions/domain/function';
 import ChoiceArea from './ChoiceArea';
 import JudgementControls from './JudgementControls';
 import styles from '../testDialog.module.css';

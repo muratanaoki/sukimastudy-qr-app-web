@@ -50,7 +50,11 @@ import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/pronounData';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
-import { getMedalRank, resolveSegmentMeta, selectHigherMedal } from '../../utils/domain/medal';
+import {
+  getMedalRank,
+  resolveSegmentMeta,
+  selectHigherMedal,
+} from '../../utils/functions/domain/medal';
 import { TestDialogPhase } from '../../utils/enum';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;

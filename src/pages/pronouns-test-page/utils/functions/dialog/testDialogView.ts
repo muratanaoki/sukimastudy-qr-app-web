@@ -1,4 +1,4 @@
-import { getDisplayWord, getRevealButtonText, shouldShowTranslation } from '../../domain/function';
+import { getDisplayWord, getRevealButtonText, shouldShowTranslation } from '../domain/function';
 import { AnswerMode, ChoiceView, TestDialogPhase } from '../../enum';
 
 /**

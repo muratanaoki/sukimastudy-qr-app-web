@@ -1,5 +1,5 @@
-import { getMedalPriority, getScoreMeta } from '../functions/score/score';
-import type { MedalRank, PosGroup, PronounGroup } from '../type';
+import { getMedalPriority, getScoreMeta } from '../score/score';
+import type { MedalRank, PosGroup, PronounGroup } from '../../type';
 
 /** 採点セグメントのデフォルト幅（語数）。 */
 export const DEFAULT_SEGMENT_SIZE = 10;

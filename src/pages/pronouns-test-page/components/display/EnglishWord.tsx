@@ -5,7 +5,7 @@ import type { PronounItem } from '../../utils/type';
 import gridStyles from '../../learningEnglishPage.module.css';
 import { ExampleList } from './ExampleList';
 import type { UseSpeech } from '../../hooks/audio/useSpeech';
-import { buildExamples } from '../../utils/domain/function';
+import { buildExamples } from '../../utils/functions/domain/function';
 
 const EnglishWordCardInner = ({ item, speech }: { item: PronounItem; speech: UseSpeech }) => {
   const examples = useMemo(() => buildExamples(item), [item]);

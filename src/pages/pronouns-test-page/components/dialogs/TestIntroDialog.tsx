@@ -3,7 +3,7 @@ import { Check, Settings } from 'lucide-react';
 import type { MedalRank, PosGroup, PronounGroup, Segment } from '../../utils/type';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
-import { segmentItems } from '../../utils/domain/function';
+import { segmentItems } from '../../utils/functions/domain/function';
 import clsx from 'clsx';
 import { PrimaryButton } from '@/shared/components/primary-button/PrimaryButton';
 import { useInitialSelect } from '../../hooks/gameplay/useInitialSelect';
@@ -14,7 +14,7 @@ import { STARTUP_AUDIO_FADE_MS, STARTUP_AUDIO_SRC } from '../../utils/constants/
 import { getStartupSoundHandle } from '../../utils/functions/audio/startupSoundHandle';
 import DialogCard from './DialogCard';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
-import { buildSegmentId } from '../../utils/domain/medal';
+import { buildSegmentId } from '../../utils/functions/domain/medal';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
