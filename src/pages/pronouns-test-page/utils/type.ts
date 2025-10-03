@@ -25,7 +25,6 @@ export type PronounItem = {
  */
 export type QAChoices = {
   enToJp: [string, string, string];
-  jpToEn: [string, string, string];
 };
 
 /**

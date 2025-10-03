@@ -19,7 +19,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたは', '彼は', '私たちは'],
-      jpToEn: ['me', 'my', 'mine'],
     },
   },
   {
@@ -33,7 +32,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私のもの', '私を、私に', 'あなたの'],
-      jpToEn: ['mine', 'me', 'our'],
     },
   },
   {
@@ -51,7 +49,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私の', '私のもの', '私自身'],
-      jpToEn: ['I', 'mine', 'myself'],
     },
   },
   {
@@ -69,7 +66,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私の', '私を、私に', 'あなたのもの'],
-      jpToEn: ['my', 'me', 'yours'],
     },
   },
   {
@@ -91,7 +87,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私のもの', '私たち自身', '彼自身'],
-      jpToEn: ['mine', 'ourselves', 'himself'],
     },
   },
 
@@ -114,7 +109,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼らは', 'あなたたちは', '私は'],
-      jpToEn: ['they', 'you', 'I'],
     },
   },
   {
@@ -136,7 +130,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私たちのもの', '私たちを、私たちに', 'あなたたちの'],
-      jpToEn: ['ours', 'us', 'your'],
     },
   },
   {
@@ -158,7 +151,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私たちの', '私たちのもの', '私たち自身'],
-      jpToEn: ['our', 'ours', 'ourselves'],
     },
   },
   {
@@ -176,7 +168,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私たちの', '彼らのもの', 'あなたたちのもの'],
-      jpToEn: ['our', 'theirs', 'yours'],
     },
   },
   {
@@ -202,7 +193,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['私たちを、私たちに', 'あなたたち自身', '彼ら自身'],
-      jpToEn: ['us', 'yourselves', 'themselves'],
     },
   },
 
@@ -225,7 +215,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたの', '彼女に', '彼は'],
-      jpToEn: ['your', 'you', 'he'],
     },
   },
   {
@@ -243,7 +232,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたのもの', 'あなたは', 'あなた自身'],
-      jpToEn: ['yours', 'you', 'yourself'],
     },
   },
   {
@@ -261,7 +249,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたの', 'あなたのもの', 'あなた自身'],
-      jpToEn: ['your', 'yours', 'yourself'],
     },
   },
   {
@@ -279,7 +266,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたの', 'あなたを、あなたに', 'あなたたちのもの'],
-      jpToEn: ['your', 'you', 'yours'],
     },
   },
   {
@@ -297,7 +283,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたの', 'あなたたち自身', '彼女自身'],
-      jpToEn: ['your', 'yourselves', 'herself'],
     },
   },
 
@@ -320,7 +305,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたたちの', 'あなたの', '彼らは'],
-      jpToEn: ['your', 'you', 'they'],
     },
   },
   {
@@ -338,7 +322,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたたちのもの', 'あなたたちは', 'あなたたち自身'],
-      jpToEn: ['yours', 'you', 'yourselves'],
     },
   },
   {
@@ -360,7 +343,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたたちの', 'あなたたちのもの', 'あなたたち自身'],
-      jpToEn: ['your', 'yours', 'you'],
     },
   },
   {
@@ -378,7 +360,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたたちの', 'あなたたちを、あなたたちに', '彼らのもの'],
-      jpToEn: ['your', 'you', 'theirs'],
     },
   },
   {
@@ -400,7 +381,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あなたたちの', 'あなたたちを、あなたたちに', '彼ら自身'],
-      jpToEn: ['your', 'ourselves', 'themselves'],
     },
   },
 
@@ -419,7 +399,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼の', '彼を、彼に', '彼女は'],
-      jpToEn: ['his', 'him', 'she'],
     },
   },
   {
@@ -433,7 +412,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼を、彼に', '彼は', '彼自身'],
-      jpToEn: ['his', 'he', 'himself'],
     },
   },
   {
@@ -447,7 +425,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼は', '彼のもの', '彼女を、彼女に'],
-      jpToEn: ['he', 'his', 'her'],
     },
   },
   {
@@ -461,7 +438,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼は', '彼を、彼に', '彼女のもの'],
-      jpToEn: ['his', 'him', 'hers'],
     },
   },
   {
@@ -479,7 +455,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼の', '彼ら自身', '彼女自身'],
-      jpToEn: ['his', 'themselves', 'herself'],
     },
   },
 
@@ -494,7 +469,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼女の', '彼女を、彼女に', '彼は'],
-      jpToEn: ['her', 'her', 'he'],
     },
   },
   {
@@ -508,7 +482,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼女のもの', '彼女は', '彼女自身'],
-      jpToEn: ['hers', 'she', 'herself'],
     },
   },
   {
@@ -522,7 +495,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼女は', '彼女のもの', '彼女自身'],
-      jpToEn: ['her', 'hers', 'herself'],
     },
   },
   {
@@ -536,7 +508,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼女の', '彼女を、彼女に', '彼のもの'],
-      jpToEn: ['her', 'her', 'his'],
     },
   },
   {
@@ -558,7 +529,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼女の', '彼ら自身', '私自身'],
-      jpToEn: ['her', 'themselves', 'myself'],
     },
   },
 
@@ -573,7 +543,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あれの', 'それの', 'それ自身'],
-      jpToEn: ['it', 'its', 'itself'],
     },
   },
   {
@@ -587,7 +556,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['それは', 'それを、それに', 'それ自身'],
-      jpToEn: ['it', 'it', 'itself'],
     },
   },
   {
@@ -601,7 +569,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['あれは', 'それの', 'それ自身'],
-      jpToEn: ['it', 'its', 'itself'],
     },
   },
   {
@@ -623,7 +590,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['それの', '彼ら自身', '私自身'],
-      jpToEn: ['its', 'themselves', 'myself'],
     },
   },
 
@@ -646,7 +612,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼らの', '彼らを、彼らに', '私たちは'],
-      jpToEn: ['their', 'them', 'we'],
     },
   },
   {
@@ -660,7 +625,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼らのもの', '彼らは', '彼ら自身'],
-      jpToEn: ['theirs', 'they', 'themselves'],
     },
   },
   {
@@ -674,7 +638,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼らの', '彼らのもの', '彼らは'],
-      jpToEn: ['their', 'theirs', 'they'],
     },
   },
   {
@@ -688,7 +651,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼らの', '彼らを、彼らに', '私たちのもの'],
-      jpToEn: ['their', 'them', 'ours'],
     },
   },
   {
@@ -714,7 +676,6 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['彼らのもの', 'あなたたち自身', '彼自身'],
-      jpToEn: ['theirs', 'yourselves', 'himself'],
     },
   },
 ];
@@ -732,7 +693,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰でも、誰か', 'みんな', '誰も〜ない'],
-      jpToEn: ['anyone', 'everyone', 'no one'],
     },
   },
   {
@@ -750,7 +710,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['みんな', '誰でも、誰か', '誰も〜ない'],
-      jpToEn: ['everyone', 'anyone', 'nobody'],
     },
   },
   {
@@ -764,7 +723,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['何でも、何か', 'すべて', '何も〜ない'],
-      jpToEn: ['anything', 'everything', 'nothing'],
     },
   },
 
@@ -783,7 +741,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰か', 'みんな', '誰も〜ない'],
-      jpToEn: ['someone', 'everyone', 'no one'],
     },
   },
   {
@@ -801,7 +758,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰か', 'みんな', '誰も〜ない'],
-      jpToEn: ['somebody', 'everybody', 'nobody'],
     },
   },
   {
@@ -819,7 +775,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['何か', 'すべて', '何も〜ない'],
-      jpToEn: ['something', 'everything', 'nothing'],
     },
   },
 
@@ -834,7 +789,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰か', '誰でも、誰か', '誰も〜ない'],
-      jpToEn: ['someone', 'anyone', 'no one'],
     },
   },
   {
@@ -852,7 +806,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰か', '誰でも、誰か', '誰も〜ない'],
-      jpToEn: ['somebody', 'anybody', 'nobody'],
     },
   },
   {
@@ -866,7 +819,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['何でも、何か', '何か', '何も〜ない'],
-      jpToEn: ['anything', 'something', 'nothing'],
     },
   },
 
@@ -885,7 +837,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰か', 'みんな', '誰でも、誰か'],
-      jpToEn: ['someone', 'everyone', 'anyone'],
     },
   },
   {
@@ -907,7 +858,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['誰か', 'みんな', '誰でも、誰か'],
-      jpToEn: ['somebody', 'everybody', 'anybody'],
     },
   },
   {
@@ -921,7 +871,6 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['何か', 'すべて', '何でも、何か'],
-      jpToEn: ['something', 'everything', 'anything'],
     },
   },
 ];
@@ -942,7 +891,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['他の', 'いくつかの', '両方'],
-      jpToEn: ['another', 'other', 'both'],
     },
   },
   {
@@ -960,7 +908,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['他の', 'ほとんどの', '同じもの、こと'],
-      jpToEn: ['other', 'most', 'same'],
     },
   },
   {
@@ -974,7 +921,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['もう一つの、別の', 'それぞれ', '両方'],
-      jpToEn: ['another', 'each', 'both'],
     },
   },
   {
@@ -988,7 +934,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['同じもの、こと', 'どちらか', 'すべて'],
-      jpToEn: ['same', 'either', 'all'],
     },
   },
   {
@@ -1010,7 +955,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['両方', 'どちらか', 'どちらも〜ない'],
-      jpToEn: ['both', 'either', 'neither'],
     },
   },
   {
@@ -1028,7 +972,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['どちらも〜ない', '両方', 'それぞれ'],
-      jpToEn: ['neither', 'both', 'each'],
     },
   },
   {
@@ -1050,7 +993,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['どちらか', '両方', 'すべて'],
-      jpToEn: ['either', 'both', 'all'],
     },
   },
   {
@@ -1064,7 +1006,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['いくつかの', 'すべて', '両方'],
-      jpToEn: ['some', 'all', 'both'],
     },
   },
   {
@@ -1082,7 +1023,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['どれも〜ない、誰も〜ない', 'すべて', 'ほとんどの'],
-      jpToEn: ['none', 'all', 'most'],
     },
   },
   {
@@ -1100,7 +1040,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['いくつかの', 'すべて', 'ほとんど〜ない（可算）'],
-      jpToEn: ['some', 'all', 'few'],
     },
   },
   {
@@ -1122,7 +1061,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['すべて', '他の', '同じもの、こと'],
-      jpToEn: ['all', 'other', 'same'],
     },
   },
   {
@@ -1136,7 +1074,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['いくつかの', 'ほとんどの', '両方'],
-      jpToEn: ['some', 'most', 'both'],
     },
   },
   {
@@ -1150,7 +1087,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['どちらか', 'どちらも〜ない', 'すべて'],
-      jpToEn: ['either', 'neither', 'all'],
     },
   },
   {
@@ -1164,7 +1100,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['いくつかの', 'すべて', 'より少ない'],
-      jpToEn: ['some', 'all', 'less'],
     },
   },
   {
@@ -1182,7 +1117,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['より少ない', '最小、最も少ない', '十分な'],
-      jpToEn: ['less', 'least', 'enough'],
     },
   },
   {
@@ -1200,7 +1134,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['多くの（不可算）', 'いくつかの', 'ほとんど〜ない（可算）'],
-      jpToEn: ['much', 'several', 'few'],
     },
   },
   {
@@ -1218,7 +1151,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['多くの（可算）', 'より少ない', '最小、最も少ない'],
-      jpToEn: ['many', 'less', 'least'],
     },
   },
   {
@@ -1240,7 +1172,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['ほとんどの', '多くの（不可算）', 'いくらか、どれか'],
-      jpToEn: ['most', 'much', 'any'],
     },
   },
   {
@@ -1262,7 +1193,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['ほとんど〜ない（不可算）', '多くの（可算）', 'すべて'],
-      jpToEn: ['little', 'many', 'all'],
     },
   },
   {
@@ -1284,7 +1214,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['ほとんど〜ない（可算）', '多くの（不可算）', 'いくつかの'],
-      jpToEn: ['few', 'much', 'several'],
     },
   },
   {
@@ -1298,7 +1227,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['もっと多くの', '最小、最も少ない', '十分な'],
-      jpToEn: ['more', 'least', 'enough'],
     },
   },
   {
@@ -1316,7 +1244,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['より少ない', 'もっと多くの', '同じもの、こと'],
-      jpToEn: ['less', 'more', 'same'],
     },
   },
   {
@@ -1334,7 +1261,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['より少ない', 'ほとんど〜ない（不可算）', 'いくらか、どれか'],
-      jpToEn: ['less', 'little', 'any'],
     },
   },
 
@@ -1354,7 +1280,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['それら、あれら', 'それ、あれ', 'これら'],
-      jpToEn: ['those', 'that', 'these'],
     },
   },
   {
@@ -1368,7 +1293,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['それ、あれ', 'それら、あれら', 'これ'],
-      jpToEn: ['that', 'those', 'this'],
     },
   },
   {
@@ -1382,7 +1306,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['これ', 'これら', 'それら、あれら'],
-      jpToEn: ['this', 'these', 'those'],
     },
   },
   {
@@ -1396,7 +1319,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['これ', 'これら', 'それ、あれ'],
-      jpToEn: ['this', 'these', 'that'],
     },
   },
   {
@@ -1414,7 +1336,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['同じもの、こと', 'これら', 'いくつかの'],
-      jpToEn: ['same', 'these', 'some'],
     },
   },
   {
@@ -1432,7 +1353,6 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['そのようなもの、こと', '他の', 'これ'],
-      jpToEn: ['such', 'other', 'this'],
     },
   },
 ];
@@ -1453,7 +1373,6 @@ export const DATA_RAW_SOURCE4: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['それ、あれ', 'これら', 'それら、あれら'],
-      jpToEn: ['that', 'these', 'those'],
     },
   },
   {
@@ -1467,7 +1386,6 @@ export const DATA_RAW_SOURCE4: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['これ', 'それら、あれら', 'それ、あれ'],
-      jpToEn: ['this', 'those', 'that'],
     },
   },
   {
@@ -1481,7 +1399,6 @@ export const DATA_RAW_SOURCE4: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['これ', 'これら', 'それら、あれら'],
-      jpToEn: ['this', 'these', 'those'],
     },
   },
   {
@@ -1495,7 +1412,6 @@ export const DATA_RAW_SOURCE4: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['これ', 'これら', 'それ、あれ'],
-      jpToEn: ['this', 'these', 'that'],
     },
   },
   {
@@ -1513,7 +1429,6 @@ export const DATA_RAW_SOURCE4: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['同じもの、こと', 'これら', 'いくつかの'],
-      jpToEn: ['same', 'these', 'some'],
     },
   },
   {
@@ -1531,7 +1446,6 @@ export const DATA_RAW_SOURCE4: RawPronounItem[] = [
     ],
     choices: {
       enToJp: ['そのようなもの、こと', '他の', 'これ'],
-      jpToEn: ['such', 'other', 'this'],
     },
   },
 ];

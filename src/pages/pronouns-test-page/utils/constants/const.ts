@@ -13,7 +13,6 @@ const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
     examples: d.examples,
     choices: {
       enToJp: d.choices.enToJp,
-      jpToEn: d.choices.jpToEn,
     },
   }));
 
