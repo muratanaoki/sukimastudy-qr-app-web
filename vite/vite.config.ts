@@ -1,6 +1,5 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 
 // 共通設定を名前付きエクスポートとして定義
 export const baseConfig = defineConfig({
@@ -10,7 +9,6 @@ export const baseConfig = defineConfig({
   resolve: {
     alias: {
       '@': '/src',
-      '@sukimastudy/shared': path.resolve(__dirname, '../../shared/src'),
     },
   },
 

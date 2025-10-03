@@ -49,22 +49,12 @@
   },
   "dependencies": {
     "@lordicon/react": "^1.11.0",
-    "@sukimastudy/shared": "file:../shared",
-    "@tanstack-query-firebase/react": "^1.0.0",
-    "@tanstack/react-query": "^5.0.0",
-    "@testing-library/react": "^16.2.0",
-    "@types/papaparse": "^5.3.16",
-    "@types/uuid": "^10.0.0",
     "clsx": "^2.1.1",
-    "dotenv": "^16.5.0",
     "lottie-web": "^5.13.0",
     "lucide-react": "^0.503.0",
-    "papaparse": "^5.5.3",
-    "qs": "^6.14.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^7.2.0",
-    "use-immer": "^0.11.0"
+    "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -72,7 +62,6 @@
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
     "@vitejs/plugin-react": "^4.3.1",
-    "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-react": "^7.37.4",
