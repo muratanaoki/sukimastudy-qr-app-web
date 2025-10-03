@@ -5,7 +5,7 @@ import {
   type SpeechIdleOptions,
   type SpeechIdleWatcher,
 } from './speechIdleWatcher';
-import { isMobileDevice } from '@/shared/utils/device';
+import { isMobileUserAgent } from '@/shared/utils/device';
 
 // =====================================================================================
 // Speech (Web Speech Synthesis) Hook
@@ -114,7 +114,7 @@ export function useSpeech(options?: UseSpeechOptions) {
     synth.addEventListener?.('voiceschanged', loadVoices);
 
     // speaking状態の定期チェック（モバイルでは頻度を下げる）
-    const pollInterval = isMobileDevice() ? 1000 : 500;
+    const pollInterval = isMobileUserAgent() ? 1000 : 500;
     const id = window.setInterval(() => {
       setSpeaking(synth.speaking);
     }, pollInterval);
@@ -178,7 +178,7 @@ export function useSpeech(options?: UseSpeechOptions) {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
       const synth = window.speechSynthesis;
-      const isMobile = isMobileDevice();
+      const isMobile = isMobileUserAgent();
 
       // 既存音声をキャンセルして新しい音声を再生（PC・モバイル共通）
       if (synth.speaking) {

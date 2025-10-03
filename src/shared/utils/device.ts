@@ -11,5 +11,3 @@ export const isMobileUserAgent = (userAgent?: string): boolean => {
 
   return MOBILE_USER_AGENT_PATTERN.test(navigator.userAgent);
 };
-
-export const isMobileDevice = (): boolean => isMobileUserAgent();

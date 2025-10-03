@@ -29,7 +29,7 @@ import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
-import { isMobileDevice } from '@/shared/utils/device';
+import { isMobileUserAgent } from '@/shared/utils/device';
 import {
   getMedalRank,
   resolveSegmentMeta,
@@ -383,7 +383,7 @@ export const TestDialog = ({
   const { getMedal, upsertMedal } = useMedalStore();
   const segmentMeta = useMemo(() => resolveSegmentMeta(pos, group), [pos, group]);
   const { speakWord, cancel, waitForIdle, supported: speechSupported } = useSpeech();
-  const isMobile = useMemo(() => isMobileDevice(), []);
+  const isMobile = useMemo(() => isMobileUserAgent(), []);
   const { isPaused, addReason, removeReason } = usePauseManager();
   const {
     isOpen: isConfirmOpen,
