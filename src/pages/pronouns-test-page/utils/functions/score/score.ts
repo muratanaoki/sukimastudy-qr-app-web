@@ -1,7 +1,8 @@
-import { RESULT_TIERS } from '@/shared/constants/resultTier';
-
-import { MedalRank, ResultTier } from '../../enum';
+import { MedalRank } from '../../enum';
 import { MEDAL_RANKS } from '../../constants/const';
+import { ResultTier } from '@/pages/pronouns-test-page/utils/enum';
+
+const RESULT_TIERS = [ResultTier.Perfect, ResultTier.Great, ResultTier.Nice] as const;
 
 export type ScoreMeta = {
   /** UI 表示用の評価ラベル。 */
