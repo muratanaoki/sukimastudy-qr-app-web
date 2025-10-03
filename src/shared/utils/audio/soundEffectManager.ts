@@ -93,6 +93,10 @@ const defaultUnlockAudioContext = async (): Promise<boolean> => {
   }
 };
 
+// 単一ページで使い回せる効果音マネージャを生成する。
+// - 全効果音のプリロードと参照キャッシュを担当
+// - `beforePlay` リスナーを挟み込むことで、呼び出し側が再生前に追加処理を差し込める
+// - AudioContext 解放状態でも `enable()` が再開できるよう保険をかけている
 export const createSoundEffectManager = ({
   soundSources = SOUND_SOURCES,
   createHandle = createSoundHandle,
@@ -107,6 +111,8 @@ export const createSoundEffectManager = ({
   let initializedPromise: Promise<void> | null = null;
   let enabled = false;
 
+  // 各サウンドの `ensureLoaded()` を一度だけ呼び出してプリロードを済ませる。
+  // 失敗してもエラーは握り潰さずログし、以降の再生はハンドル側に委ねる。
   const ensureInitialized = async () => {
     if (!initializedPromise) {
       initializedPromise = Promise.all(
@@ -134,6 +140,8 @@ export const createSoundEffectManager = ({
     }
   };
 
+  // `beforePlay` が指定されている場合は、再生前に await して完了を待つ。
+  // 呼び出し側で async 処理を仕込んでもここで例外を握りつぶし、再生処理を継続させる。
   const invokeBeforePlay = async () => {
     if (!beforePlay) return;
     try {
@@ -143,6 +151,7 @@ export const createSoundEffectManager = ({
     }
   };
 
+  // 実際のサウンド再生。ハンドルが欠落していた場合は false を返すことで呼び出し側に通知。
   const play = async (key: SoundKey) => {
     const handle = handles.get(key);
     if (!handle) return false;
@@ -151,6 +160,8 @@ export const createSoundEffectManager = ({
     return handle.playFromStart();
   };
 
+  // ブラウザのオートプレイ制限解除を試みる。
+  // 1) 無音再生での解錠を試し、失敗した場合は AudioContext の resume をバックアップに使う。
   const enable = async () => {
     void ensureInitialized();
     if (enabled) return true;
@@ -179,10 +190,12 @@ export const createSoundEffectManager = ({
     return false;
   };
 
+  // 呼び出し側で任意の `beforePlay` 処理を差し込めるよう登録する。
   const setBeforePlay = (listener: BeforePlayListener | null) => {
     beforePlay = listener;
   };
 
+  // ページ離脱などで呼び出し、内部ハンドルを破棄してリソースを開放する。
   const dispose = () => {
     handles.forEach((handle) => {
       handle.cleanup();
@@ -194,6 +207,7 @@ export const createSoundEffectManager = ({
 
   const isEnabled = () => enabled;
 
+  // 現在使用中の audio 要素を返し、呼び出し側で巻き取り処理を行えるようにする。
   const getAudioElement = (key: SoundKey) => {
     const handle = handles.get(key);
     if (!handle) return null;

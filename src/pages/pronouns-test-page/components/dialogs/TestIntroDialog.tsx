@@ -10,12 +10,13 @@ import { useInitialSelect } from '../../hooks/gameplay/useInitialSelect';
 import { SelectableButton } from '@/pages/pronouns-test-page/components/buttons/selectable-button/SelectableButton';
 import { unlockSpeechSynthesis } from '@/shared/utils/speechUnlocker';
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
-import { STARTUP_AUDIO_FADE_MS, STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
+import { STARTUP_AUDIO_FADE_MS } from '../../utils/constants/audio';
 import { getStartupSoundHandle } from '../../utils/functions/audio/startupSoundHandle';
 import DialogCard from './DialogCard';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
 import { buildSegmentId } from '../../utils/functions/domain/medal';
 import { MedalRank } from '../../utils/enum';
+import startTestAudio from '@/shared/sounds/startTest.mp3';
 
 // ===== Types =====
 type SelectedRange = { groupNo: number; start: number; end: number } | null | undefined;
@@ -144,7 +145,7 @@ export const TestIntroDialog = ({
   onOpenSettings,
 }: TestIntroDialogProps) => {
   useEscapeKey(onClose, true);
-  const startupSoundHandle = useStartupSoundHandle(STARTUP_AUDIO_SRC);
+  const startupSoundHandle = useStartupSoundHandle(startTestAudio);
   const { getMedal } = useMedalStore();
 
   // Data derivations
@@ -179,8 +180,11 @@ export const TestIntroDialog = ({
     if (!selectedSegment || !selectedRange) return;
     unlockSpeechSynthesis();
 
-    if (startupSoundHandle) {
-      await startupSoundHandle.playFromStart({ fadeInDurationMs: STARTUP_AUDIO_FADE_MS });
+    let preplayed = false;
+    if (startupSoundHandle?.getCurrent()) {
+      preplayed = await startupSoundHandle.playFromStart({
+        fadeInDurationMs: STARTUP_AUDIO_FADE_MS,
+      });
     }
 
     onStart?.({
@@ -189,7 +193,7 @@ export const TestIntroDialog = ({
       end: selectedSegment.end,
       items: selectedSegment.items,
       soundHandle: startupSoundHandle ?? undefined,
-      preplayed: !!startupSoundHandle,
+      preplayed,
     });
   }, [onStart, selectedRange, selectedSegment, startupSoundHandle]);
 

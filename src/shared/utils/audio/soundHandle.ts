@@ -1,9 +1,9 @@
 import { createVolumeFadeController } from './volumeFader';
 
 /**
- * 単一音声ソースを抽象化し、再生・フェード・ボリューム操作を提供するハンドル。
- * - Audio 要素の再利用とプリロードを内部で管理し、複数再生時の遅延を低減。
- * - フェードイン/ボリューム制御を `volumeFader` に委譲しつつ、API をシンプルに露出。
+ * 単一音声ソースの再生・フェード・ボリューム操作を抽象化するハンドル。
+ * - Web Audio API を優先し、利用できない環境では HTMLAudioElement をフォールバック利用。
+ * - ログ出力やリソース生成を依存性として差し替え可能にし、単体テストしやすい構造にしている。
  */
 
 export type PlayOptions = {
@@ -13,25 +13,152 @@ export type PlayOptions = {
 };
 
 export type SoundHandle = {
+  /**
+   * このハンドルが参照する音源の URL。UI やログで識別したい場合に読み取り専用で参照する。
+   */
   readonly src: string;
+  /**
+   * 呼び出し側: サウンドマネージャやプリロード処理。
+   * 役割: 初回再生前にロード／デコードを済ませ、次回以降の遅延を減らす。
+   * 成功時: HTMLAudio を返す（Web Audio 時は null）。失敗時は例外を投げずに null を返し、フォールバックに委ねる。
+   */
   ensureLoaded: () => Promise<HTMLAudioElement | null>;
+  /**
+   * 呼び出し側: 実際に効果音を鳴らす箇所（例: ボタン押下や結果表示）。
+   * 役割: 音源を頭出しし、フェードや音量指定を反映してから再生する。
+   * 成功時: true を返し、診断ログに成功エントリが記録される。再生がブロックされた場合は false を返し、ログに失敗理由を残す。
+   */
   playFromStart: (options?: PlayOptions) => Promise<boolean>;
+  /**
+   * 呼び出し側: シーン遷移やダイアログ終了など「音を止めたい」タイミング。
+   * 役割: 進行中の再生やフェードを止め、再生位置を冒頭に戻す。戻り値はなく、失敗時も例外を投げない。
+   */
   reset: () => void;
+  /**
+   * 呼び出し側: コンポーネント破棄時や音源差し替え時のクリーンアップ。
+   * 役割: 内部リソース（AudioBuffer/HTMLAudio）を解放し、次回利用時は再ロードが走る。
+   * 成功・失敗: 戻り値なし。失敗しても例外は表に出ず、必要ならログで検出。
+   */
   cleanup: () => void;
+  /**
+   * 呼び出し側: HTMLAudio 専用の追加制御（例: 既存要素への直接アクセス）。
+   * 役割: 実際の HTMLAudioElement を取得する。Web Audio では常に null。
+   */
   getCurrent: () => HTMLAudioElement | null;
+  /**
+   * 呼び出し側: ユーザー設定やサウンドテストでボリュームを変更する UI。
+   * 役割: 内部に現在音量を保持しつつ、再生中であれば即座に音量を反映。失敗時も例外を投げずに黙って無視。
+   */
   setVolume: (volume: number) => void;
+  /**
+   * 呼び出し側: 設定 UI や診断ログで現在の音量を参照する場合。
+   * 役割: Web Audio では内部にキャッシュしている値、HTMLAudio では要素実値を返す。
+   */
   getVolume: () => number;
 };
 
-const createAudioElement = (src: string, volume: number): HTMLAudioElement => {
+type SoundPlayEngine = 'html' | 'webaudio';
+
+const SOUND_ENGINE_HTML: SoundPlayEngine = 'html';
+const SOUND_ENGINE_WEB_AUDIO: SoundPlayEngine = 'webaudio';
+const READY_STATE_CAN_PLAY = 2; // HTMLMediaElement.HAVE_CURRENT_DATA
+const BUFFER_START_EPSILON = 0.001;
+const SOUND_PLAY_LOG_LIMIT = 80;
+const DEFAULT_VOLUME = 0.5;
+
+type SoundPlayLogEntry = {
+  engine: SoundPlayEngine;
+  timestampMs: number;
+  durationMs: number;
+  src: string;
+  playSucceeded: boolean;
+  usesFade: boolean;
+  readyStateBefore?: number;
+  readyStateAfter?: number;
+  hadToPrime?: boolean;
+  pausedBefore?: boolean;
+  errorMessage?: string;
+};
+
+type SoundPlayLogger = {
+  log: (entry: SoundPlayLogEntry) => void;
+};
+
+type SoundLogWindow = Window &
+  typeof globalThis & {
+    __SOUND_PLAY_LOGS__?: SoundPlayLogEntry[];
+    webkitAudioContext?: typeof AudioContext;
+  };
+
+type NormalizedPlayOptions = {
+  startTime: number;
+  fadeInDurationMs: number;
+  volume?: number;
+};
+
+type GetNow = () => number;
+
+type SoundHandleDependencies = {
+  createFadeController?: typeof createVolumeFadeController;
+  getAudioContext?: () => AudioContext | null;
+  createHtmlAudio?: (src: string, initialVolume: number) => HTMLAudioElement;
+  fetchAudioBuffer?: (src: string) => Promise<ArrayBuffer>;
+  logger?: SoundPlayLogger;
+  now?: GetNow;
+};
+
+const defaultNow: GetNow = () => {
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+    return performance.now();
+  }
+  return Date.now();
+};
+
+// オプション値を正規化し、欠けているパラメータには再生可能なデフォルト値を割り当てる。
+const normalizePlayOptions = (options?: PlayOptions): NormalizedPlayOptions => {
+  return {
+    startTime: Math.max(options?.startTime ?? 0, 0),
+    fadeInDurationMs: Math.max(options?.fadeInDurationMs ?? 0, 0),
+    volume: options?.volume,
+  };
+};
+
+// 再生ログを window グローバルにリングバッファとして蓄積し、任意に参照できるようにする。
+const createSoundPlayLogger = (limit = SOUND_PLAY_LOG_LIMIT): SoundPlayLogger => {
+  if (typeof window === 'undefined') {
+    return { log: () => undefined };
+  }
+
+  const soundWindow = window as SoundLogWindow;
+  return {
+    log: (entry: SoundPlayLogEntry) => {
+      const existing = soundWindow.__SOUND_PLAY_LOGS__ ?? [];
+      soundWindow.__SOUND_PLAY_LOGS__ = [...existing, entry].slice(-limit);
+    },
+  };
+};
+
+const logPlayback = (
+  logger: SoundPlayLogger,
+  entry: Omit<SoundPlayLogEntry, 'timestampMs'> & { timestampMs?: number }
+) => {
+  logger.log({
+    timestampMs: entry.timestampMs ?? Date.now(),
+    ...entry,
+  });
+};
+
+// HTMLAudioElement を生成して src と初期ボリュームをセットし、事前に load して利用準備を整える。
+const defaultCreateHtmlAudio = (src: string, volume: number): HTMLAudioElement => {
   const audio = new Audio();
-  audio.volume = volume;
   audio.preload = 'auto';
   audio.src = src;
+  audio.volume = volume;
   audio.load();
   return audio;
 };
 
+// canplaythrough まで待機し、再生可能な状態になったら resolve する。エラー時も resolve してフォールバックを継続する。
 const waitForReady = (audio: HTMLAudioElement): Promise<HTMLAudioElement> => {
   return new Promise<HTMLAudioElement>((resolve) => {
     const cleanup = () => {
@@ -55,32 +182,87 @@ const waitForReady = (audio: HTMLAudioElement): Promise<HTMLAudioElement> => {
   });
 };
 
-type SoundHandleDependencies = {
-  createFadeController?: typeof createVolumeFadeController;
+// Safari などで decodeAudioData が promise と callback の二形態を取るため、両方を吸収して待ち合わせする。
+const decodeAudioDataWithFallback = (
+  context: AudioContext,
+  data: ArrayBuffer
+): Promise<AudioBuffer> => {
+  return new Promise<AudioBuffer>((resolve, reject) => {
+    const promise = context.decodeAudioData(data, resolve, reject);
+    if (promise) {
+      promise.then(resolve).catch(reject);
+    }
+  });
 };
 
-export const createSoundHandle = (
+// Web Audio 用にバイナリ取得して AudioBuffer 化するための ArrayBuffer を返す。
+const defaultFetchAudioBuffer = async (src: string): Promise<ArrayBuffer> => {
+  const response = await fetch(src);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch audio: ${response.status}`);
+  }
+  return response.arrayBuffer();
+};
+
+let sharedAudioContext: AudioContext | null = null;
+
+// 共通 AudioContext を lazily 生成し、ブラウザが Web Audio をサポートしない場合は null を返す。
+const getDefaultAudioContext = (): AudioContext | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const audioWindow = window as SoundLogWindow;
+  const AudioContextCtor = audioWindow.AudioContext ?? audioWindow.webkitAudioContext;
+  if (!AudioContextCtor) {
+    return null;
+  }
+
+  if (!sharedAudioContext || sharedAudioContext.state === 'closed') {
+    sharedAudioContext = new AudioContextCtor();
+  }
+
+  return sharedAudioContext;
+};
+
+// iOS などで resume が失敗するケースを考慮し、例外を握りつぶして続行する。
+const safeResumeContext = async (context: AudioContext) => {
+  try {
+    await context.resume();
+  } catch (error) {
+    console.warn('AudioContext resume failed', error);
+  }
+};
+
+// HTMLAudioElement ベースのサウンドハンドル。Web Audio が使えない環境向けのフォールバック実装。
+const createHtmlAudioSoundHandle = (
   src: string,
-  initialVolume = 0.5,
-  dependencies: SoundHandleDependencies = {}
+  initialVolume: number,
+  dependencies: SoundHandleDependencies
 ): SoundHandle => {
-  const { createFadeController = createVolumeFadeController } = dependencies;
+  const {
+    createFadeController = createVolumeFadeController,
+    createHtmlAudio = defaultCreateHtmlAudio,
+    now = defaultNow,
+    logger = createSoundPlayLogger(),
+  } = dependencies;
+
   let audio: HTMLAudioElement | null = null;
   let currentVolume = initialVolume;
   let loadPromise: Promise<HTMLAudioElement> | null = null;
 
-  // Audio 要素を lazily 生成し、同一インスタンスを再利用する。
+  // シングルトン的に HTMLAudioElement を生成・保持し、以降の処理で共有する。
   const ensureAudioElement = (): HTMLAudioElement => {
     if (!audio) {
-      audio = createAudioElement(src, currentVolume);
+      audio = createHtmlAudio(src, currentVolume);
     }
     return audio;
   };
 
-  // canplay が発火するまでのプリロードを並列で進める。
+  // 再生前に canplaythrough までのロードを Prime し、待機中は Promise を共有して重複ロードを避ける。
   const primeLoad = () => {
     const element = ensureAudioElement();
-    if (element.readyState >= 2) {
+    if (element.readyState >= READY_STATE_CAN_PLAY) {
       return null;
     }
 
@@ -102,9 +284,10 @@ export const createSoundHandle = (
     return loadPromise;
   };
 
+  // 外部から明示的にロードを要求された場合に利用。成功すれば HTMLAudioElement を返す。
   const ensureLoaded = async (): Promise<HTMLAudioElement | null> => {
     const element = ensureAudioElement();
-    if (element.readyState >= 2) {
+    if (element.readyState >= READY_STATE_CAN_PLAY) {
       return element;
     }
 
@@ -122,32 +305,39 @@ export const createSoundHandle = (
     return audio;
   };
 
+  // HTMLAudioElement の状態を初期化し、必要ならフェードインやシークをセットしてから再生する。
   const playFromStart = async (options: PlayOptions = {}): Promise<boolean> => {
     const element = ensureAudioElement();
     if (!element) return false;
 
-    if (element.readyState < 2) {
+    if (element.readyState < READY_STATE_CAN_PLAY) {
       primeLoad();
     }
 
+    const normalized = normalizePlayOptions(options);
     const previousVolume = element.volume;
-    const { volume, startTime = 0, fadeInDurationMs } = options;
-    const targetVolume = volume ?? previousVolume;
-    const fadeDuration = typeof fadeInDurationMs === 'number' ? fadeInDurationMs : 0;
+    const targetVolume = normalized.volume ?? previousVolume;
     const fadeController = createFadeController({
       audio: element,
       targetVolume,
-      durationMs: fadeDuration,
+      durationMs: normalized.fadeInDurationMs,
     });
     const shouldFade = fadeController.enabled;
+    const readyStateBefore = element.readyState;
+    const pausedBefore = element.paused;
+    const hadToPrime = readyStateBefore < READY_STATE_CAN_PLAY;
+    const startTimestamp = now();
+    let playSucceeded = false;
+    let playError: unknown;
 
+    // 既に再生中なら pause してから currentTime を戻す。
     if (!element.paused) {
       element.pause();
     }
 
     let seekScheduled = false;
     try {
-      element.currentTime = startTime;
+      element.currentTime = normalized.startTime;
     } catch {
       seekScheduled = true;
     }
@@ -158,10 +348,11 @@ export const createSoundHandle = (
       element.volume = targetVolume;
     }
 
+    // ブラウザによっては currentTime セットやフェード開始が canplay 後でないと失敗するため、イベントにぶら下げる。
     const handleCanPlay = () => {
       if (seekScheduled) {
         try {
-          element.currentTime = startTime;
+          element.currentTime = normalized.startTime;
         } catch {
           /* seek失敗時は諦める */
         }
@@ -179,7 +370,7 @@ export const createSoundHandle = (
       element.addEventListener('canplay', handleCanPlay);
       element.addEventListener('canplaythrough', handleCanPlay);
 
-      if (element.readyState >= 2) {
+      if (element.readyState >= READY_STATE_CAN_PLAY) {
         handleCanPlay();
       }
     }
@@ -192,6 +383,7 @@ export const createSoundHandle = (
       }
 
       await playPromise;
+      playSucceeded = true;
       return true;
     } catch (error) {
       if (shouldFade) {
@@ -199,20 +391,37 @@ export const createSoundHandle = (
         element.volume = previousVolume;
       }
       console.warn('音声再生エラー:', error);
+      playError = error;
       return false;
     } finally {
       element.removeEventListener('canplay', handleCanPlay);
       element.removeEventListener('canplaythrough', handleCanPlay);
 
-      if (!shouldFade && typeof volume === 'number') {
+      if (!shouldFade && typeof normalized.volume === 'number') {
         element.volume = previousVolume;
-      } else if (shouldFade && typeof volume === 'number') {
+      } else if (shouldFade && typeof normalized.volume === 'number') {
         fadeController.cancel();
         element.volume = previousVolume;
       }
+
+      // 計測値と状態をログに送る。結果はサウンド診断ビューから参照できる。
+      const duration = Number((now() - startTimestamp).toFixed(1));
+      logPlayback(logger, {
+        engine: SOUND_ENGINE_HTML,
+        durationMs: duration,
+        src,
+        readyStateBefore,
+        readyStateAfter: element.readyState,
+        hadToPrime,
+        pausedBefore,
+        playSucceeded,
+        usesFade: shouldFade,
+        errorMessage: playError instanceof Error ? playError.message : undefined,
+      });
     }
   };
 
+  // 再生中なら停止し、再生位置を頭に戻す。
   const reset = () => {
     if (!audio) return;
     try {
@@ -223,6 +432,7 @@ export const createSoundHandle = (
     audio.currentTime = 0;
   };
 
+  // src を解除して GC 可能な状態に戻す。次回再生時には再ロードが走る。
   const cleanup = () => {
     if (!audio) return;
     try {
@@ -237,6 +447,7 @@ export const createSoundHandle = (
 
   const getCurrent = () => audio;
 
+  // 音量設定を保存しつつ、インスタンス化済みの audio にも即時反映する。
   const setVolume = (volume: number) => {
     currentVolume = volume;
     if (audio) {
@@ -261,4 +472,220 @@ export const createSoundHandle = (
     setVolume,
     getVolume,
   };
+};
+
+// Web Audio API ベースのサウンドハンドル。低遅延の AudioBuffer 再生とフェード制御を提供する。
+const createWebAudioSoundHandle = (
+  src: string,
+  initialVolume: number,
+  dependencies: SoundHandleDependencies
+): SoundHandle | null => {
+  const {
+    getAudioContext,
+    fetchAudioBuffer = defaultFetchAudioBuffer,
+    now = defaultNow,
+    logger = createSoundPlayLogger(),
+  } = dependencies;
+
+  const context = getAudioContext?.() ?? getDefaultAudioContext();
+  if (!context || context.state === 'closed') {
+    return null;
+  }
+
+  let currentVolume = initialVolume;
+  let buffer: AudioBuffer | null = null;
+  let loadPromise: Promise<AudioBuffer | null> | null = null;
+  const gainNode = context.createGain();
+  let gainConnected = false;
+  gainNode.gain.value = currentVolume;
+
+  // ガインノードは再生開始時に Destination へ接続する。複数回接続を避けるためフラグ管理する。
+  const ensureGainConnected = () => {
+    if (!gainConnected) {
+      gainNode.connect(context.destination);
+      gainConnected = true;
+    }
+  };
+
+  let currentSource: AudioBufferSourceNode | null = null;
+
+  // 同時再生を避けるため、既存の BufferSource を停止・切断する。
+  const stopCurrentSource = () => {
+    if (!currentSource) return;
+    try {
+      currentSource.stop();
+    } catch {
+      /* noop */
+    }
+    currentSource.disconnect();
+    currentSource = null;
+  };
+
+  // 初回再生時に AudioBuffer を decode し、それ以降はキャッシュを再利用する。
+  const ensureLoaded = async (): Promise<HTMLAudioElement | null> => {
+    if (buffer) {
+      return null;
+    }
+
+    if (!loadPromise) {
+      loadPromise = (async () => {
+        try {
+          await safeResumeContext(context);
+          const arrayBuffer = await fetchAudioBuffer(src);
+          buffer = await decodeAudioDataWithFallback(context, arrayBuffer);
+          return buffer;
+        } catch (error) {
+          console.warn('Web Audio 読み込みエラー:', error);
+          buffer = null;
+          return null;
+        } finally {
+          loadPromise = null;
+        }
+      })();
+    }
+
+    await loadPromise;
+    return null;
+  };
+
+  // AudioBufferSourceNode を都度生成し、フェード・シークを設定してから start する。
+  const playFromStart = async (options: PlayOptions = {}): Promise<boolean> => {
+    const normalized = normalizePlayOptions(options);
+    const startTimestamp = now();
+    const hadToPrime = !buffer;
+    let playSucceeded = false;
+    let errorMessage: string | undefined;
+
+    try {
+      await ensureLoaded();
+      if (!buffer) {
+        throw new Error('AudioBuffer が初期化されていません');
+      }
+
+      await safeResumeContext(context);
+      ensureGainConnected();
+      stopCurrentSource();
+
+      // BufferSource は使い捨てなので毎回生成し、再生後に onended で後片付けする。
+      const source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(gainNode);
+      currentSource = source;
+
+      const currentTime = context.currentTime;
+      gainNode.gain.cancelScheduledValues(currentTime);
+
+      const targetVolume =
+        typeof normalized.volume === 'number' ? normalized.volume : currentVolume;
+      const baseVolume = currentVolume;
+
+      if (normalized.fadeInDurationMs > 0) {
+        const fadeEnd = currentTime + normalized.fadeInDurationMs / 1000;
+        gainNode.gain.setValueAtTime(0, currentTime);
+        gainNode.gain.linearRampToValueAtTime(targetVolume, fadeEnd);
+      } else {
+        gainNode.gain.setValueAtTime(targetVolume, currentTime);
+      }
+
+      // startTime が duration を超えると例外になるため、末尾からわずかに余白を引いた値で clamp する。
+      const maxStart = Math.max(buffer.duration - BUFFER_START_EPSILON, 0);
+      const clampedStart = Math.min(Math.max(normalized.startTime, 0), maxStart);
+      source.start(currentTime, clampedStart);
+
+      source.onended = () => {
+        currentSource = null;
+        const endTime = context.currentTime;
+        gainNode.gain.cancelScheduledValues(endTime);
+        const restoreVolume = typeof normalized.volume === 'number' ? baseVolume : currentVolume;
+        gainNode.gain.setValueAtTime(restoreVolume, Math.max(endTime, context.currentTime));
+      };
+
+      if (typeof normalized.volume !== 'number') {
+        currentVolume = targetVolume;
+      }
+
+      playSucceeded = true;
+      return true;
+    } catch (error) {
+      errorMessage = error instanceof Error ? error.message : String(error);
+      stopCurrentSource();
+      return false;
+    } finally {
+      // Web Audio でも HTML と同様に診断ログを残す。
+      const duration = Number((now() - startTimestamp).toFixed(1));
+      logPlayback(logger, {
+        engine: SOUND_ENGINE_WEB_AUDIO,
+        durationMs: duration,
+        src,
+        playSucceeded,
+        usesFade: normalized.fadeInDurationMs > 0,
+        hadToPrime,
+        errorMessage,
+      });
+    }
+  };
+
+  // フェード予約をキャンセルし、現在のボリューム値だけ保持したまま停止する。
+  const reset = () => {
+    stopCurrentSource();
+    const currentTime = context.currentTime;
+    gainNode.gain.cancelScheduledValues(currentTime);
+    gainNode.gain.setValueAtTime(currentVolume, currentTime);
+  };
+
+  // 参照を切って GC 可能にしつつ、ガインノードの接続も解除する。
+  const cleanup = () => {
+    stopCurrentSource();
+    if (gainConnected) {
+      gainNode.disconnect();
+      gainConnected = false;
+    }
+    buffer = null;
+  };
+
+  const getCurrent = () => null;
+
+  // ガイン値を即時更新し、以後の再生でも同じ音量がスタートポイントになる。
+  const setVolume = (volumeValue: number) => {
+    currentVolume = volumeValue;
+    ensureGainConnected();
+    const currentTime = context.currentTime;
+    gainNode.gain.cancelScheduledValues(currentTime);
+    gainNode.gain.setValueAtTime(volumeValue, currentTime);
+  };
+
+  const getVolume = () => currentVolume;
+
+  return {
+    src,
+    ensureLoaded,
+    playFromStart,
+    reset,
+    cleanup,
+    getCurrent,
+    setVolume,
+    getVolume,
+  };
+};
+
+// エントリーポイント。Web Audio が利用可能ならそちらを優先し、不可なら HTMLAudio ハンドルを返す。
+export const createSoundHandle = (
+  src: string,
+  initialVolume = DEFAULT_VOLUME,
+  dependencies: SoundHandleDependencies = {}
+): SoundHandle => {
+  const resolvedNow = dependencies.now ?? defaultNow;
+  const resolvedLogger = dependencies.logger ?? createSoundPlayLogger();
+  const sharedDependencies: SoundHandleDependencies = {
+    ...dependencies,
+    now: resolvedNow,
+    logger: resolvedLogger,
+  };
+
+  const webAudioHandle = createWebAudioSoundHandle(src, initialVolume, sharedDependencies);
+  if (webAudioHandle) {
+    return webAudioHandle;
+  }
+
+  return createHtmlAudioSoundHandle(src, initialVolume, sharedDependencies);
 };

@@ -44,7 +44,8 @@ import { TestDialogContent } from './internal/TestDialogContent';
 // 閉じるアニメーションや requestClose を扱うコントローラ
 import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogCloseController';
 // スタートアップ音声のパス定数
-import { STARTUP_AUDIO_SRC } from '../../utils/constants/audio';
+import startTestAudio from '@/shared/sounds/startTest.mp3';
+
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 // 効果音再生失敗時に表示するフォールバックダイアログ
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
@@ -60,6 +61,36 @@ import { TestDialogPhase } from '../../utils/enum';
 const CLOSE_ANIMATION_DURATION_MS = 450;
 // Web Speech API のキャンセルを待機する上限時間（ms）
 const SPEECH_IDLE_TIMEOUT_MS = 480;
+const MOBILE_SPEECH_IDLE_TIMEOUT_MS = 240;
+
+const MAX_WAIT_LOG_ENTRIES = 40;
+
+type WaitLogEntry = {
+  timestampMs: number;
+  durationMs: number;
+  timeoutMs: number;
+  timeoutHit: boolean;
+  mobile: boolean;
+  speakingBefore: boolean;
+  speakingAfter: boolean;
+};
+
+type WaitLogWindow = Window &
+  typeof globalThis & {
+    __TEST_DIALOG_WAIT_LOGS__?: WaitLogEntry[];
+  };
+
+const detectMobileUserAgent = () => {
+  if (typeof navigator === 'undefined') return false;
+  return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+const getTimestamp = () => {
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+    return performance.now();
+  }
+  return Date.now();
+};
 
 type PlaybackFailureState = {
   context: string;
@@ -131,7 +162,8 @@ export const TestDialog = ({
   const medalSavedRef = useRef(false);
   const segmentMeta = useMemo(() => resolveSegmentMeta(pos, group), [pos, group]);
   // Web Speech API の呼び出しをラップ。単語読み上げとキャンセルを提供
-  const { speakWord, cancel, waitForIdle } = useSpeech();
+  const { speakWord, cancel, waitForIdle, supported: speechSupported } = useSpeech();
+  const isMobile = useMemo(() => detectMobileUserAgent(), []);
   // 一時停止の原因を積み上げ式で管理して UI に反映
   const { isPaused, addReason, removeReason } = usePauseManager();
   const {
@@ -146,7 +178,7 @@ export const TestDialog = ({
   // ダイアログ起動時の演出（例: カウントダウン音）を管理し、完了状態を返す
   const { isStartupComplete } = useTestStartup({
     open,
-    audioSrc: STARTUP_AUDIO_SRC,
+    audioSrc: startTestAudio,
     soundHandle: startupSoundHandle ?? undefined,
     startupAudioPreplayed,
   });
@@ -200,12 +232,64 @@ export const TestDialog = ({
 
   // 効果音再生前に読み上げをキャンセルして音が重ならないようにする
   const beforePlay = useCallback(async () => {
+    if (!speechSupported) {
+      console.info('[TestDialog] waitForIdle skipped | supported=false');
+      return;
+    }
+
+    const synth = typeof window === 'undefined' ? null : (window.speechSynthesis ?? null);
+    if (!synth) {
+      console.info('[TestDialog] waitForIdle skipped | synthUnavailable');
+      return;
+    }
+
+    const speakingBefore = synth.speaking;
+    if (!speakingBefore && !isMobile) {
+      console.info('[TestDialog] waitForIdle skipped | mobile=false | speaking=false');
+      return;
+    }
+
+    const timeoutMs = isMobile ? MOBILE_SPEECH_IDLE_TIMEOUT_MS : SPEECH_IDLE_TIMEOUT_MS;
+    const startedAt = getTimestamp();
+    let timeoutHit = false;
+    let timeoutHandle: number | undefined;
+
+    if (typeof window !== 'undefined') {
+      timeoutHandle = window.setTimeout(() => {
+        timeoutHit = true;
+      }, timeoutMs + 8);
+    }
+
     try {
-      await waitForIdle({ forceCancel: true, timeoutMs: SPEECH_IDLE_TIMEOUT_MS });
+      await waitForIdle({ forceCancel: true, timeoutMs });
     } catch (error) {
       console.warn('Failed to settle speech before sound effect', error);
+    } finally {
+      if (typeof window !== 'undefined' && typeof timeoutHandle === 'number') {
+        window.clearTimeout(timeoutHandle);
+      }
+      const elapsed = getTimestamp() - startedAt;
+      if (typeof window !== 'undefined') {
+        const waitWindow = window as WaitLogWindow;
+        const existingLogs = waitWindow.__TEST_DIALOG_WAIT_LOGS__ ?? [];
+        const nextEntry: WaitLogEntry = {
+          timestampMs: Date.now(),
+          durationMs: Number(elapsed.toFixed(1)),
+          timeoutMs,
+          timeoutHit,
+          mobile: isMobile,
+          speakingBefore,
+          speakingAfter: synth.speaking,
+        };
+        waitWindow.__TEST_DIALOG_WAIT_LOGS__ = [...existingLogs, nextEntry].slice(
+          -MAX_WAIT_LOG_ENTRIES
+        );
+      }
+      console.info(
+        `[TestDialog] waitForIdle metrics | duration=${elapsed.toFixed(1)}ms | timeoutMs=${timeoutMs} | timeoutHit=${timeoutHit} | mobile=${isMobile} | speakingBefore=${speakingBefore} | speakingAfter=${synth.speaking}`
+      );
     }
-  }, [waitForIdle]);
+  }, [waitForIdle, speechSupported, isMobile]);
 
   useSoundEffectLifecycle({
     setBeforePlay,
