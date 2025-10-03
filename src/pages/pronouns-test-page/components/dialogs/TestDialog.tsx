@@ -1,53 +1,31 @@
 /**
  * Pronouns テスト画面のメインダイアログ。
- * - 各種カスタムフックを組み合わせて、出題ロジック・効果音・UI状態を統括的に制御する。
- * - 依存するフックが多いため、どの責務を担っているのかをコメントで明示している。
+ * 依存する多数のフックを統合しつつ、可読性とテスト容易性を確保するよう小さなヘルパーへ分割している。
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-// ESCキーでダイアログを閉じるためのキーボードショートカット管理
 import { useEscapeKey } from '../../hooks/dialog/useEscapeKey';
-// 品詞グループや代名詞グループの型定義
-import type { PosGroup, PronounGroup } from '../../utils/type';
-// 単語読み上げ（Web Speech API ラッパー）
+import type { JudgementButtonType, PosGroup, PronounGroup } from '../../utils/type';
 import { useSpeech } from '../../hooks/audio/useSpeech';
-// 自動読み上げ制御（問題表示時に自動で発話するか）
+import type { WaitForSpeechIdleOptions } from '../../hooks/audio/useSpeech';
 import { useAutoPronounce } from '../../hooks/audio/useAutoPronounce';
-// ダイアログ全体の状態（問題、残り時間、フィードバック等）を一括管理
 import { useTestDialogState } from '../../hooks/dialog/useTestDialogState';
-// 判定ボタンの選択・フラッシュ制御をまとめたフック
 import { useJudgementHandler } from '../../hooks/gameplay/useJudgementHandler';
-// 選択肢の回答・スキップ・単語の開示など各種イベントハンドラ生成
 import { useTestDialogHandlers } from '../../hooks/dialog/useTestDialogHandlers';
-// 一時停止（タイマー停止）理由を積み上げ式で管理
 import { usePauseManager } from '../../hooks/gameplay/usePauseManager';
-// テストの進行段階（問題中／結果表示など）を計算するユーティリティ
 import { resolveDialogPhase } from '../../utils/functions/dialog/dialogPhase';
-// ダイアログ起動時のチュートリアル音など初期化処理を実行
 import { useTestStartup } from '../../hooks/dialog/useTestStartup';
-// 閉じる確認ダイアログの open/close 状態を管理
 import { useConfirmCloseState } from '../../hooks/dialog/internal/useConfirmCloseState';
-// 現在の状態から UI に渡す表示用データを構築
 import { buildTestDialogView } from '../../utils/functions/dialog/testDialogView';
-// 効果音の共通フック（クリック音、正解音など）
 import { useSoundEffects } from '@/shared/hooks/useSoundEffects';
 import type { PlaybackFailureHandler, PlaybackFailureInfo } from '@/shared/hooks/useSoundEffects';
-// 結果表示時のサウンド演出を担当
 import { useResultSoundEffect } from '../../hooks/dialog/internal/useResultSoundEffect';
-// 一時停止理由が発生した際に PauseManager に接続
 import { usePauseReasonEffect } from '../../hooks/dialog/internal/usePauseReasonEffect';
-// 一時停止理由の定義（スタートアップなど）
 import { PauseReason } from '../../hooks/gameplay/usePauseManager';
-// 表示中のフィードバック内容から UI の操作可否を導出
 import { deriveControlState } from '../../utils/functions/dialog/controlState';
-// 実際のダイアログ UI コンポーネント
 import { TestDialogContent } from './internal/TestDialogContent';
-// 閉じるアニメーションや requestClose を扱うコントローラ
 import { useDialogCloseController } from '../../hooks/dialog/internal/useDialogCloseController';
-// スタートアップ音声のパス定数
 import startTestAudio from '@/shared/sounds/startTest.mp3';
-
 import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
-// 効果音再生失敗時に表示するフォールバックダイアログ
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
@@ -59,11 +37,13 @@ import {
 import { TestDialogPhase } from '../../utils/enum';
 
 const CLOSE_ANIMATION_DURATION_MS = 450;
-// Web Speech API のキャンセルを待機する上限時間（ms）
 const SPEECH_IDLE_TIMEOUT_MS = 480;
 const MOBILE_SPEECH_IDLE_TIMEOUT_MS = 240;
-
 const MAX_WAIT_LOG_ENTRIES = 40;
+const WAIT_LOG_TIMEOUT_GRACE_MS = 8;
+const WAIT_LOG_WINDOW_KEY = '__TEST_DIALOG_WAIT_LOGS__' as const;
+const WAIT_LOG_SKIP_PREFIX = '[TestDialog] waitForIdle skipped';
+const WAIT_LOG_METRICS_PREFIX = '[TestDialog] waitForIdle metrics';
 
 type WaitLogEntry = {
   timestampMs: number;
@@ -77,8 +57,60 @@ type WaitLogEntry = {
 
 type WaitLogWindow = Window &
   typeof globalThis & {
-    __TEST_DIALOG_WAIT_LOGS__?: WaitLogEntry[];
+    [WAIT_LOG_WINDOW_KEY]?: WaitLogEntry[];
   };
+
+type PlaybackFailureState = {
+  context: string;
+  info?: PlaybackFailureInfo;
+} | null;
+
+type SegmentMeta = ReturnType<typeof resolveSegmentMeta>;
+type MedalRank = ReturnType<typeof getMedalRank>;
+
+type SpeechWaitSkipContext = {
+  speechSupported: boolean;
+  synth: SpeechSynthesis | null;
+  isMobile: boolean;
+};
+
+type SettleSpeechParams = {
+  waitForIdle: (options?: WaitForSpeechIdleOptions) => Promise<void>;
+  timeoutMs: number;
+  synth: SpeechSynthesis | null;
+};
+
+type LogWaitMetricsParams = {
+  elapsed: number;
+  timeoutMs: number;
+  timeoutHit: boolean;
+  isMobile: boolean;
+  speakingBefore: boolean;
+  speakingAfter: boolean;
+};
+
+type UseSpeechBeforePlayParams = {
+  waitForIdle: (options?: WaitForSpeechIdleOptions) => Promise<void>;
+  speechSupported: boolean;
+  isMobile: boolean;
+};
+
+type UseMedalAutoSaveParams = {
+  open: boolean;
+  isResultDisplayed: boolean;
+  hasItems: boolean;
+  segmentMeta: SegmentMeta | null;
+  attemptMedal: MedalRank | null;
+  getMedal: (segmentId: string) => MedalRank | undefined;
+  upsertMedal: (segmentId: string, medal: MedalRank) => void;
+};
+
+type UseCloseBehaviorParams = {
+  dialogPhase: TestDialogPhase;
+  closeConfirm: () => void;
+  openConfirm: () => void;
+  requestClose: () => void;
+};
 
 const detectMobileUserAgent = () => {
   if (typeof navigator === 'undefined') return false;
@@ -92,12 +124,115 @@ const getTimestamp = () => {
   return Date.now();
 };
 
-type PlaybackFailureState = {
-  context: string;
-  info?: PlaybackFailureInfo;
-} | null;
+const appendWaitLogEntry = (entry: WaitLogEntry) => {
+  if (typeof window === 'undefined') return;
+  const waitWindow = window as WaitLogWindow;
+  const existingLogs = waitWindow[WAIT_LOG_WINDOW_KEY] ?? [];
+  waitWindow[WAIT_LOG_WINDOW_KEY] = [...existingLogs, entry].slice(-MAX_WAIT_LOG_ENTRIES);
+};
 
-// 効果音再生の失敗状態を局所管理し、テストしやすいシンプルな API で返す
+const getSpeechSynthesis = (): SpeechSynthesis | null => {
+  if (typeof window === 'undefined') return null;
+  return window.speechSynthesis ?? null;
+};
+
+const getSpeechWaitSkipReason = ({
+  speechSupported,
+  synth,
+  isMobile,
+}: SpeechWaitSkipContext): string | null => {
+  if (!speechSupported) return 'supported=false';
+  if (!synth) return 'synthUnavailable';
+  if (!isMobile && !synth.speaking) return 'mobile=false | speaking=false';
+  return null;
+};
+
+const settleSpeechBeforeAudio = async ({ waitForIdle, timeoutMs, synth }: SettleSpeechParams) => {
+  const startedAt = getTimestamp();
+  let timeoutHit = false;
+  let timeoutHandle: number | undefined;
+
+  if (typeof window !== 'undefined') {
+    timeoutHandle = window.setTimeout(() => {
+      timeoutHit = true;
+    }, timeoutMs + WAIT_LOG_TIMEOUT_GRACE_MS);
+  }
+
+  try {
+    await waitForIdle({ forceCancel: true, timeoutMs });
+  } catch (error) {
+    console.warn('Failed to settle speech before sound effect', error);
+  } finally {
+    if (typeof window !== 'undefined' && typeof timeoutHandle === 'number') {
+      window.clearTimeout(timeoutHandle);
+    }
+  }
+
+  const elapsed = Number((getTimestamp() - startedAt).toFixed(1));
+  const speakingAfter = synth?.speaking ?? false;
+
+  return { elapsed, timeoutHit, speakingAfter };
+};
+
+const logWaitMetrics = ({
+  elapsed,
+  timeoutMs,
+  timeoutHit,
+  isMobile,
+  speakingBefore,
+  speakingAfter,
+}: LogWaitMetricsParams) => {
+  appendWaitLogEntry({
+    timestampMs: Date.now(),
+    durationMs: elapsed,
+    timeoutMs,
+    timeoutHit,
+    mobile: isMobile,
+    speakingBefore,
+    speakingAfter,
+  });
+
+  console.info(
+    `${WAIT_LOG_METRICS_PREFIX} | duration=${elapsed.toFixed(1)}ms | timeoutMs=${timeoutMs} | timeoutHit=${timeoutHit} | mobile=${isMobile} | speakingBefore=${speakingBefore} | speakingAfter=${speakingAfter}`
+  );
+};
+
+const useSpeechBeforePlay = ({
+  waitForIdle,
+  speechSupported,
+  isMobile,
+}: UseSpeechBeforePlayParams) =>
+  useCallback(async () => {
+    const synth = getSpeechSynthesis();
+    const skipReason = getSpeechWaitSkipReason({ speechSupported, synth, isMobile });
+
+    if (skipReason) {
+      console.info(`${WAIT_LOG_SKIP_PREFIX} | ${skipReason}`);
+      return;
+    }
+
+    const timeoutMs = isMobile ? MOBILE_SPEECH_IDLE_TIMEOUT_MS : SPEECH_IDLE_TIMEOUT_MS;
+    const speakingBefore = synth?.speaking ?? false;
+
+    const { elapsed, timeoutHit, speakingAfter } = await settleSpeechBeforeAudio({
+      waitForIdle,
+      timeoutMs,
+      synth,
+    });
+
+    logWaitMetrics({
+      elapsed,
+      timeoutMs,
+      timeoutHit,
+      isMobile,
+      speakingBefore,
+      speakingAfter,
+    });
+  }, [waitForIdle, speechSupported, isMobile]);
+
+/**
+ * 効果音再生の失敗状態を局所管理し、フォールバック UI と連携しやすい形で提供する。
+ */
 const usePlaybackFailureState = () => {
   const [state, setState] = useState<PlaybackFailureState>(null);
 
@@ -123,7 +258,9 @@ type SoundEffectLifecycleParams = {
   onPlaybackFailure: PlaybackFailureHandler;
 };
 
-// 効果音マネージャの before/after ハンドラ登録とクリーンアップを共通化
+/**
+ * 効果音マネージャに before/after のフックを登録し、ライフサイクルに合わせてクリーンアップする。
+ */
 const useSoundEffectLifecycle = ({
   setBeforePlay,
   setPlaybackFailureHandler,
@@ -141,180 +278,16 @@ const useSoundEffectLifecycle = ({
   }, [setBeforePlay, setPlaybackFailureHandler, beforePlay, onPlaybackFailure]);
 };
 
-export type TestDialogProps = {
-  open: boolean;
-  onClose: () => void;
-  pos: PosGroup; // 上位の品詞グループ（単数）
-  group: PronounGroup; // 現在テスト中の下位グループ
-  startupSoundHandle?: SoundHandle | null;
-  startupAudioPreplayed?: boolean;
-};
-
-export const TestDialog = ({
+const useMedalAutoSave = ({
   open,
-  onClose,
-  pos,
-  group,
-  startupSoundHandle,
-  startupAudioPreplayed,
-}: TestDialogProps) => {
-  const { getMedal, upsertMedal } = useMedalStore();
+  isResultDisplayed,
+  hasItems,
+  segmentMeta,
+  attemptMedal,
+  getMedal,
+  upsertMedal,
+}: UseMedalAutoSaveParams) => {
   const medalSavedRef = useRef(false);
-  const segmentMeta = useMemo(() => resolveSegmentMeta(pos, group), [pos, group]);
-  // Web Speech API の呼び出しをラップ。単語読み上げとキャンセルを提供
-  const { speakWord, cancel, waitForIdle, supported: speechSupported } = useSpeech();
-  const isMobile = useMemo(() => detectMobileUserAgent(), []);
-  // 一時停止の原因を積み上げ式で管理して UI に反映
-  const { isPaused, addReason, removeReason } = usePauseManager();
-  const {
-    isOpen: isConfirmOpen,
-    open: openConfirm,
-    close: closeConfirm,
-  } = useConfirmCloseState({
-    addPauseReason: addReason,
-    removePauseReason: removeReason,
-  });
-
-  // ダイアログ起動時の演出（例: カウントダウン音）を管理し、完了状態を返す
-  const { isStartupComplete } = useTestStartup({
-    open,
-    audioSrc: startTestAudio,
-    soundHandle: startupSoundHandle ?? undefined,
-    startupAudioPreplayed,
-  });
-
-  // スタートアップ処理中はゲームを一時停止扱いにしてタイマー等を止める
-  usePauseReasonEffect({
-    active: open && !isStartupComplete,
-    reason: PauseReason.Startup,
-    addReason,
-    removeReason,
-  });
-
-  // 効果音群（正解音／不正解音／結果音など）をまとめて取得
-  const soundEffects = useSoundEffects();
-
-  // テスト全体の状態（設定・進捗・結果・UI 表示用データなど）を取得
-  const { settings, progress, results, choices, meta, actions, feedback, display } =
-    useTestDialogState({
-      open,
-      group,
-      paused: isPaused,
-      soundEffects,
-    });
-
-  // 設定情報: 出題モードや選択肢表示方法
-  const { choiceView, answerMode } = settings;
-  // 進捗情報: 現在の問題、残り時間、問題数など
-  const { total, current, timeLeftPct, item, isCompleted, hasItems } = progress;
-  // 結果情報: 正解数や履歴など
-  const { correctAnswers, scorePercentage, answerHistory } = results;
-  // 選択肢データ
-  const { options: choiceOptions } = choices;
-  // メタ情報: 問題を識別するキー
-  const { questionKey } = meta;
-  // 進行制御: 次の問題へ進む、リセットするなど
-  const { advance, reset } = actions;
-
-  // 効果音操作を個別に取り出して使いやすくする
-  const {
-    playCorrectSound,
-    playIncorrectSound,
-    enableAudio,
-    playResultSound,
-    setBeforePlay,
-    notifyPlaybackFailure,
-    setPlaybackFailureHandler,
-    getAudioElement,
-  } = soundEffects;
-
-  const { state: playbackFailureInfo, reportFailure, clearFailure } = usePlaybackFailureState();
-
-  // 効果音再生前に読み上げをキャンセルして音が重ならないようにする
-  const beforePlay = useCallback(async () => {
-    if (!speechSupported) {
-      console.info('[TestDialog] waitForIdle skipped | supported=false');
-      return;
-    }
-
-    const synth = typeof window === 'undefined' ? null : (window.speechSynthesis ?? null);
-    if (!synth) {
-      console.info('[TestDialog] waitForIdle skipped | synthUnavailable');
-      return;
-    }
-
-    const speakingBefore = synth.speaking;
-    if (!speakingBefore && !isMobile) {
-      console.info('[TestDialog] waitForIdle skipped | mobile=false | speaking=false');
-      return;
-    }
-
-    const timeoutMs = isMobile ? MOBILE_SPEECH_IDLE_TIMEOUT_MS : SPEECH_IDLE_TIMEOUT_MS;
-    const startedAt = getTimestamp();
-    let timeoutHit = false;
-    let timeoutHandle: number | undefined;
-
-    if (typeof window !== 'undefined') {
-      timeoutHandle = window.setTimeout(() => {
-        timeoutHit = true;
-      }, timeoutMs + 8);
-    }
-
-    try {
-      await waitForIdle({ forceCancel: true, timeoutMs });
-    } catch (error) {
-      console.warn('Failed to settle speech before sound effect', error);
-    } finally {
-      if (typeof window !== 'undefined' && typeof timeoutHandle === 'number') {
-        window.clearTimeout(timeoutHandle);
-      }
-      const elapsed = getTimestamp() - startedAt;
-      if (typeof window !== 'undefined') {
-        const waitWindow = window as WaitLogWindow;
-        const existingLogs = waitWindow.__TEST_DIALOG_WAIT_LOGS__ ?? [];
-        const nextEntry: WaitLogEntry = {
-          timestampMs: Date.now(),
-          durationMs: Number(elapsed.toFixed(1)),
-          timeoutMs,
-          timeoutHit,
-          mobile: isMobile,
-          speakingBefore,
-          speakingAfter: synth.speaking,
-        };
-        waitWindow.__TEST_DIALOG_WAIT_LOGS__ = [...existingLogs, nextEntry].slice(
-          -MAX_WAIT_LOG_ENTRIES
-        );
-      }
-      console.info(
-        `[TestDialog] waitForIdle metrics | duration=${elapsed.toFixed(1)}ms | timeoutMs=${timeoutMs} | timeoutHit=${timeoutHit} | mobile=${isMobile} | speakingBefore=${speakingBefore} | speakingAfter=${synth.speaking}`
-      );
-    }
-  }, [waitForIdle, speechSupported, isMobile]);
-
-  useSoundEffectLifecycle({
-    setBeforePlay,
-    setPlaybackFailureHandler,
-    beforePlay,
-    onPlaybackFailure: reportFailure,
-  });
-
-  // 判定ボタン操作で利用する効果音群をメモ化して渡しやすく
-  const judgementSoundEffects = useMemo(
-    () => ({
-      playCorrectSound,
-      playIncorrectSound,
-      enableAudio,
-      notifyPlaybackFailure,
-      getAudioElement,
-    }),
-    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure, getAudioElement]
-  );
-
-  const isResultDisplayed = isCompleted;
-  const attemptMedal = useMemo(
-    () => (segmentMeta ? getMedalRank(scorePercentage) : null),
-    [segmentMeta, scorePercentage]
-  );
 
   useEffect(() => {
     if (!open) {
@@ -333,11 +306,184 @@ export const TestDialog = ({
 
     const existing = getMedal(segmentMeta.segmentId);
     const finalMedal = selectHigherMedal(existing, attemptMedal);
+    if (!finalMedal) return;
+
     upsertMedal(segmentMeta.segmentId, finalMedal);
     medalSavedRef.current = true;
   }, [isResultDisplayed, hasItems, segmentMeta, attemptMedal, getMedal, upsertMedal]);
+};
 
-  // 結果表示に切り替わった際に結果用のサウンドを再生
+const useCloseBehavior = ({
+  dialogPhase,
+  closeConfirm,
+  openConfirm,
+  requestClose,
+}: UseCloseBehaviorParams) => {
+  const handleCloseClick = useCallback(() => {
+    if (dialogPhase === TestDialogPhase.Completed) {
+      closeConfirm();
+      requestClose();
+      return;
+    }
+
+    openConfirm();
+  }, [dialogPhase, closeConfirm, openConfirm, requestClose]);
+
+  const handleConfirmClose = useCallback(() => {
+    closeConfirm();
+    requestClose();
+  }, [closeConfirm, requestClose]);
+
+  return {
+    handleCloseClick,
+    handleConfirmClose,
+    handleCancelClose: closeConfirm,
+  } as const;
+};
+
+const useJudgementButtons = (handleJudgementAnswer: (type: JudgementButtonType) => void) => {
+  const handleDontKnow = useCallback(() => {
+    handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW);
+  }, [handleJudgementAnswer]);
+
+  const handleKnow = useCallback(() => {
+    handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW);
+  }, [handleJudgementAnswer]);
+
+  return { handleDontKnow, handleKnow } as const;
+};
+
+const useWordPronunciation = (term: string | null, speakWord: (value: string) => void) =>
+  useMemo(() => {
+    if (!term) return undefined;
+
+    return () => {
+      try {
+        speakWord(term);
+      } catch (error) {
+        console.warn('Failed to pronounce term', error);
+      }
+    };
+  }, [term, speakWord]);
+
+export type TestDialogProps = {
+  open: boolean;
+  onClose: () => void;
+  pos: PosGroup;
+  group: PronounGroup;
+  startupSoundHandle?: SoundHandle | null;
+  startupAudioPreplayed?: boolean;
+};
+
+export const TestDialog = ({
+  open,
+  onClose,
+  pos,
+  group,
+  startupSoundHandle,
+  startupAudioPreplayed,
+}: TestDialogProps) => {
+  // --- Context & stores -----------------------------------------------------------
+  const { getMedal, upsertMedal } = useMedalStore();
+  const segmentMeta = useMemo(() => resolveSegmentMeta(pos, group), [pos, group]);
+  const { speakWord, cancel, waitForIdle, supported: speechSupported } = useSpeech();
+  const isMobile = useMemo(() => detectMobileUserAgent(), []);
+  const { isPaused, addReason, removeReason } = usePauseManager();
+  const {
+    isOpen: isConfirmOpen,
+    open: openConfirm,
+    close: closeConfirm,
+  } = useConfirmCloseState({
+    addPauseReason: addReason,
+    removePauseReason: removeReason,
+  });
+
+  // --- Startup gating ------------------------------------------------------------
+  const { isStartupComplete } = useTestStartup({
+    open,
+    audioSrc: startTestAudio,
+    soundHandle: startupSoundHandle ?? undefined,
+    startupAudioPreplayed,
+  });
+
+  usePauseReasonEffect({
+    active: open && !isStartupComplete,
+    reason: PauseReason.Startup,
+    addReason,
+    removeReason,
+  });
+
+  // --- Test state (questions, answers, feedback) ---------------------------------
+  const soundEffects = useSoundEffects();
+  const { settings, progress, results, choices, meta, actions, feedback, display } =
+    useTestDialogState({
+      open,
+      group,
+      paused: isPaused,
+      soundEffects,
+    });
+
+  const { choiceView, answerMode } = settings;
+  const { total, current, timeLeftPct, item, isCompleted, hasItems } = progress;
+  const { correctAnswers, scorePercentage, answerHistory } = results;
+  const { options: choiceOptions } = choices;
+  const { questionKey } = meta;
+  const { advance, reset } = actions;
+
+  // --- Sound effects -------------------------------------------------------------
+  const {
+    playCorrectSound,
+    playIncorrectSound,
+    enableAudio,
+    playResultSound,
+    setBeforePlay,
+    notifyPlaybackFailure,
+    setPlaybackFailureHandler,
+    getAudioElement,
+  } = soundEffects;
+
+  const { state: playbackFailureInfo, reportFailure, clearFailure } = usePlaybackFailureState();
+  const beforeSoundEffect = useSpeechBeforePlay({
+    waitForIdle,
+    speechSupported,
+    isMobile,
+  });
+
+  useSoundEffectLifecycle({
+    setBeforePlay,
+    setPlaybackFailureHandler,
+    beforePlay: beforeSoundEffect,
+    onPlaybackFailure: reportFailure,
+  });
+
+  const judgementSoundEffects = useMemo(
+    () => ({
+      playCorrectSound,
+      playIncorrectSound,
+      enableAudio,
+      notifyPlaybackFailure,
+      getAudioElement,
+    }),
+    [enableAudio, playCorrectSound, playIncorrectSound, notifyPlaybackFailure, getAudioElement]
+  );
+
+  // --- Medal persistence ---------------------------------------------------------
+  const isResultDisplayed = isCompleted;
+  const attemptMedal = useMemo(
+    () => (segmentMeta ? getMedalRank(scorePercentage) : null),
+    [segmentMeta, scorePercentage]
+  );
+
+  useMedalAutoSave({
+    open,
+    isResultDisplayed,
+    hasItems,
+    segmentMeta,
+    attemptMedal,
+    getMedal,
+    upsertMedal,
+  });
+
   useResultSoundEffect({
     hasItems,
     scorePercentage,
@@ -347,7 +493,7 @@ export const TestDialog = ({
     open,
   });
 
-  // 判定ボタン（わかる／わからない）押下時の処理をカプセル化
+  // --- Judgement buttons ---------------------------------------------------------
   const advanceForJudgement = useCallback(
     (isCorrect?: boolean) => {
       advance({ isCorrect });
@@ -362,7 +508,8 @@ export const TestDialog = ({
     judgementSoundEffects
   );
 
-  // 選択肢回答・スキップ・単語開示など UI 操作に対応するハンドラ群
+  const { handleDontKnow, handleKnow } = useJudgementButtons(handleJudgementAnswer);
+
   const { handleChoiceAnswer, handleSkip, handleRevealWord } = useTestDialogHandlers({
     answerMode,
     revealed: display.revealed,
@@ -370,13 +517,13 @@ export const TestDialog = ({
     feedback,
     setShowTranslation: display.setShowTranslation,
   });
-  // ダイアログが閉じ切った瞬間に状態リセットと親コンポーネントへの通知
+
+  // --- Dialog closing ------------------------------------------------------------
   const handleDialogClosed = useCallback(() => {
     reset();
     onClose();
-  }, [onClose, reset]);
+  }, [reset, onClose]);
 
-  // 閉じアニメーションや requestClose を制御
   const { isClosing, shouldRender, requestClose, finalizeClose } = useDialogCloseController({
     open,
     animationDurationMs: CLOSE_ANIMATION_DURATION_MS,
@@ -384,47 +531,22 @@ export const TestDialog = ({
     onClosed: handleDialogClosed,
   });
 
-  // 現在の状態から「出題中」「結果表示中」「問題なし」などフェーズを判定
   const dialogPhase = resolveDialogPhase(hasItems, isResultDisplayed);
 
-  // 閉じるボタン押下時の処理。結果表示中は即閉じ、途中なら確認ダイアログを開く
-  const handleCloseClick = useCallback(() => {
-    if (dialogPhase === TestDialogPhase.Completed) {
-      closeConfirm();
-      requestClose();
-      return;
-    }
-    openConfirm();
-  }, [dialogPhase, closeConfirm, openConfirm, requestClose]);
+  const { handleCloseClick, handleConfirmClose, handleCancelClose } = useCloseBehavior({
+    dialogPhase,
+    closeConfirm,
+    openConfirm,
+    requestClose,
+  });
 
-  // 確認ダイアログで「閉じる」が押された際の処理
-  const handleConfirmClose = useCallback(() => {
-    closeConfirm();
-    requestClose();
-  }, [closeConfirm, requestClose]);
-
-  // 「キャンセル」は単に確認ダイアログを閉じる
-  const handleCancelClose = closeConfirm;
-
+  // --- Derived view state --------------------------------------------------------
   const term = item?.term ?? null;
   const translation = item?.jp ?? '';
   const hasTranslation = translation.length > 0;
+  const handleWordClick = useWordPronunciation(term, speakWord);
 
-  // 単語をクリックしたときに読み上げる。単語がない場面では undefined を返してボタン非表示。
-  const handleWordClick = useMemo(() => {
-    if (!term) return undefined;
-    return () => {
-      try {
-        speakWord(term);
-      } catch (error) {
-        console.warn('Failed to pronounce term', error);
-      }
-    };
-  }, [term, speakWord]);
-
-  // ESC キー入力をフックして閉じ動作を実行
   useEscapeKey(handleCloseClick, open);
-  // 問題表示時に自動で英単語を読み上げる（結果表示中は無効）
   useAutoPronounce({
     open,
     term,
@@ -434,7 +556,6 @@ export const TestDialog = ({
     enabled: isStartupComplete && !isResultDisplayed,
   });
 
-  // 表示用のデータモデルを作成（UI コンポーネントはこの値のみを参照して描画する）
   const view = useMemo(
     () =>
       buildTestDialogView({
@@ -459,22 +580,11 @@ export const TestDialog = ({
     ]
   );
 
-  // フィードバック状態や結果表示状況から操作ボタンの活性／非活性を決定
   const { controlsDisabled, judgementDisabled } = deriveControlState({
     isFeedbackDisabled: feedback.disabled,
     isCompleted,
     selectedJudgement,
   });
-
-  // 判定ボタンが押された際のラッパー（わからない）
-  const handleDontKnow = useCallback(() => {
-    handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.DONT_KNOW);
-  }, [handleJudgementAnswer]);
-
-  // 判定ボタンが押された際のラッパー（わかる）
-  const handleKnow = useCallback(() => {
-    handleJudgementAnswer(JUDGEMENT_BUTTON_TYPE.KNOW);
-  }, [handleJudgementAnswer]);
 
   if (!shouldRender && !playbackFailureInfo) return null;
 
@@ -486,7 +596,6 @@ export const TestDialog = ({
           closing={isClosing}
           onCloseAnimationEnd={finalizeClose}
           header={{
-            // ヘッダーには現在の品詞名・グループ名・残り時間などを表示
             posTitle: pos.title,
             groupTitle: group.title,
             timeLeftPct,
@@ -494,7 +603,6 @@ export const TestDialog = ({
             questionKey,
           }}
           question={{
-            // 問題エリア: 単語表示・翻訳表示・読み上げハンドラ等
             visible: view.showQuestion,
             current,
             total,
@@ -504,7 +612,6 @@ export const TestDialog = ({
             onWordClick: handleWordClick,
           }}
           result={{
-            // 結果エリア: スコアと履歴をまとめて表示
             visible: view.showResult,
             hasItems,
             total,
@@ -515,7 +622,6 @@ export const TestDialog = ({
           }}
           emptyLabelVisible={view.showEmpty}
           controls={{
-            // 選択肢や判定ボタンを含む操作エリア
             visible: view.showQuestion,
             choiceView,
             isCompleted: isResultDisplayed,
@@ -541,7 +647,6 @@ export const TestDialog = ({
             selectedButton: selectedJudgement,
           }}
           confirm={{
-            // 中断確認ダイアログ（途中退出すると進捗破棄）
             open: isConfirmOpen,
             onConfirm: handleConfirmClose,
             onCancel: handleCancelClose,
@@ -550,7 +655,6 @@ export const TestDialog = ({
       ) : null}
       {playbackFailureInfo ? (
         <PlaybackFailureDialog
-          // 効果音再生に失敗した場合のフォールバック UI
           info={playbackFailureInfo.info}
           fallbackContext={playbackFailureInfo.context}
           onClose={clearFailure}
@@ -559,4 +663,5 @@ export const TestDialog = ({
     </>
   );
 };
+
 export default TestDialog;
