@@ -9,7 +9,7 @@ import { RawPronounItem } from '../type';
 
 export const DATA_RAW_SOURCE1: RawPronounItem[] = [
   {
-    term: 'I\u2060', // ZERO WIDTH WORD JOINER (音は出ない)
+    term: 'I\u2060',
     ipa: '/aɪ/',
     jp: '私は',
     examples: [
@@ -18,7 +18,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'I have never been abroad.', jp: '私は海外に行ったことがありません。', level: 3 },
     ],
     choices: {
-      enToJp: ['あなたは', '彼は', '私たちは'],
+      enToJp: ['あなたは', '彼は', '彼女は'],
     },
   },
   {
@@ -31,7 +31,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'My dream is to study overseas.', jp: '私の夢は海外で勉強することです。', level: 3 },
     ],
     choices: {
-      enToJp: ['私のもの', '私を、私に', 'あなたの'],
+      enToJp: ['あなたの', '彼の', '彼女の'],
     },
   },
   {
@@ -48,7 +48,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私の', '私のもの', '私自身'],
+      enToJp: ['あなたを、あなたに', '彼を、彼に', '彼女を、彼女に'],
     },
   },
   {
@@ -65,7 +65,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私の', '私を、私に', 'あなたのもの'],
+      enToJp: ['あなたのもの', '彼のもの', '彼女のもの'],
     },
   },
   {
@@ -86,7 +86,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私のもの', '私たち自身', '彼自身'],
+      enToJp: ['あなた自身', '彼自身', '彼女自身'],
     },
   },
 
@@ -108,7 +108,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['彼らは', 'あなたたちは', '私は'],
+      enToJp: ['あなたたちは', '彼らは', 'それは'],
     },
   },
   {
@@ -129,7 +129,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私たちのもの', '私たちを、私たちに', 'あなたたちの'],
+      enToJp: ['あなたたちの', '彼らの', 'それの'],
     },
   },
   {
@@ -150,7 +150,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私たちの', '私たちのもの', '私たち自身'],
+      enToJp: ['あなたたちを、あなたたちに', '彼らを、彼らに', 'それを、それに'],
     },
   },
   {
@@ -167,7 +167,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私たちの', '彼らのもの', 'あなたたちのもの'],
+      enToJp: ['あなたたちのもの', '彼らのもの', '彼女のもの'],
     },
   },
   {
@@ -177,7 +177,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
     examples: [
       {
         en: 'We made sandwiches by ourselves.',
-        jp: '私たちは自分たちでサンドイッチを作りました。',
+        jp: '私たちは自分たでサンドイッチを作りました。',
         level: 1,
       },
       {
@@ -192,7 +192,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['私たちを、私たちに', 'あなたたち自身', '彼ら自身'],
+      enToJp: ['あなたたち自身', '彼ら自身', 'それ自身'],
     },
   },
 
@@ -214,7 +214,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたの', '彼女に', '彼は'],
+      enToJp: ['あなたの', '彼は', '彼女は'],
     },
   },
   {
@@ -231,7 +231,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたのもの', 'あなたは', 'あなた自身'],
+      enToJp: ['あなたは', '彼の', '彼女の'],
     },
   },
   {
@@ -248,7 +248,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたの', 'あなたのもの', 'あなた自身'],
+      enToJp: ['あなたの', '彼を、彼に', '彼女を、彼女に'],
     },
   },
   {
@@ -265,7 +265,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたの', 'あなたを、あなたに', 'あなたたちのもの'],
+      enToJp: ['彼のもの', '彼女のもの', '私のもの'],
     },
   },
   {
@@ -282,7 +282,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたの', 'あなたたち自身', '彼女自身'],
+      enToJp: ['あなたの', '彼自身', '彼女自身'],
     },
   },
 
@@ -304,7 +304,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちの', 'あなたの', '彼らは'],
+      enToJp: ['あなたたちの', '彼らは', 'それは'],
     },
   },
   {
@@ -321,7 +321,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちのもの', 'あなたたちは', 'あなたたち自身'],
+      enToJp: ['あなたたちは', '彼らの', 'それの'],
     },
   },
   {
@@ -342,7 +342,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちの', 'あなたたちのもの', 'あなたたち自身'],
+      enToJp: ['あなたたちの', '彼らを、彼らに', 'それを、それに'],
     },
   },
   {
@@ -359,7 +359,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'The choice is yours.', jp: '選択はあなたたちに任されています。', level: 3 },
     ],
     choices: {
-      enToJp: ['あなたたちの', 'あなたたちを、あなたたちに', '彼らのもの'],
+      enToJp: ['あなたたちの', '彼らのもの', '私たちのもの'],
     },
   },
   {
@@ -380,7 +380,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['あなたたちの', 'あなたたちを、あなたたちに', '彼ら自身'],
+      enToJp: ['あなたたちの', '彼ら自身', 'それ自身'],
     },
   },
 
@@ -411,7 +411,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'His advice has been helpful.', jp: '彼の助言は役に立ってきました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼を、彼に', '彼は', '彼自身'],
+      enToJp: ['彼は', '彼女の', '彼らの'],
     },
   },
   {
@@ -424,7 +424,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'Everyone respects him.', jp: 'みんなが彼を尊敬しています。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼は', '彼のもの', '彼女を、彼女に'],
+      enToJp: ['彼は', '彼女を、彼女に', 'それを、それに'],
     },
   },
   {
@@ -437,7 +437,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'The final decision is his.', jp: '最終的な決定は彼のものです。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼は', '彼を、彼に', '彼女のもの'],
+      enToJp: ['彼は', '彼女のもの', '彼らのもの'],
     },
   },
   {
@@ -454,7 +454,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['彼の', '彼ら自身', '彼女自身'],
+      enToJp: ['彼女自身', '彼ら自身', 'それ自身'],
     },
   },
 
@@ -481,7 +481,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'Her idea has changed the plan.', jp: '彼女の考えで計画が変わりました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼女のもの', '彼女は', '彼女自身'],
+      enToJp: ['彼女は', '彼の', '彼らの'],
     },
   },
   {
@@ -494,7 +494,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'We chose her as the leader.', jp: '私たちは彼女をリーダーに選びました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼女は', '彼女のもの', '彼女自身'],
+      enToJp: ['彼女は', '彼を、彼に', 'それを、それに'],
     },
   },
   {
@@ -507,7 +507,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'The victory is hers.', jp: 'その勝利は彼女のものです。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼女の', '彼女を、彼女に', '彼のもの'],
+      enToJp: ['彼のもの', '彼らのもの', 'あなたのもの'],
     },
   },
   {
@@ -528,7 +528,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['彼女の', '彼ら自身', '私自身'],
+      enToJp: ['彼自身', '彼ら自身', 'あなた自身'],
     },
   },
 
@@ -542,7 +542,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'It has become colder recently.', jp: '最近、寒くなってきました。', level: 3 },
     ],
     choices: {
-      enToJp: ['あれの', 'それの', 'それ自身'],
+      enToJp: ['それの', 'それを、それに', '彼らは'],
     },
   },
   {
@@ -555,7 +555,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'The company changed its policy.', jp: 'その会社は方針を変えました。', level: 3 },
     ],
     choices: {
-      enToJp: ['それは', 'それを、それに', 'それ自身'],
+      enToJp: ['それは', '彼らの', 'あなたの'],
     },
   },
   {
@@ -568,7 +568,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'I considered it carefully.', jp: '私はそれを慎重に考えました。', level: 3 },
     ],
     choices: {
-      enToJp: ['あれは', 'それの', 'それ自身'],
+      enToJp: ['それは', 'それの', '彼らを、彼らに'],
     },
   },
   {
@@ -589,7 +589,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['それの', '彼ら自身', '私自身'],
+      enToJp: ['私自身', 'あなた自身', '彼ら自身'],
     },
   },
 
@@ -611,7 +611,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['彼らの', '彼らを、彼らに', '私たちは'],
+      enToJp: ['彼らの', '彼らを、彼らに', 'あなたたちは'],
     },
   },
   {
@@ -624,7 +624,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'Their efforts have paid off.', jp: '彼らの努力は実を結びました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼らのもの', '彼らは', '彼ら自身'],
+      enToJp: ['彼らは', 'あなたたちの', 'それの'],
     },
   },
   {
@@ -637,7 +637,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'I asked them to join us.', jp: '私は彼らに一緒に参加するよう頼みました。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼らの', '彼らのもの', '彼らは'],
+      enToJp: ['彼らの', '彼らのもの', 'あなたたちを、あなたたちに'],
     },
   },
   {
@@ -650,7 +650,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       { en: 'The win is theirs this time.', jp: '今回は彼らの勝ちです。', level: 3 },
     ],
     choices: {
-      enToJp: ['彼らの', '彼らを、彼らに', '私たちのもの'],
+      enToJp: ['私たちのもの', 'あなたたちのもの', '彼女のもの'],
     },
   },
   {
@@ -675,7 +675,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['彼らのもの', 'あなたたち自身', '彼自身'],
+      enToJp: ['あなたたち自身', '彼自身', '彼女自身'],
     },
   },
 ];
