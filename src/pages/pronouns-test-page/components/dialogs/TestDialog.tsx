@@ -29,6 +29,7 @@ import type { SoundHandle } from '@/shared/utils/audio/soundHandle';
 import { PlaybackFailureDialog } from './internal/PlaybackFailureDialog';
 import { JUDGEMENT_BUTTON_TYPE } from '../../utils/constants/const';
 import { useMedalStore } from '../../hooks/context/MedalStoreContext';
+import { isMobileDevice } from '@/shared/utils/device';
 import {
   getMedalRank,
   resolveSegmentMeta,
@@ -110,11 +111,6 @@ type UseCloseBehaviorParams = {
   closeConfirm: () => void;
   openConfirm: () => void;
   requestClose: () => void;
-};
-
-const detectMobileUserAgent = () => {
-  if (typeof navigator === 'undefined') return false;
-  return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 };
 
 const getTimestamp = () => {
@@ -387,7 +383,7 @@ export const TestDialog = ({
   const { getMedal, upsertMedal } = useMedalStore();
   const segmentMeta = useMemo(() => resolveSegmentMeta(pos, group), [pos, group]);
   const { speakWord, cancel, waitForIdle, supported: speechSupported } = useSpeech();
-  const isMobile = useMemo(() => detectMobileUserAgent(), []);
+  const isMobile = useMemo(() => isMobileDevice(), []);
   const { isPaused, addReason, removeReason } = usePauseManager();
   const {
     isOpen: isConfirmOpen,

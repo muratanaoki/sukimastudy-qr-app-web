@@ -5,6 +5,7 @@ import {
   type SpeechIdleOptions,
   type SpeechIdleWatcher,
 } from './speechIdleWatcher';
+import { isMobileDevice } from '@/shared/utils/device';
 
 // =====================================================================================
 // Speech (Web Speech Synthesis) Hook
@@ -28,11 +29,6 @@ const detectSafari = (): boolean => {
 
   // WebKitベースでApple製品かチェック
   return /AppleWebKit/i.test(ua) && !/Chrome/i.test(ua);
-};
-
-const detectMobile = (): boolean => {
-  if (typeof navigator === 'undefined') return false;
-  return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 };
 
 const SAFARI_VOICE_CANDIDATES = [
@@ -118,7 +114,7 @@ export function useSpeech(options?: UseSpeechOptions) {
     synth.addEventListener?.('voiceschanged', loadVoices);
 
     // speaking状態の定期チェック（モバイルでは頻度を下げる）
-    const pollInterval = detectMobile() ? 1000 : 500;
+    const pollInterval = isMobileDevice() ? 1000 : 500;
     const id = window.setInterval(() => {
       setSpeaking(synth.speaking);
     }, pollInterval);
@@ -182,7 +178,7 @@ export function useSpeech(options?: UseSpeechOptions) {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
       const synth = window.speechSynthesis;
-      const isMobile = detectMobile();
+      const isMobile = isMobileDevice();
 
       // 既存音声をキャンセルして新しい音声を再生（PC・モバイル共通）
       if (synth.speaking) {
