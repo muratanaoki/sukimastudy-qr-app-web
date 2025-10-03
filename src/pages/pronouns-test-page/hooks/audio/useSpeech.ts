@@ -35,17 +35,17 @@ const SAFARI_VOICE_CANDIDATES = [
   'Samantha',
   'Alex',
   'Victoria',
-  'Daniel',
-  'Kate',
-  'Karen',
+  'Allison',
+  'Ava',
+  'Susan',
 ] as const;
 const CHROME_VOICE_CANDIDATES = [
   'Google US English',
-  'Google UK English Female',
-  'Google UK English Male',
   'Samantha',
   'Alex',
-  'Victoria',
+  'Allison',
+  'Ava',
+  'Susan',
 ] as const;
 
 const resolvePreferredVoiceNames = (): string[] => {
@@ -94,7 +94,6 @@ export function useSpeech(options?: UseSpeechOptions) {
   const [supported, setSupported] = useState<boolean>(false);
   const [speaking, setSpeaking] = useState<boolean>(false);
   const voicesRef = useRef<SpeechSynthesisVoice[] | null>(null);
-  const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(null);
   const speechIdleWatcherRef = useRef<SpeechIdleWatcher | null>(null);
 
   useEffect(() => {
@@ -127,31 +126,37 @@ export function useSpeech(options?: UseSpeechOptions) {
 
   // ブラウザが保持している音声リストから、言語・名前を基準に最適な音声を選択
   const pickVoice = useCallback(
-    (targetLang = 'en') => {
+    (targetLang = 'en-US') => {
       const list = voicesRef.current || [];
       if (!list.length) return undefined;
       const norm = (s?: string) => s?.toLowerCase() ?? '';
-      // 0) 明示選択
-      if (selectedVoiceName) {
-        const chosen = list.find((v) => norm(v.name) === norm(selectedVoiceName));
-        if (chosen) return chosen;
-      }
-      // 1) 名前優先 (部分一致)
+      // 0) 名前優先 (部分一致)
       const loweredPrefs = opts.preferredVoiceNames.map((n) => n.toLowerCase());
       for (const pref of loweredPrefs) {
         const hit = list.find((v) => norm(v.name).includes(pref));
         if (hit) return hit;
       }
-      // 2) 言語優先
-      const lang = targetLang.toLowerCase();
-      return (
-        list.find((v) => norm(v.lang).startsWith(`${lang}-us`)) ||
-        list.find((v) => norm(v.lang).startsWith(`${lang}-gb`)) ||
-        list.find((v) => norm(v.lang).startsWith(lang)) ||
-        undefined
+      // 1) 言語優先（US 優先でフォールバック）
+      const loweredLang = targetLang.toLowerCase();
+      const [base, region] = loweredLang.split('-', 2);
+      const langCandidates = [region ? `${base}-${region}` : null, `${base}-us`, base].filter(
+        (candidate, index, arr): candidate is string => {
+          if (!candidate) return false;
+          return arr.indexOf(candidate) === index;
+        }
       );
+
+      for (const candidate of langCandidates) {
+        const exact = list.find((v) => norm(v.lang) === candidate);
+        if (exact) return exact;
+
+        const variant = list.find((v) => norm(v.lang).startsWith(`${candidate}-`));
+        if (variant) return variant;
+      }
+
+      return undefined;
     },
-    [selectedVoiceName, opts.preferredVoiceNames]
+    [opts.preferredVoiceNames]
   );
 
   // rate/pitch などを指定して SpeechSynthesisUtterance を生成するユーティリティ
@@ -164,7 +169,7 @@ export function useSpeech(options?: UseSpeechOptions) {
       u.lang = local?.lang ?? opts.defaultLang;
       u.rate = local?.rate ?? opts.sentenceRate;
       u.pitch = local?.pitch ?? opts.pitch;
-      const voice = pickVoice(u.lang.slice(0, 2));
+      const voice = pickVoice(u.lang);
       if (voice) u.voice = voice;
       return u;
     },
@@ -284,18 +289,8 @@ export function useSpeech(options?: UseSpeechOptions) {
         speakSentence,
         cancel,
         waitForIdle,
-        setSelectedVoiceName,
       }) as const,
-    [
-      supported,
-      speaking,
-      speak,
-      speakWord,
-      speakSentence,
-      cancel,
-      waitForIdle,
-      setSelectedVoiceName,
-    ]
+    [supported, speaking, speak, speakWord, speakSentence, cancel, waitForIdle]
   );
 
   return api;
