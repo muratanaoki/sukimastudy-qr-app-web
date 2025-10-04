@@ -890,7 +890,7 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['他の', 'いくつかの', '両方'],
+      enToJp: ['もう一つの、別の', '他の', '両方'],
     },
   },
   {
