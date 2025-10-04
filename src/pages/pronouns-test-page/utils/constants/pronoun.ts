@@ -7,7 +7,7 @@ import { RawPronounItem } from '../type';
  * - 本ファイルを更新するときは `RawPronounItem` の構造を維持することで整合性を保つ。
  */
 
-export const DATA_RAW_SOURCE1: RawPronounItem[] = [
+export const PRONOUN_DATA_RAW_SOURCE1: RawPronounItem[] = [
   {
     term: 'I\u2060',
     ipa: '/aɪ/',
@@ -680,7 +680,7 @@ export const DATA_RAW_SOURCE1: RawPronounItem[] = [
   },
 ];
 
-export const DATA_RAW_SOURCE2: RawPronounItem[] = [
+export const PRONOUN_DATA_RAW_SOURCE2: RawPronounItem[] = [
   // 02. Indefinite (person/thing)
   {
     term: 'someone',
@@ -875,7 +875,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
   },
 ];
 
-export const DATA_RAW_SOURCE3: RawPronounItem[] = [
+export const PRONOUN_DATA_RAW_SOURCE3: RawPronounItem[] = [
   {
     term: 'one',
     ipa: '/wʌn/',
@@ -1357,7 +1357,7 @@ export const DATA_RAW_SOURCE3: RawPronounItem[] = [
   },
 ];
 
-export const DATA_RAW_SOURCE4: RawPronounItem[] = [
+export const PRONOUN_DATA_RAW_SOURCE4: RawPronounItem[] = [
   {
     term: 'this',
     ipa: '/ðɪs/',

@@ -1,6 +1,11 @@
 import { PronounGroup, PronounItem, RawPronounItem, PosGroup, JudgementButtonType } from '../type';
 import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
-import { DATA_RAW_SOURCE1, DATA_RAW_SOURCE2, DATA_RAW_SOURCE3, DATA_RAW_SOURCE4 } from './pronoun';
+import {
+  PRONOUN_DATA_RAW_SOURCE1,
+  PRONOUN_DATA_RAW_SOURCE2,
+  PRONOUN_DATA_RAW_SOURCE3,
+  PRONOUN_DATA_RAW_SOURCE4,
+} from './pronoun';
 import { MedalRank } from '../enum';
 
 // 生データに通し番号を付与し、UI 側で扱いやすい `PronounItem` に変換するヘルパー
@@ -16,14 +21,8 @@ const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
     },
   }));
 
-// 生データ（そのままエクスポート）
-export const DATA_RAW1: RawPronounItem[] = DATA_RAW_SOURCE1;
-export const DATA_RAW2: RawPronounItem[] = DATA_RAW_SOURCE2;
-export const DATA_RAW3: RawPronounItem[] = DATA_RAW_SOURCE3;
-export const DATA_RAW4: RawPronounItem[] = DATA_RAW_SOURCE4;
-
 // 画面で使うグループ配列（現状は静的に定義。API 化する場合の元データとしても利用）
-export const DATA: PronounGroup[] = [
+export const PRONOUN_DATA: PronounGroup[] = [
   {
     id: 'personal-pronouns',
     groupNo: 1,
@@ -31,7 +30,7 @@ export const DATA: PronounGroup[] = [
     abbr: '人称',
     icon: User,
     url: '/pronouns?tab=1',
-    items: withIndex(DATA_RAW1),
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE1),
   },
   {
     id: 'indefinite-people',
@@ -40,7 +39,7 @@ export const DATA: PronounGroup[] = [
     abbr: '不定',
     icon: Users,
     url: '/pronouns?tab=2',
-    items: withIndex(DATA_RAW2),
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE2),
   },
   {
     id: 'indefinite-quantity',
@@ -49,7 +48,7 @@ export const DATA: PronounGroup[] = [
     abbr: '不定',
     icon: ChartColumn,
     url: '/pronouns?tab=3',
-    items: withIndex(DATA_RAW3),
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE3),
   },
   {
     id: 'demonstrative-others',
@@ -58,7 +57,7 @@ export const DATA: PronounGroup[] = [
     abbr: '指示',
     icon: MousePointer,
     url: '/pronouns?tab=4',
-    items: withIndex(DATA_RAW4),
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE4),
   },
 ];
 
@@ -71,7 +70,7 @@ export const POS_GROUPS: PosGroup[] = [
   {
     pos: 'pronouns',
     title: '代名詞',
-    groups: DATA,
+    groups: PRONOUN_DATA,
   },
   // {
   //   pos: 'others',
