@@ -1,8 +1,6 @@
-import { PronounGroup, PronounItem, RawPronounItem, PosGroup, JudgementButtonType } from '../type';
-import { MapPin } from 'lucide-react';
+import { PronounGroup, PronounItem, RawPronounItem, JudgementButtonType } from '../type';
 
 import { MedalRank } from '../enum';
-import { PRONOUN_DATA_BASE } from './pronoun';
 
 // 生データに通し番号を付与し、UI 側で扱いやすい `PronounItem` に変換するヘルパー
 export const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
@@ -20,35 +18,7 @@ export const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
 // URL以外のプロパティを持つグループの基底型
 export type EnglishWordGroupBase = Omit<PronounGroup, 'url'>;
 
-// URLを動的に生成するヘルパー関数
-const createGroupUrl = (pos: string, index: number): string => `/${pos}?tab=${index + 1}`;
-
-// グループにURLを付与するヘルパー関数
-const addUrlToGroups = (groups: EnglishWordGroupBase[], pos: string): PronounGroup[] =>
-  groups.map((group, index) => ({
-    ...group,
-    url: createGroupUrl(pos, index),
-  }));
-
-export const PRONOUN_DATA: PronounGroup[] = addUrlToGroups(PRONOUN_DATA_BASE, 'pronouns');
-
-// 上位の「品詞グループ」レイヤ（今後他品詞を追加する拡張ポイント）
-// - pos: 品詞キー（URLにも使える識別子）
-// - url: 品詞トップのURL
-// - title: 表示名
-// - groups: 下位のグループ配列（上の DATA をそのまま利用）
-export const POS_GROUPS: PosGroup[] = [
-  {
-    pos: 'pronouns',
-    title: '代名詞',
-    groups: addUrlToGroups(PRONOUN_DATA_BASE, 'pronouns'),
-  },
-  {
-    pos: 'prepositions',
-    title: '前置詞',
-    groups: addUrlToGroups(PRONOUN_DATA_BASE, 'prepositions'),
-  },
-];
+// URL生成やPOS_GROUPSは循環参照を避けるため、pos-groups.tsで定義される
 
 export const FLASH_DURATION_MS = 500;
 

@@ -8,7 +8,7 @@ import { useHeaderHeightVar } from '../../hooks/useHeaderHeightVar';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import { useNoScrollClass } from '../../hooks/useNoScrollClass';
-import { POS_GROUPS } from '@/pages/pronouns-test-page/utils/constants/const';
+import { POS_GROUPS } from '@/pages/pronouns-test-page/utils/constants/pos-groups';
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
