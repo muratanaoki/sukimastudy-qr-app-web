@@ -6,7 +6,6 @@ import { RawPronounItem } from '../type';
  * - ボタンラベルやフラッシュ秒数など、複数コンポーネントから参照される定数も一元化。
  * - 本ファイルを更新するときは `RawPronounItem` の構造を維持することで整合性を保つ。
  */
-
 export const PRONOUN_DATA_RAW_SOURCE1: RawPronounItem[] = [
   {
     term: 'I\u2060',

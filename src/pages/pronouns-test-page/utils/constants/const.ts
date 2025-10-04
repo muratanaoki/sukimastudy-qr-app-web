@@ -21,15 +21,17 @@ const withIndex = (raw: RawPronounItem[]): PronounItem[] =>
     },
   }));
 
+// URLを動的に生成するヘルパー関数
+const createGroupUrl = (pos: string, index: number): string => `/${pos}?tab=${index + 1}`;
+
 // 画面で使うグループ配列（現状は静的に定義。API 化する場合の元データとしても利用）
-export const PRONOUN_DATA: PronounGroup[] = [
+const PRONOUN_DATA_BASE = [
   {
     id: 'personal-pronouns',
     groupNo: 1,
     title: '人称・所有・再帰代名詞',
     abbr: '人称',
     icon: User,
-    url: '/pronouns?tab=1',
     items: withIndex(PRONOUN_DATA_RAW_SOURCE1),
   },
   {
@@ -38,7 +40,6 @@ export const PRONOUN_DATA: PronounGroup[] = [
     title: '不定代名詞（人・物・事）',
     abbr: '不定',
     icon: Users,
-    url: '/pronouns?tab=2',
     items: withIndex(PRONOUN_DATA_RAW_SOURCE2),
   },
   {
@@ -47,7 +48,6 @@ export const PRONOUN_DATA: PronounGroup[] = [
     title: '不定代名詞（数量・部分など）',
     abbr: '不定',
     icon: ChartColumn,
-    url: '/pronouns?tab=3',
     items: withIndex(PRONOUN_DATA_RAW_SOURCE3),
   },
   {
@@ -56,10 +56,14 @@ export const PRONOUN_DATA: PronounGroup[] = [
     title: '指示代名詞・その他',
     abbr: '指示',
     icon: MousePointer,
-    url: '/pronouns?tab=4',
     items: withIndex(PRONOUN_DATA_RAW_SOURCE4),
   },
 ];
+
+export const PRONOUN_DATA: PronounGroup[] = PRONOUN_DATA_BASE.map((group, index) => ({
+  ...group,
+  url: createGroupUrl('pronouns', index),
+}));
 
 // 上位の「品詞グループ」レイヤ（今後他品詞を追加する拡張ポイント）
 // - pos: 品詞キー（URLにも使える識別子）
@@ -70,7 +74,10 @@ export const POS_GROUPS: PosGroup[] = [
   {
     pos: 'pronouns',
     title: '代名詞',
-    groups: PRONOUN_DATA,
+    groups: PRONOUN_DATA_BASE.map((group, index) => ({
+      ...group,
+      url: createGroupUrl('pronouns', index),
+    })),
   },
   // {
   //   pos: 'others',
