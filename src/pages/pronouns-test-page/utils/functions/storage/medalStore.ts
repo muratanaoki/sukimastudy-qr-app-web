@@ -2,7 +2,7 @@ import { MEDAL_RANKS } from '../../constants/const';
 import { MedalRank } from '../../enum';
 import { type MedalStoreState } from '../../type';
 
-const STORAGE_KEY = 'pronoun_test_medals_v1';
+const STORAGE_KEY = 'english_word_test_medals_v1';
 const STORAGE_VERSION = 1;
 const FALLBACK_UPDATED_AT = new Date(0).toISOString();
 

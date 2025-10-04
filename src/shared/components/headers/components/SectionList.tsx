@@ -19,6 +19,7 @@ export const SectionList = memo(function SectionList({ posGroups, onLinkClick }:
           <li className={styles.navSection} key={pos.pos}>
             <PosHeaderButton
               title={pos.title}
+              subtitle={pos.subtitle}
               open={open}
               controlsId={controlsId}
               onClick={() => toggle(pos.pos)}

@@ -12,7 +12,21 @@
   align-items: center;
   justify-content: space-between;
   min-height: var(--space-350);
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: baseline;
+}
+
+.title {
   font-size: var(--fs-125);
+}
+
+.subTitle {
+  font-size: var(--fs-100);
+  position: relative;
+  top: 0.02em;
 }
 
 /* 右側の＋/−アイコン（要素版） */

@@ -2,12 +2,19 @@ import styles from './posHeaderButton.module.css';
 
 export type PosHeaderButtonProps = {
   title: string;
+  subtitle?: string;
   open: boolean;
   controlsId: string;
   onClick: () => void;
 };
 
-export const PosHeaderButton = ({ title, open, controlsId, onClick }: PosHeaderButtonProps) => (
+export const PosHeaderButton = ({
+  title,
+  subtitle,
+  open,
+  controlsId,
+  onClick,
+}: PosHeaderButtonProps) => (
   <button
     type="button"
     className={styles.sectionButton}
@@ -15,7 +22,10 @@ export const PosHeaderButton = ({ title, open, controlsId, onClick }: PosHeaderB
     aria-controls={controlsId}
     onClick={onClick}
   >
-    <span>{title}</span>
+    <div className={styles.titleWrapper}>
+      <p className={styles.title}>{title}</p>
+      <p className={styles.subTitle}>{subtitle}</p>
+    </div>
     <span className={styles.plusMinus} aria-hidden="true" data-open={open} />
   </button>
 );

@@ -42,4 +42,10 @@ export const POS_GROUPS: PosGroup[] = [
     title: '前置詞',
     groups: PREPOSITION_DATA,
   },
+  {
+    pos: PartOfSpeechEnum.Nouns,
+    title: '名詞',
+    subtitle: '（1/14）',
+    groups: PREPOSITION_DATA,
+  },
 ];

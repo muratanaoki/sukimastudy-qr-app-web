@@ -34,4 +34,8 @@ export enum MedalRank {
 export enum PartOfSpeechEnum {
   Pronouns = 'pronouns',
   Prepositions = 'prepositions',
+  Nouns = 'nouns',
+  Verbs = 'verbs',
+  Adjectives = 'adjectives',
+  Adverbs = 'adverbs',
 }
