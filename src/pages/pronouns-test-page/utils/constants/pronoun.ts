@@ -1,4 +1,6 @@
+import { ChartColumn, MousePointer, User, Users } from 'lucide-react';
 import { RawPronounItem } from '../type';
+import { EnglishWordGroupBase, withIndex } from './const';
 
 /**
  * Pronouns テストで利用する静的定数集。
@@ -1446,5 +1448,41 @@ export const PRONOUN_DATA_RAW_SOURCE4: RawPronounItem[] = [
     choices: {
       enToJp: ['そのようなもの、こと', '他の', 'これ'],
     },
+  },
+];
+
+// 画面で使うグループ配列（現状は静的に定義。API 化する場合の元データとしても利用）
+export const PRONOUN_DATA_BASE: EnglishWordGroupBase[] = [
+  {
+    id: 'personal-pronouns',
+    groupNo: 1,
+    title: '人称・所有・再帰代名詞',
+    abbr: '人称',
+    icon: User,
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE1),
+  },
+  {
+    id: 'indefinite-people',
+    groupNo: 2,
+    title: '不定代名詞（人・物・事）',
+    abbr: '不定',
+    icon: Users,
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE2),
+  },
+  {
+    id: 'indefinite-quantity',
+    groupNo: 3,
+    title: '不定代名詞（数量・部分など）',
+    abbr: '不定',
+    icon: ChartColumn,
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE3),
+  },
+  {
+    id: 'demonstrative-others',
+    groupNo: 4,
+    title: '指示代名詞・その他',
+    abbr: '指示',
+    icon: MousePointer,
+    items: withIndex(PRONOUN_DATA_RAW_SOURCE4),
   },
 ];
