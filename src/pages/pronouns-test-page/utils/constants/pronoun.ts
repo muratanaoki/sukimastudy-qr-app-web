@@ -692,7 +692,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       { en: 'Someone has taken my seat.', jp: '誰かが私の席を取ってしまいました。', level: 3 },
     ],
     choices: {
-      enToJp: ['誰でも、誰か', 'みんな', '誰も〜ない'],
+      enToJp: ['誰でも', 'みんな', '誰も〜ない'],
     },
   },
   {
@@ -709,7 +709,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['みんな', '誰でも、誰か', '誰も〜ない'],
+      enToJp: ['誰でも', 'みんな', '誰も〜ない'],
     },
   },
   {
@@ -722,7 +722,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       { en: 'Something has changed recently.', jp: '最近、何かが変わりました。', level: 3 },
     ],
     choices: {
-      enToJp: ['何でも、何か', 'すべて', '何も〜ない'],
+      enToJp: ['何でも', 'すべて', '何も〜ない'],
     },
   },
 
@@ -788,7 +788,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       { en: 'Everyone has done their homework.', jp: 'みんな宿題を終えています。', level: 3 },
     ],
     choices: {
-      enToJp: ['誰か', '誰でも、誰か', '誰も〜ない'],
+      enToJp: ['誰か', '誰でも', '誰も〜ない'],
     },
   },
   {
@@ -805,7 +805,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       { en: 'Everybody has arrived on time.', jp: 'みんな時間どおりに到着しました。', level: 3 },
     ],
     choices: {
-      enToJp: ['誰か', '誰でも、誰か', '誰も〜ない'],
+      enToJp: ['誰か', '誰でも', '誰も〜ない'],
     },
   },
   {
@@ -818,7 +818,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       { en: 'Everything has been prepared.', jp: 'すべて準備ができています。', level: 3 },
     ],
     choices: {
-      enToJp: ['何でも、何か', '何か', '何も〜ない'],
+      enToJp: ['何でも', '何か', '何も〜ない'],
     },
   },
 
@@ -836,7 +836,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['誰か', 'みんな', '誰でも、誰か'],
+      enToJp: ['誰か', 'みんな', '誰でも'],
     },
   },
   {
@@ -857,7 +857,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       },
     ],
     choices: {
-      enToJp: ['誰か', 'みんな', '誰でも、誰か'],
+      enToJp: ['誰か', 'みんな', '誰でも'],
     },
   },
   {
@@ -870,7 +870,7 @@ export const DATA_RAW_SOURCE2: RawPronounItem[] = [
       { en: 'Nothing has been decided yet.', jp: 'まだ何も決まっていません。', level: 3 },
     ],
     choices: {
-      enToJp: ['何か', 'すべて', '何でも、何か'],
+      enToJp: ['何か', 'すべて', '何でも'],
     },
   },
 ];

@@ -71,13 +71,20 @@ const buildDefaultOptions = (): Required<UseSpeechOptions> => ({
 });
 
 // モバイル環境で speechSynthesis.speak を僅かに遅延させることで発話安定性を向上
+// すぐに speak() を呼ぶと iOS Safari などで再生が開始されないことがあるため、
+// ここで定義した遅延時間 (ms) を setTimeout に渡して再生を安定させる。
 const DEFAULT_MOBILE_SPEAK_DELAY_MS = 50;
-// requestAnimationFrame が無い環境向けの疑似フレーム時間
+// requestAnimationFrame が無い環境向けの疑似フレーム時間。
+// speechIdleWatcher 内のフレーム監視において requestAnimationFrame が使えない場合、
+// setTimeout を使って 16ms (約 60fps) 間隔でポーリングして近似的な挙動を再現する。
 const DEFAULT_IDLE_FALLBACK_FRAME_MS = 16;
 
 const createFallbackRequestFrame =
   () =>
   (callback: FrameRequestCallback): number => {
+    // requestAnimationFrame が未定義な環境向けのフォールバック実装。
+    // 本来ならブラウザが描画タイミングで callback を呼び出すが、
+    // setTimeout を使って同等の周期で callback を呼び出すようにする。
     return window.setTimeout(() => {
       const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
       callback(now);
@@ -236,6 +243,10 @@ export function useSpeech(options?: UseSpeechOptions) {
     }
 
     if (!speechIdleWatcherRef.current) {
+      // requestAnimationFrame / cancelAnimationFrame が存在すればそれを渡し、
+      // 無ければ上で定義した setTimeout ベースのフォールバックを渡す。
+      // これにより speechIdleWatcher 側では常に「フレームごとに speaking を監視する」
+      // という同じインターフェースで扱える。
       const requestFrame =
         typeof window.requestAnimationFrame === 'function'
           ? window.requestAnimationFrame.bind(window)
