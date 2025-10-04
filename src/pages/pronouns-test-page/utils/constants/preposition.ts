@@ -1051,6 +1051,764 @@ const TIME_RAW_DATA: RawPronounItem[] = [
   },
 ];
 
+// 手段の前置詞データ
+const MEANS_RAW_DATA: RawPronounItem[] = [
+  // 関係・所属 / 部分・比率
+  {
+    term: 'of',
+    ipa: '/ʌv/',
+    jp: '〜の（所有、所属、部分など）',
+    examples: [
+      { en: 'This is a picture of my family.', jp: 'これは私の家族の写真です。', level: 1 },
+      { en: 'The roof of the house is red.', jp: 'その家の屋根は赤いです。', level: 2 },
+      {
+        en: 'The results of the experiment were surprising.',
+        jp: '実験の結果は驚くべきものでした。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜の中の、〜のうち（比率）',
+        '〜から（情報源、出所）',
+        '〜によって（手段、方法、人）',
+      ],
+    },
+  },
+  {
+    term: 'out of',
+    ipa: '/aʊt ʌv/',
+    jp: '〜の中の、〜のうち（比率）',
+    examples: [
+      {
+        en: 'Two out of three students passed.',
+        jp: '3人のうち2人の学生が合格しました。',
+        level: 1,
+      },
+      {
+        en: 'Nine out of ten people agree with this idea.',
+        jp: '10人中9人がこの考えに賛成しています。',
+        level: 2,
+      },
+      {
+        en: 'Five out of every hundred cars are electric.',
+        jp: '100台の車のうち5台が電気自動車です。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜の（所有、所属、部分など）',
+        '〜から（情報源、出所）',
+        '〜を通して（媒介、経路、経験）',
+      ],
+    },
+  },
+  // 出所・経路・媒介
+  {
+    term: 'from',
+    ipa: '/frʌm/',
+    jp: '〜から（情報源、出所）',
+    examples: [
+      { en: 'I learned this from my teacher.', jp: '私は先生からこれを学びました。', level: 1 },
+      {
+        en: 'We got the news from the radio.',
+        jp: '私たちはラジオからそのニュースを得ました。',
+        level: 2,
+      },
+      {
+        en: 'This information comes from a reliable source.',
+        jp: 'この情報は信頼できる情報源から来ています。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜の（所有、所属、部分など）',
+        '〜を通して（媒介、経路、経験）',
+        '〜によって（手段、方法、人）',
+      ],
+    },
+  },
+  {
+    term: 'through',
+    ipa: '/θruː/',
+    jp: '〜を通して（媒介、経路、経験）',
+    examples: [
+      {
+        en: 'I learned English through practice.',
+        jp: '私は練習を通して英語を学びました。',
+        level: 1,
+      },
+      {
+        en: 'We communicate through email.',
+        jp: '私たちはメールを通してやり取りしています。',
+        level: 2,
+      },
+      {
+        en: 'Success comes through hard work and dedication.',
+        jp: '成功は努力と献身を通してもたらされます。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜から（情報源、出所）',
+        '〜によって（手段、方法、人）',
+        '〜と一緒に（道具、同伴）',
+      ],
+    },
+  },
+  {
+    term: 'by',
+    ipa: '/baɪ/',
+    jp: '〜によって（手段、方法、人）',
+    examples: [
+      { en: 'I go to school by bus.', jp: '私はバスで学校に行きます。', level: 1 },
+      {
+        en: 'This book was written by my teacher.',
+        jp: 'この本は私の先生によって書かれました。',
+        level: 2,
+      },
+      {
+        en: 'The problem was solved by using a new method.',
+        jp: '問題は新しい方法を使うことによって解決されました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜を通して（媒介、経路、経験）', '〜と一緒に（道具、同伴）', '〜なしで（欠如）'],
+    },
+  },
+  // 同伴・道具 / 欠如
+  {
+    term: 'with',
+    ipa: '/wɪð/',
+    jp: '〜と一緒に（道具、同伴）',
+    examples: [
+      { en: 'I eat rice with chopsticks.', jp: '私は箸でご飯を食べます。', level: 1 },
+      {
+        en: 'She went to the movie with her friends.',
+        jp: '彼女は友だちと映画を見に行きました。',
+        level: 2,
+      },
+      {
+        en: 'The teacher explained the problem with examples.',
+        jp: '先生は例を使ってその問題を説明しました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜によって（手段、方法、人）',
+        '〜なしで（欠如）',
+        '〜のために、〜にとって（目的）',
+      ],
+    },
+  },
+  {
+    term: 'without',
+    ipa: '/wɪˈðaʊt/',
+    jp: '〜なしで（欠如）',
+    examples: [
+      { en: 'I cannot live without music.', jp: '私は音楽なしでは生きられません。', level: 1 },
+      {
+        en: 'Please come to school without your phone.',
+        jp: '携帯電話を持たずに学校に来てください。',
+        level: 2,
+      },
+      {
+        en: 'The team won the game without their best player.',
+        jp: 'チームは最高の選手なしで試合に勝ちました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜と一緒に（道具、同伴）',
+        '〜のために、〜にとって（目的）',
+        '〜として（身分、役割、機能）',
+      ],
+    },
+  },
+  // 目的・利益
+  {
+    term: 'for',
+    ipa: '/fɔːr/',
+    jp: '〜のために、〜にとって（目的）',
+    examples: [
+      { en: 'This present is for you.', jp: 'このプレゼントはあなたのためのものです。', level: 1 },
+      { en: 'I study hard for my future.', jp: '私は将来のために一生懸命勉強します。', level: 2 },
+      {
+        en: 'Regular exercise is good for your health.',
+        jp: '定期的な運動は健康にとって良いです。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜なしで（欠如）', '〜として（身分、役割、機能）', '〜のように（類似、比喩）'],
+    },
+  },
+  // 身分・役割 / 類似
+  {
+    term: 'as',
+    ipa: '/æz/',
+    jp: '〜として（身分、役割、機能）',
+    examples: [
+      { en: 'I work as a teacher.', jp: '私は教師として働いています。', level: 1 },
+      { en: 'Use this book as a dictionary.', jp: 'この本を辞書として使ってください。', level: 2 },
+      {
+        en: 'He is known as the best student in our class.',
+        jp: '彼は私たちのクラスで最高の生徒として知られています。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜のために、〜にとって（目的）',
+        '〜のように（類似、比喩）',
+        '〜について（一般的な話題）',
+      ],
+    },
+  },
+  {
+    term: 'like',
+    ipa: '/laɪk/',
+    jp: '〜のように（類似、比喩）',
+    examples: [
+      { en: 'She sings like a bird.', jp: '彼女は鳥のように歌います。', level: 1 },
+      { en: 'He runs like the wind.', jp: '彼は風のように走ります。', level: 2 },
+      {
+        en: 'The new student looks like my brother.',
+        jp: 'その新しい生徒は私の兄のように見えます。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜として（身分、役割、機能）',
+        '〜について（一般的な話題）',
+        '〜について（専門的な話題）',
+      ],
+    },
+  },
+  // 話題・トピック
+  {
+    term: 'about',
+    ipa: '/əˈbaʊt/',
+    jp: '〜について（一般的な話題）',
+    examples: [
+      { en: 'Tell me about your school.', jp: 'あなたの学校について教えてください。', level: 1 },
+      { en: 'We talked about the movie.', jp: '私たちはその映画について話しました。', level: 2 },
+      {
+        en: "The teacher asked questions about yesterday's lesson.",
+        jp: '先生は昨日の授業について質問をしました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜のように（類似、比喻）',
+        '〜について（専門的な話題）',
+        '〜に反対して、〜に対して',
+      ],
+    },
+  },
+  {
+    term: 'on',
+    ipa: '/ɔːn/',
+    jp: '〜について（専門的な話題）',
+    examples: [
+      { en: 'I read a book on science.', jp: '私は科学に関する本を読みました。', level: 1 },
+      {
+        en: 'She gave a speech on world peace.',
+        jp: '彼女は世界平和についてスピーチをしました。',
+        level: 2,
+      },
+      {
+        en: 'The professor wrote a paper on modern technology.',
+        jp: '教授は現代技術に関する論文を書きました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜について（一般的な話題）',
+        '〜のように（類似、比喩）',
+        '〜に反対して、〜に対して',
+      ],
+    },
+  },
+  // 対立・対向
+  {
+    term: 'against',
+    ipa: '/əˈɡɛnst/',
+    jp: '〜に反対して、〜に対して',
+    examples: [
+      { en: 'I am against this plan.', jp: '私はこの計画に反対です。', level: 1 },
+      {
+        en: 'Our team played against the best school.',
+        jp: '私たちのチームは最高の学校と対戦しました。',
+        level: 2,
+      },
+      {
+        en: 'Many students voted against the new rule.',
+        jp: '多くの生徒が新しいルールに反対票を投じました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜について（一般的な話題）',
+        '〜について（専門的な話題）',
+        '〜として（身分、役割、機能）',
+      ],
+    },
+  },
+];
+
+// 論理の前置詞データ
+const LOGIC_RAW_DATA: RawPronounItem[] = [
+  // 比較・量の範囲
+  {
+    term: 'than',
+    ipa: '/ðæn/',
+    jp: '〜よりも（比較）',
+    examples: [
+      { en: 'I am taller than my sister.', jp: '私は妹より背が高いです。', level: 1 },
+      {
+        en: 'This book is more interesting than that one.',
+        jp: 'この本はあの本より面白いです。',
+        level: 2,
+      },
+      {
+        en: "Today's test was harder than I expected.",
+        jp: '今日のテストは私が思ったより難しかったです。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜以上（数値超過）', '〜を超えて（範囲外、想定外）', '〜に至るまで（数値・程度）'],
+    },
+  },
+  {
+    term: 'over',
+    ipa: '/ˈoʊvər/',
+    jp: '〜以上（数値超過）',
+    examples: [
+      {
+        en: 'Students over 15 can join this club.',
+        jp: '15歳以上の生徒がこのクラブに参加できます。',
+        level: 1,
+      },
+      {
+        en: 'The temperature went over 30 degrees today.',
+        jp: '今日の気温は30度を超えました。',
+        level: 2,
+      },
+      {
+        en: 'Over 100 people came to the school festival.',
+        jp: '100人以上の人が学校祭に来ました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜よりも（比較）', '〜を超えて（範囲外、想定外）', '〜に至るまで（数値・程度）'],
+    },
+  },
+  {
+    term: 'beyond',
+    ipa: '/bɪˈjɑːnd/',
+    jp: '〜を超えて（範囲外、想定外）',
+    examples: [
+      { en: 'This is beyond my understanding.', jp: 'これは私の理解を超えています。', level: 1 },
+      {
+        en: 'The mountains are beyond the river.',
+        jp: '山は川の向こうにあります。',
+        level: 2,
+      },
+      {
+        en: 'His performance was beyond our expectations.',
+        jp: '彼のパフォーマンスは私たちの期待を超えていました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜よりも（比較）', '〜以上（数値超過）', '〜に至るまで（数値・程度）'],
+    },
+  },
+  {
+    term: 'up to',
+    ipa: '/ʌp tuː/',
+    jp: '〜に至るまで（数値・程度）',
+    examples: [
+      {
+        en: 'You can choose up to three books.',
+        jp: 'あなたは最大3冊まで本を選ぶことができます。',
+        level: 1,
+      },
+      {
+        en: 'The elevator can hold up to ten people.',
+        jp: 'エレベーターは最大10人まで乗ることができます。',
+        level: 2,
+      },
+      {
+        en: 'The project may take up to six months.',
+        jp: 'そのプロジェクトは最大6か月かかるかもしれません。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜よりも（比較）', '〜以上（数値超過）', '〜を超えて（範囲外、想定外）'],
+    },
+  },
+  // 価値・単位
+  {
+    term: 'per',
+    ipa: '/pər/',
+    jp: '〜につき、〜あたり（単価、率）',
+    examples: [
+      { en: 'The apple costs 100 yen per piece.', jp: 'りんごは1個につき100円です。', level: 1 },
+      {
+        en: 'Students can borrow two books per week.',
+        jp: '生徒は週に2冊まで本を借りることができます。',
+        level: 2,
+      },
+      {
+        en: 'The speed limit is 60 kilometers per hour.',
+        jp: '制限速度は時速60キロメートルです。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜の価値がある', '〜を含めて（包含）', '〜のような（例示）'],
+    },
+  },
+  {
+    term: 'worth',
+    ipa: '/wərθ/',
+    jp: '〜の価値がある',
+    examples: [
+      { en: 'This book is worth reading.', jp: 'この本は読む価値があります。', level: 1 },
+      {
+        en: 'The old coin is worth a lot of money.',
+        jp: 'その古いコインはたくさんのお金の価値があります。',
+        level: 2,
+      },
+      {
+        en: 'The experience was worth all the effort.',
+        jp: 'その経験はすべての努力に値するものでした。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜につき、〜あたり（単価、率）', '〜を含めて（包含）', '〜のような（例示）'],
+    },
+  },
+  // 含む・例示
+  {
+    term: 'including',
+    ipa: '/ɪnˈkluːdɪŋ/',
+    jp: '〜を含めて（包含）',
+    examples: [
+      { en: 'Five people came, including me.', jp: '私を含めて5人が来ました。', level: 1 },
+      {
+        en: 'The total cost is 1000 yen, including tax.',
+        jp: '税込みで総額1000円です。',
+        level: 2,
+      },
+      {
+        en: 'Many subjects are taught here, including English.',
+        jp: '英語を含む多くの科目がここで教えられています。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜の価値がある', '〜のような（例示）', '〜を除いて（除外）'],
+    },
+  },
+  {
+    term: 'such as',
+    ipa: '/sʌtʃ æz/',
+    jp: '〜のような（例示）',
+    examples: [
+      {
+        en: 'I like fruits such as apples and oranges.',
+        jp: 'りんごやオレンジのような果物が好きです。',
+        level: 1,
+      },
+      {
+        en: 'Sports such as soccer and baseball are popular.',
+        jp: 'サッカーや野球のようなスポーツは人気があります。',
+        level: 2,
+      },
+      {
+        en: 'We study subjects such as math, science, and English.',
+        jp: '私たちは数学、理科、英語などの科目を勉強します。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜を含めて（包含）', '〜を除いて（除外）', '〜に加えて、（否定文）〜を除いて'],
+    },
+  },
+  // 除外・付加
+  {
+    term: 'except',
+    ipa: '/ɪkˈsɛpt/',
+    jp: '〜を除いて（除外）',
+    examples: [
+      { en: 'Everyone came except Tom.', jp: 'トムを除いてみんな来ました。', level: 1 },
+      {
+        en: 'I like all subjects except math.',
+        jp: '私は数学を除いてすべての科目が好きです。',
+        level: 2,
+      },
+      {
+        en: 'The store is open every day except Sunday.',
+        jp: '店は日曜日を除いて毎日開いています。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜のような（例示）', '〜に加えて、（否定文）〜を除いて', '〜の代わりに（代替）'],
+    },
+  },
+  {
+    term: 'besides',
+    ipa: '/bɪˈsaɪdz/',
+    jp: '〜に加えて、（否定文）〜を除いて',
+    examples: [
+      {
+        en: 'Besides English, I study math.',
+        jp: '英語に加えて、私は数学を勉強します。',
+        level: 1,
+      },
+      {
+        en: 'Besides you, no one knows the answer.',
+        jp: 'あなた以外、誰もその答えを知りません。',
+        level: 2,
+      },
+      {
+        en: 'Besides being smart, she is also kind.',
+        jp: '頭が良いことに加えて、彼女は親切でもあります。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜を除いて（除外）', '〜の代わりに（代替）', '〜に続いて'],
+    },
+  },
+  // 代替
+  {
+    term: 'instead of',
+    ipa: '/ɪnˈstɛd ʌv/',
+    jp: '〜の代わりに（代替）',
+    examples: [
+      { en: 'I walked instead of taking the bus.', jp: 'バスに乗る代わりに歩きました。', level: 1 },
+      {
+        en: 'Use a pen instead of a pencil.',
+        jp: '鉛筆の代わりにペンを使ってください。',
+        level: 2,
+      },
+      {
+        en: 'Instead of watching TV, I decided to read a book.',
+        jp: 'テレビを見る代わりに、本を読むことにしました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜に加えて、（否定文）〜を除いて', '〜に続いて', '〜の状態に（状態変化）'],
+    },
+  },
+  // 順序・移動
+  {
+    term: 'following',
+    ipa: '/ˈfɑːloʊɪŋ/',
+    jp: '〜に続いて',
+    examples: [
+      {
+        en: 'Following the teacher, we entered the room.',
+        jp: '先生に続いて、私たちは部屋に入りました。',
+        level: 1,
+      },
+      {
+        en: 'The meeting will be held following lunch.',
+        jp: '会議は昼食の後に行われます。',
+        level: 2,
+      },
+      {
+        en: 'Following the success of the first event, we planned another.',
+        jp: '最初のイベントの成功に続いて、私たちは別のイベントを計画しました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜の代わりに（代替）', '〜の状態に（状態変化）', '〜から（理由、心情を起点）'],
+    },
+  },
+  {
+    term: 'into',
+    ipa: '/ˈɪntuː/',
+    jp: '〜の状態に（状態変化）',
+    examples: [
+      { en: 'The ice turned into water.', jp: '氷は水になりました。', level: 1 },
+      {
+        en: 'She grew into a beautiful woman.',
+        jp: '彼女は美しい女性に成長しました。',
+        level: 2,
+      },
+      {
+        en: 'The small company developed into a big business.',
+        jp: 'その小さな会社は大企業に発展しました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: ['〜に続いて', '〜から（理由、心情を起点）', '〜が原因で、〜のために（起因）'],
+    },
+  },
+  // 理由・起因
+  {
+    term: 'out of',
+    ipa: '/aʊt ʌv/',
+    jp: '〜から（理由、心情を起点）',
+    examples: [
+      { en: 'I helped him out of kindness.', jp: '私は親切心から彼を助けました。', level: 1 },
+      {
+        en: 'She spoke out of anger.',
+        jp: '彼女は怒りから話しました。',
+        level: 2,
+      },
+      {
+        en: 'They acted out of fear for their safety.',
+        jp: '彼らは安全への恐れから行動しました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜の状態に（状態変化）',
+        '〜が原因で、〜のために（起因）',
+        '〜のおかげで（好結果の原因）',
+      ],
+    },
+  },
+  {
+    term: 'because of',
+    ipa: '/bɪˈkɔːz ʌv/',
+    jp: '〜が原因で、〜のために（起因）',
+    examples: [
+      { en: 'School was closed because of snow.', jp: '雪のため学校は休校でした。', level: 1 },
+      {
+        en: 'I was late because of the train delay.',
+        jp: '電車の遅れのため遅刻しました。',
+        level: 2,
+      },
+      {
+        en: 'The game was canceled because of bad weather.',
+        jp: '悪天候のため試合は中止されました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜から（理由、心情を起点）',
+        '〜のおかげで（好結果の原因）',
+        '〜によれば、〜に従って',
+      ],
+    },
+  },
+  {
+    term: 'thanks to',
+    ipa: '/θæŋks tuː/',
+    jp: '〜のおかげで（好結果の原因）',
+    examples: [
+      {
+        en: 'Thanks to my teacher, I passed the test.',
+        jp: '先生のおかげでテストに合格しました。',
+        level: 1,
+      },
+      {
+        en: 'Thanks to the good weather, we had a great picnic.',
+        jp: '良い天気のおかげで、素晴らしいピクニックができました。',
+        level: 2,
+      },
+      {
+        en: "Thanks to everyone's help, the project was successful.",
+        jp: 'みなさんの助けのおかげで、プロジェクトは成功しました。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜から（理由、心情を起点）',
+        '〜が原因で、〜のために（起因）',
+        '〜によれば、〜に従って',
+      ],
+    },
+  },
+  // 参照・譲歩
+  {
+    term: 'according to',
+    ipa: '/əˈkɔːrdɪŋ tuː/',
+    jp: '〜によれば、〜に従って',
+    examples: [
+      {
+        en: 'According to the teacher, the test is tomorrow.',
+        jp: '先生によれば、テストは明日です。',
+        level: 1,
+      },
+      {
+        en: 'According to the weather report, it will rain.',
+        jp: '天気予報によれば、雨が降るでしょう。',
+        level: 2,
+      },
+      {
+        en: 'According to the survey, most students like math.',
+        jp: '調査によれば、ほとんどの生徒が数学を好んでいます。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜のおかげで（好結果の原因）',
+        '〜にもかかわらず（譲歩）',
+        '〜が原因で、〜のために（起因）',
+      ],
+    },
+  },
+  {
+    term: 'in spite of',
+    ipa: '/ɪn spaɪt ʌv/',
+    jp: '〜にもかかわらず（譲歩）',
+    examples: [
+      {
+        en: 'In spite of the rain, we went out.',
+        jp: '雨にもかかわらず、私たちは外出しました。',
+        level: 1,
+      },
+      {
+        en: 'In spite of being tired, she kept studying.',
+        jp: '疲れていたにもかかわらず、彼女は勉強し続けました。',
+        level: 2,
+      },
+      {
+        en: 'In spite of the difficulties, the team never gave up.',
+        jp: '困難にもかかわらず、チームは諦めませんでした。',
+        level: 3,
+      },
+    ],
+    choices: {
+      enToJp: [
+        '〜によれば、〜に従って',
+        '〜のおかげで（好結果の原因）',
+        '〜が原因で、〜のために（起因）',
+      ],
+    },
+  },
+];
+
 export const PREPOSITION_DATA_BASE: EnglishWordGroupBase[] = [
   {
     id: 'position',
@@ -1082,7 +1840,7 @@ export const PREPOSITION_DATA_BASE: EnglishWordGroupBase[] = [
     title: '手段',
     abbr: '手段',
     icon: Hand,
-    items: [],
+    items: withIndex(MEANS_RAW_DATA),
   },
   {
     id: 'logic',
@@ -1090,6 +1848,6 @@ export const PREPOSITION_DATA_BASE: EnglishWordGroupBase[] = [
     title: '論理',
     abbr: '論理',
     icon: Lightbulb,
-    items: [],
+    items: withIndex(LOGIC_RAW_DATA),
   },
 ];

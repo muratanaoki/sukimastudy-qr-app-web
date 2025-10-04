@@ -30,3 +30,8 @@ export enum MedalRank {
   Silver = 'silver',
   Bronze = 'bronze',
 }
+
+export enum PartOfSpeechEnum {
+  Pronouns = 'pronouns',
+  Prepositions = 'prepositions',
+}
